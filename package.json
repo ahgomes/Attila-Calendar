@@ -1,20 +1,29 @@
 {
-  "name": "cs546-final-project",
-  "version": "1.0.0",
-  "description": "CS 546 Web Programming Final Project",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js"
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ahgomes/CS546-Final-Project.git"
-  },
-  "author": "",
-  "license": "",
-  "bugs": {
-    "url": "https://github.com/ahgomes/CS546-Final-Project/issues"
-  },
-  "homepage": "https://github.com/ahgomes/CS546-Final-Project#readme"
+    "name": "cs546-attila-calendar",
+    "version": "1.0.0",
+    "description": "CS 546 Web Programming Final Project: Attila Calendar",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "seed": "node ./tasks/seed.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ahgomes/Attila-Calendar.git"
+    },
+    "author": "",
+    "license": "",
+    "bugs": {
+        "url": "https://github.com/ahgomes/Attila-Calendar/issues"
+    },
+    "homepage": "https://github.com/ahgomes/Attila-Calendar#readme",
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "express": "^4.17.3",
+        "express-handlebars": "^6.0.5",
+        "express-session": "^1.17.2",
+        "mongodb": "^4.5.0",
+        "xss": "^1.0.11"
+    }
 }

@@ -1,6 +1,7 @@
 const mongoConnection = require('../config/mongoConnection');
 
 const data = require('../data');
+const validate = data.validate;
 
 async function main() {
     const db = await mongoConnection.connectToDb();

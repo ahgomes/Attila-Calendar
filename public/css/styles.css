@@ -13,6 +13,48 @@ h2 {
     font-size: 1.25em;
 }
 
+/* Nav bar */
+#logo {
+    width: 175px;
+    height: auto;
+    display: block;
+    margin: auto;
+}
+
+#nav-container {
+    list-style-type: none;
+    overflow: hidden;
+    padding: 0px;
+    margin: 0px;
+    background-color: #333333;
+}
+
+.nav-block {
+    float: left;
+    padding: 10px;
+}
+
+.nav-block:hover {
+    animation: nav-block-hover 0.25s;
+    animation-fill-mode: forwards;
+}
+
+.nav-content {
+    font-size: 1.25em;
+    text-decoration: none;
+    color: white;
+}
+
+@keyframes nav-block-hover {
+    from {
+        background-color: #333333;
+    }
+
+    to {
+        background-color: #9d1535;
+    }
+}
+
 /* Error */
 #error {
     font-family: 'Courier New', Courier, monospace;
@@ -45,7 +87,7 @@ h2 {
 #error-image-caption {
     opacity: 0;
     font-family: 'Courier New', Courier, monospace;
-    width: auto;
+    width: 100%;
     padding: 3px;
     border: 1px solid black;
     border-radius: 5px;

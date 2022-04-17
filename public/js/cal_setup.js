@@ -113,6 +113,7 @@ function fill_cal(curr) {
     fill_events(data);
 }
 
+/* dummy data */
 let data = [{date: '04/17/2022, 12:16:35 AM', title: 'event'},
             {date: '03/17/2022, 12:16:35 AM', title: 'event'},
             {date: '03/31/2022, 12:16:35 AM', title: 'event'},

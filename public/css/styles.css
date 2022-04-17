@@ -1,8 +1,18 @@
-/* Global */
+/* ------------------------------------------------------------------
+    GLOBAL
+------------------------------------------------------------------ */
+
+:root {
+
+}
 
 * {
     font-family: Helvetica, sans-serif;
     font-size: 16pt;
+}
+
+main {
+    height: 100vh;
 }
 
 h1 {
@@ -13,7 +23,156 @@ h2 {
     font-size: 1.25em;
 }
 
-/* Error */
+ol {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* ------------------------------------------------------------------
+    CALENDAR PAGE
+------------------------------------------------------------------ */
+
+#cal-container {
+    width: 70%;
+}
+
+/* -- CALENDAR TITLE AND NAVIGATION -- */
+
+#cal-head {
+    padding: 5px;
+    margin: auto;
+    width: 90%;
+}
+
+#cal-head #cal-title {
+    display: inline-block;
+    font-size: 24px;
+}
+
+#cal-head #btn-today {
+    font-size: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+#cal-head #btn-last,
+#cal-head #btn-next {
+    display: inline-block;
+    padding: 5px;
+    margin: 5px;
+    font-weight: 900;
+    text-align: center;
+    cursor: pointer;
+    color: #aaa;
+}
+
+#cal-head #btn-last:hover,
+#cal-head #btn-next:hover {
+    color: #222;
+}
+
+/* -- CALENDAR ACTUAL -- */
+
+#cal {
+    display: table;
+    padding: 5px;
+    margin: auto;
+    width: 90%;
+    height: 80%;
+    border-collapse: collapse;
+    user-select: none;
+}
+
+#cal .row {
+    display: table-row;
+}
+
+/* top row of dates */
+#cal .row:nth-of-type(2) .cell {
+    border-top: 0px;
+}
+
+#cal .row .cell {
+    display: table-cell;
+    padding: 5px;
+    width: 150px;
+    border: #000 solid 1px;
+    overflow: hidden;
+}
+
+/* days of week title row */
+#cal .th-group {
+    display: table-header-group;
+}
+
+/* days of week titles */
+#cal .th-group h2 {
+    display: table-cell;
+    height: 0;
+    padding-top: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    border: 1px solid #000;
+    border-bottom: 0px;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+/* date title */
+#cal .row .cell h3 {
+    text-align: center;
+    font-size: 12px;
+    margin: 5px auto 10px;
+    width: 24px;
+}
+
+/* events list in cell */
+#cal .row .cell .events {
+    height: 0;
+}
+
+/* event block */
+#cal .row .cell .events li {
+    padding: 5px 10px;
+    background: #0f0;
+    border-radius: 2px;
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+/* last month & next month cells */
+#cal .row .last,
+#cal .row .next {
+    opacity: 0.5;
+}
+
+#cal .row .today {
+    background: #f00;
+}
+
+/* -- EVENT SIDE PANEL -- */
+
+#event-panel {
+    display: block;
+    position: fixed;
+    top: calc(50% - 45vh);
+    right: 20px;
+    padding: 20px;
+    height: 90vh;
+    width: 30%;
+    border: 1px solid #000;
+    box-sizing: border-box;
+}
+
+#event-panel #event-panel-title {
+    margin: 0;
+}
+
+/* ------------------------------------------------------------------
+    ERROR PAGE
+------------------------------------------------------------------ */
+
 #error {
     font-family: 'Courier New', Courier, monospace;
     color: white;

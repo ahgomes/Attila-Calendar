@@ -1,4 +1,4 @@
-<main id="cal-container">
+<section id="cal-container">
     <section id="cal-head">
         <span id="btn-today">today</span>
         <span id="btn-last"><</span>
@@ -7,10 +7,8 @@
     </section>
     <section id="cal">
     </section>
-</main>
+</section>
 <section id="event-panel">
-    <h1 id="event-panel-title">Events</h1>
-    <ol id="event-panel-past"></ol>
-    <ol id="event-panel-future"></ol>
+    {{> events_panel}}
 </section>
 <script src="public/js/cal_setup.js" defer></script>

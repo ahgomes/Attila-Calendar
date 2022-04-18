@@ -11,12 +11,12 @@
     font-size: 16pt;
 }
 
-main {
-    height: 100vh;
+html, body {
+    margin: 0;
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 24px;
 }
 
 h2 {
@@ -34,6 +34,7 @@ ol {
 ------------------------------------------------------------------ */
 
 #cal-container {
+    height: 100vh;
     width: 70%;
 }
 
@@ -127,6 +128,10 @@ ol {
     width: 24px;
 }
 
+#cal .row .today h3 {
+    background: #f00;
+}
+
 /* events list in cell */
 #cal .row .cell .events {
     height: 0;
@@ -147,22 +152,19 @@ ol {
     opacity: 0.5;
 }
 
-#cal .row .today {
-    background: #f00;
-}
-
 /* -- EVENT SIDE PANEL -- */
 
 #event-panel {
     display: block;
     position: fixed;
     top: calc(50% - 45vh);
-    right: 20px;
+    right: 2%;
     padding: 20px;
     height: 90vh;
     width: 30%;
     border: 1px solid #000;
     box-sizing: border-box;
+    background: #fff;
 }
 
 #event-panel #event-panel-title {

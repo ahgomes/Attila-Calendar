@@ -2,8 +2,21 @@
     GLOBAL
 ------------------------------------------------------------------ */
 
+/* colors */
 :root {
+    --white:     #fff;
+    --black:     #000;
+    --grey:      #c5c8c6;
 
+    --beige:     #f8f8e1;
+    --yellow:    #ffcc00;
+    --green:     #8fbe00;
+    --lightblue: #00a8c6;
+    --charcoal:  #37424A;
+    --purple:    #aa6699;
+    --red:       #da2010;
+    --pink:      #f92672;
+    --lilac:     #967efb;
 }
 
 * {
@@ -20,7 +33,7 @@ h1 {
 }
 
 h2 {
-    font-size: 1.25em;
+    font-size: 18px;
 }
 
 ol {
@@ -36,6 +49,7 @@ ol {
 #cal-container {
     height: 100vh;
     width: 70%;
+    user-select: none;
 }
 
 /* -- CALENDAR TITLE AND NAVIGATION -- */
@@ -65,12 +79,12 @@ ol {
     font-weight: 900;
     text-align: center;
     cursor: pointer;
-    color: #aaa;
+    color: var(--grey);
 }
 
 #cal-head #btn-last:hover,
 #cal-head #btn-next:hover {
-    color: #222;
+    color: var(--charcoal);
 }
 
 /* -- CALENDAR ACTUAL -- */
@@ -82,7 +96,6 @@ ol {
     width: 90%;
     height: 80%;
     border-collapse: collapse;
-    user-select: none;
 }
 
 #cal .row {
@@ -98,7 +111,7 @@ ol {
     display: table-cell;
     padding: 5px;
     width: 150px;
-    border: #000 solid 1px;
+    border: 1px solid var(--black);
     overflow: hidden;
 }
 
@@ -114,7 +127,7 @@ ol {
     padding-top: 10px;
     text-align: center;
     text-transform: uppercase;
-    border: 1px solid #000;
+    border: 1px solid var(--black);
     border-bottom: 0px;
     font-size: 12px;
     vertical-align: middle;
@@ -129,7 +142,9 @@ ol {
 }
 
 #cal .row .today h3 {
-    background: #f00;
+    background: var(--red);
+    color: var(--white);
+    border-radius: 2px;
 }
 
 /* events list in cell */
@@ -140,7 +155,7 @@ ol {
 /* event block */
 #cal .row .cell .events li {
     padding: 5px 10px;
-    background: #0f0;
+    background: var(--lightblue);
     border-radius: 2px;
     margin-bottom: 5px;
     font-size: 12px;
@@ -162,13 +177,9 @@ ol {
     padding: 20px;
     height: 90vh;
     width: 30%;
-    border: 1px solid #000;
+    border: 1px solid var(--black);
     box-sizing: border-box;
-    background: #fff;
-}
-
-#event-panel #event-panel-title {
-    margin: 0;
+    background: var(--white);
 }
 
 /* ------------------------------------------------------------------

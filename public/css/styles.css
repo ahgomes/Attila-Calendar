@@ -13,6 +13,14 @@ h2 {
     font-size: 1.25em;
 }
 
+/* Events */
+#create-event-form {
+    width: 30%;
+    padding: 10px;
+    background-color: white;
+    border: 2px solid black;
+}
+
 /* Nav bar */
 #logo {
     width: 175px;

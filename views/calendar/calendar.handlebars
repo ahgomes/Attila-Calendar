@@ -1,3 +1,14 @@
-<h1>This is the Calendar Page</h1>
-
-<p>Test text</p>
+<section id="cal-container">
+    <section id="cal-head">
+        <span id="btn-today">today</span>
+        <span id="btn-last"><</span>
+        <span id="btn-next">></span>
+        <h1 id="cal-title"></h1>
+    </section>
+    <section id="cal">
+    </section>
+</section>
+<section id="event-panel">
+    {{> events_panel}}
+</section>
+<script src="public/js/cal_setup.js" defer></script>

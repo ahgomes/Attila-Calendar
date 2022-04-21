@@ -8,15 +8,15 @@ const constructorMethod = (app) => {
     app.use('/user', userRoute);
 
     app.get('/', (req, res) => {
-        return res.render('calendar/home', {
+        return res.render('other/home', {
             title: 'Home Page',
         });
     });
 
     app.use('*', (req, res) => {
-        return res.status(404).render('calendar/error', {
+        return res.status(404).render('other/error', {
             title: 'Unexpected Error: (404)',
-            errorMsg: 'The page you are looking for does not exist.',
+            errorMsg: 'Error: The page you are looking for does not exist.',
         });
     });
 };

@@ -4,27 +4,28 @@
 
 /* colors */
 :root {
-    --white:     #fff;
-    --black:     #000;
-    --grey:      #c5c8c6;
+    --white: #fff;
+    --black: #000;
+    --grey: #c5c8c6;
 
-    --beige:     #f8f8e1;
-    --yellow:    #ffcc00;
-    --green:     #8fbe00;
+    --beige: #f8f8e1;
+    --yellow: #ffcc00;
+    --green: #8fbe00;
     --lightblue: #00a8c6;
-    --charcoal:  #37424A;
-    --purple:    #aa6699;
-    --red:       #da2010;
-    --pink:      #f92672;
-    --lilac:     #967efb;
+    --charcoal: #37424a;
+    --purple: #aa6699;
+    --red: #da2010;
+    --pink: #f92672;
+    --lilac: #967efb;
 }
 
 * {
     font-family: Helvetica, sans-serif;
-    font-size: 16pt;
+    font-size: 16px;
 }
 
-html, body {
+html,
+body {
     margin: 0;
 }
 
@@ -40,6 +41,24 @@ ol {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.center-element {
+    display: block;
+    margin: auto;
+}
+
+textarea {
+    resize: none;
+}
+
+main {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 /* ------------------------------------------------------------------
@@ -183,6 +202,78 @@ ol {
 }
 
 /* ------------------------------------------------------------------
+    NAVIGATION BAR
+------------------------------------------------------------------ */
+
+#logo {
+    width: 175px;
+    height: auto;
+    display: block;
+    margin: auto;
+}
+
+#nav-title {
+    text-align: center;
+}
+
+#nav-container {
+    list-style-type: none;
+    overflow: hidden;
+    padding: 0px;
+    background-color: #333333;
+}
+
+.nav-block {
+    float: left;
+    padding: 10px;
+}
+
+#nav-user-msg {
+    float: right;
+    padding: 10px;
+}
+
+.nav-block:hover {
+    animation: nav-block-hover 0.25s;
+    animation-fill-mode: forwards;
+}
+
+.nav-content {
+    font-size: 1.25em;
+    text-decoration: none;
+    color: white;
+}
+
+@keyframes nav-block-hover {
+    from {
+        background-color: #333333;
+    }
+
+    to {
+        background-color: #9d1535;
+    }
+}
+
+/* ------------------------------------------------------------------
+    EVENTS PAGE
+------------------------------------------------------------------ */
+
+#create-event-form {
+    width: fit-content;
+    padding: 10px;
+    background-color: white;
+    border: 2px solid black;
+}
+
+.form-require {
+    color: red;
+}
+
+.form-error {
+    color: red;
+}
+
+/* ------------------------------------------------------------------
     ERROR PAGE
 ------------------------------------------------------------------ */
 
@@ -217,7 +308,8 @@ ol {
 #error-image-caption {
     opacity: 0;
     font-family: 'Courier New', Courier, monospace;
-    width: auto;
+    text-align: center;
+    width: 100%;
     padding: 3px;
     border: 1px solid black;
     border-radius: 5px;

@@ -19,7 +19,13 @@ app.use(
     })
 );
 
-app.engine('handlebars', express_handlebars.engine({ defaultLayout: 'main' }));
+app.engine(
+    'handlebars',
+    express_handlebars.engine({
+        defaultLayout: 'main',
+        partialsDir: ['views/partials/'],
+    })
+);
 app.set('view engine', 'handlebars');
 
 configRoutes(app);

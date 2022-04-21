@@ -1,9 +1,11 @@
 const usersApi = require('./users');
 const eventsApi = require('./events');
+const convertApi = require('./convert');
 const validateApi = require('./validate');
 
 module.exports = {
-    users: usersApi,
-    events: eventsApi,
-    validate: validateApi,
+    usersApi,
+    eventsApi,
+    convertApi,
+    validateApi,
 };

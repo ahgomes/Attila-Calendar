@@ -47,8 +47,18 @@ ol {
     display: none;
 }
 
+.center-element {
+    display: block;
+    margin: auto;
+}
+
 textarea {
     resize: none;
+}
+
+main {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 /* ------------------------------------------------------------------
@@ -202,11 +212,14 @@ textarea {
     margin: auto;
 }
 
+#nav-title {
+    text-align: center;
+}
+
 #nav-container {
     list-style-type: none;
     overflow: hidden;
     padding: 0px;
-    margin: 0px;
     background-color: #333333;
 }
 
@@ -246,10 +259,14 @@ textarea {
 ------------------------------------------------------------------ */
 
 #create-event-form {
-    width: 30%;
+    width: fit-content;
     padding: 10px;
     background-color: white;
     border: 2px solid black;
+}
+
+.form-require {
+    color: red;
 }
 
 .form-error {

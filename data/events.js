@@ -18,7 +18,7 @@ module.exports = {
 
         username = validateApi.isValidString(username, true).toLowerCase();
         owners = validateApi
-            .isValidArrayofStrings(owners, false, true)
+            .isValidArrayOfStrings(owners, false, true)
             .map((elem) => elem.toLowerCase());
 
         return owners.includes(username);
@@ -81,8 +81,7 @@ module.exports = {
         validateApi.checkNumberOfArgs(arguments.length, 5, 5);
 
         owner = validateApi.isValidString(owner, true).toLowerCase();
-        title = validateApi.isValidString(title, false);
-        date = validateApi.isValidDate(date);
+        title = validateApi.isValidString(title, true);
         description = validateApi.isValidString(description, false);
         priority = validateApi.isValidNumber(priority, true);
         deadline = validateApi.isValidDate(deadline);
@@ -242,7 +241,7 @@ module.exports = {
         const eventsCollection = await events();
         const updateInfo = await eventsCollection.updateOne(
             { _id: event._id },
-            { $push: { owners: username } }
+            { $push: { owners: username, $sort: 1 } }
         );
 
         if (updateInfo.modifiedCount < 1)
@@ -303,7 +302,7 @@ module.exports = {
      * @throws Errors when {commentId} is not a string, or is an empty string
      * @throws Errors when {commentId} is an invalid object id
      * @throws Errors when the user comment cannot be found
-     * @throws Errors when {accesor} does not have access to {commentId}
+     * @throws Errors when {accesor} does not have access to the event containing {commentId}
      */
     async getCommentById(commentId, accesor) {
         validateApi.checkNumberOfArgs(arguments.length, 2, 2);
@@ -346,7 +345,7 @@ module.exports = {
      * @throws Errors when {commentId} is not a string, or is an empty string
      * @throws Errors when {commentId} is an invalid object id
      * @throws Errors when the event cannot be found
-     * @throws Errors when {accesor} does not have access to {commentId}
+     * @throws Errors when {accesor} does not have access to the event containing {commentId}
      */
     async getEventFromCommentById(commentId, accesor) {
         validateApi.checkNumberOfArgs(arguments.length, 2, 2);
@@ -430,7 +429,7 @@ module.exports = {
      * @throws Errors when {commentId} is not a string, or is an empty string
      * @throws Errors when {commentId} is an invalid object id
      * @throws Errors when the user comment cannot be found
-     * @throws Errors when {accesor} does not have access to {commentId}
+     * @throws Errors when {accesor} does not have access to the event containing {commentId}
      * @throws Errors when the user comment cannot be removed from its event
      */
     async deleteCommentById(commentId, accesor) {

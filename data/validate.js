@@ -66,7 +66,7 @@ module.exports = {
         this.checkNumberOfArgs(arguments.length, 2, 2);
 
         this.isValidBoolean(isInteger);
-        if (typeof arg !== 'number' || isNaN(arg))
+        if (typeof arg !== 'number' || Number.isNaN(arg))
             throw `Error: '${arg}' is not a number.`;
         if (!Number.isFinite(arg))
             throw `Error: Number '${arg}' is not finite.`;
@@ -89,7 +89,7 @@ module.exports = {
         const trimmed_id = this.isValidString(arg, true);
         if (!ObjectId.isValid(trimmed_id))
             throw `Error: Id '${trimmed_id}' is an invalid object id.`;
-        return ObjectId(arg);
+        return ObjectId(trimmed_id);
     },
 
     /**
@@ -140,7 +140,7 @@ module.exports = {
      * @throws Errors when {arg} is not an array of strings. If {isNotEmpty} is true, then this function errors if {arg} is an empty array
      * @throws Errors when an element in {arg} is not a string, or is an empty string
      */
-    isValidArrayofStrings(arg, isNotEmpty, shouldTrim) {
+    isValidArrayOfStrings(arg, isNotEmpty, shouldTrim) {
         this.checkNumberOfArgs(arguments.length, 3, 3);
 
         this.isValidBoolean(isNotEmpty);

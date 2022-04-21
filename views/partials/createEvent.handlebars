@@ -2,29 +2,72 @@
     <h2>Create an Event</h2>
 
     <label for='input-title'>Title:</label><br />
-    <input id='input-title' />
+    <input id='input-title' name='input_title' value='{{titleValue}}' />
+    {{#if hasNoTitleError}}
+        <div id='input-title-error' class='form-error hidden'></div>
+    {{else}}
+        <div id='input-title-error' class='form-error'>{{titleErrorMsg}}</div>
+    {{/if}}
 
     <br /><br />
 
     <label for='input-desc'>Description:</label><br />
-    <input id='input-desc' />
+    <textarea id='input-desc' name='input_desc'>{{descValue}}</textarea>
+    {{#if hasNoDescError}}
+        <div id='input-desc-error' class='form-error hidden'></div>
+    {{else}}
+        <div id='input-desc-error' class='form-error'>{{descErrorMsg}}</div>
+    {{/if}}
 
     <br /><br />
 
     <label for='input-priority'>Priority:</label><br />
-    <input id='input-priority' type='number' />
+    <input
+        id='input-priority'
+        type='number'
+        name='input_priority'
+        value='{{priorityValue}}'
+    />
+    {{#if hasNoPriorityError}}
+        <div id='input-priority-error' class='form-error hidden'></div>
+    {{else}}
+        <div
+            id='input-priority-error'
+            class='form-error'
+        >{{priorityErrorMsg}}</div>
+    {{/if}}
 
     <br /><br />
 
     <label for='input-date'>Deadline Date:</label><br />
-    <input id='input-date' type='date' />
+    <input
+        id='input-date'
+        type='date'
+        name='input_date'
+        value='{{dateValue}}'
+    />
+    {{#if hasNoDateError}}
+        <div id='input-date-error' class='form-error hidden'></div>
+    {{else}}
+        <div id='input-date-error' class='form-error'>{{dateErrorMsg}}</div>
+    {{/if}}
 
     <br /><br />
 
     <label for='input-time'>Deadline Time:</label><br />
-    <input id='input-time' type='time' />
+    <input
+        id='input-time'
+        type='time'
+        name='input_time'
+        value='{{timeValue}}'
+    />
+    {{#if hasNoTimeError}}
+        <div id='input-time-error' class='form-error hidden'></div>
+    {{else}}
+        <div id='input-time-error' class='form-error'>{{timeErrorMsg}}</div>
+    {{/if}}
 
     <br /><br />
 
-    <button type='submit'>Create Event</button>
+    <button id='submit-button' type='submit'>Create Event</button>
 </form>

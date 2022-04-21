@@ -21,7 +21,7 @@
 
 * {
     font-family: Helvetica, sans-serif;
-    font-size: 16pt;
+    font-size: 16px;
 }
 
 html,
@@ -41,6 +41,14 @@ ol {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+textarea {
+    resize: none;
 }
 
 /* ------------------------------------------------------------------
@@ -207,6 +215,11 @@ ol {
     padding: 10px;
 }
 
+#nav-user-msg {
+    float: right;
+    padding: 10px;
+}
+
 .nav-block:hover {
     animation: nav-block-hover 0.25s;
     animation-fill-mode: forwards;
@@ -237,6 +250,10 @@ ol {
     padding: 10px;
     background-color: white;
     border: 2px solid black;
+}
+
+.form-error {
+    color: red;
 }
 
 /* ------------------------------------------------------------------
@@ -274,6 +291,7 @@ ol {
 #error-image-caption {
     opacity: 0;
     font-family: 'Courier New', Courier, monospace;
+    text-align: center;
     width: 100%;
     padding: 3px;
     border: 1px solid black;

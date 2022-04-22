@@ -7,7 +7,7 @@ const constructorMethod = (app) => {
     app.use('/events', eventsRoute);
     app.use('/user', userRoute);
 
-    app.get('/', (req, res) => {
+    app.route('/').get((req, res) => {
         return res.render('other/home', {
             title: 'Home Page',
         });

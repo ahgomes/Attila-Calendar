@@ -19,17 +19,17 @@
         const titleValue = DOMtitle.val().trim();
         if (!titleValue) {
             noErrors = false;
-            DOMtitleError.text('Title is empty.').removeClass('hidden');
+            DOMtitleError.text('Title is empty.').show();
         } else {
-            DOMtitleError.text('').addClass('hidden');
+            DOMtitleError.text('').hide();
         }
 
         const descValue = DOMdesc.val();
         if (!descValue) {
             noErrors = false;
-            DOMdescError.text('Description is empty.').removeClass('hidden');
+            DOMdescError.text('Description is empty.').show();
         } else {
-            DOMdescError.text('').addClass('hidden');
+            DOMdescError.text('').hide();
         }
 
         const priorityValue = DOMpriority.val().trim();
@@ -44,9 +44,9 @@
             noErrors = false;
             DOMpriorityError.text(
                 'Priority is not an integer in the range 1-5 inclusive.'
-            ).removeClass('hidden');
+            ).show();
         } else {
-            DOMpriorityError.text('').addClass('hidden');
+            DOMpriorityError.text('').hide();
         }
 
         const dateValue = DOMdate.val().trim();
@@ -60,9 +60,9 @@
             noErrors = false;
             DOMdateError.text(
                 "Deadline date is not in the form 'YYYY-MM-DD'."
-            ).removeClass('hidden');
+            ).show();
         } else {
-            DOMdateError.text('').addClass('hidden');
+            DOMdateError.text('').hide();
         }
 
         const timeValue = DOMtime.val().trim();
@@ -75,9 +75,9 @@
             noErrors = false;
             DOMtimeError.text(
                 "Deadline time is not in the form 'HH:MM'."
-            ).removeClass('hidden');
+            ).show();
         } else {
-            DOMtimeError.text('').addClass('hidden');
+            DOMtimeError.text('').hide();
         }
 
         if (!noErrors) e.preventDefault();

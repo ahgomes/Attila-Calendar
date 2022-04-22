@@ -1,10 +1,12 @@
 <form
-    id='create-event-form'
+    id='edit-event-form'
     class='center-element'
-    action='/events/create'
+    action='/events/edit/{{eventId}}'
     method='POST'
 >
-    <h2>Create an Event</h2>
+    <input name='_method' value='PUT' hidden />
+
+    <h2>Edit an Event</h2>
 
     <label for='input-title'>
         Title<span class='form-require'>*</span>:
@@ -108,5 +110,5 @@
 
     <br />
 
-    <button id='submit-button' type='submit'>Create Event</button>
+    <button id='submit-button' type='submit'>Edit Event</button>
 </form>

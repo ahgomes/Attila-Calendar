@@ -1,0 +1,27 @@
+<article class='event-widget center-element'>
+    {{#if titleExists}}
+        <h2>{{{event.title}}}</h2>
+    {{else}}
+        <h2 class='italics'>(Missing Title)</h2>
+    {{/if}}
+
+    <div class='event-flex-container event-flex-container-right-align'>
+        {{#if descExists}}
+            <p class='event-post'>{{{event.description}}}</p>
+        {{else}}
+            <p class='event-post italics'>(Missing Description)</p>
+        {{/if}}
+    </div>
+
+    <span>Priority: {{event.priority}}</span><br />
+    <span>Deadline: {{event.deadline}}</span>
+
+    <div class='event-post-container'>
+        <h2>Comments:</h2>
+        <div class='event-flex-container event-flex-container-right-align'>
+            <p class='event-post'>Comment 1</p>
+            <p class='event-post'>Comment 2</p>
+            <p class='event-post'>Comment 3</p>
+        </div>
+    </div>
+</article>

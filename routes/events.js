@@ -9,7 +9,7 @@ const eventsApi = data.eventsApi;
 const convertApi = data.convertApi;
 const validateApi = data.validateApi;
 
-// /events
+/* /events */
 
 router.route('/').get((req, res) => {
     return res.render('events/main', {
@@ -17,7 +17,7 @@ router.route('/').get((req, res) => {
     });
 });
 
-// /events/create
+/* /events/create */
 
 router.route('/create').get((req, res) => {
     return res.render('events/create', {
@@ -64,7 +64,8 @@ router.route('/create').post(async (req, res) => {
     let owner = null,
         dateObj = null,
         timeObj = null,
-        deadline = null;
+        deadline = null,
+        event = null;
 
     try {
         owner = validateApi
@@ -146,7 +147,7 @@ router.route('/create').post(async (req, res) => {
     }
 
     try {
-        await eventsApi.createNewEvent(
+        event = await eventsApi.createNewEvent(
             owner,
             input_title,
             input_desc,
@@ -160,10 +161,10 @@ router.route('/create').post(async (req, res) => {
         });
     }
 
-    return res.redirect('/events');
+    return res.redirect(`/events/view/${event._id.toString()}`);
 });
 
-// /events/edit/{eventId}
+/* /events/edit/{eventId} */
 
 router.route('/edit/:eventId').get(async (req, res) => {
     let eventId = null,
@@ -311,7 +312,8 @@ router.route('/edit/:eventId').put(async (req, res) => {
 
     let dateObj = null,
         timeObj = null,
-        deadline = null;
+        deadline = null,
+        event = null;
 
     try {
         input_title = validateApi.isValidString(titleView.value, true);
@@ -382,7 +384,7 @@ router.route('/edit/:eventId').put(async (req, res) => {
     }
 
     try {
-        await eventsApi.editEventById(
+        event = await eventsApi.editEventById(
             eventId,
             accesor,
             input_title,
@@ -397,7 +399,67 @@ router.route('/edit/:eventId').put(async (req, res) => {
         });
     }
 
-    return res.redirect('/events');
+    return res.redirect(`/events/view/${event._id.toString()}`);
+});
+
+/* /events/view/{eventId} */
+
+router.route('/view/:eventId').get(async (req, res) => {
+    let eventId = null,
+        accesor = null,
+        event = null;
+
+    try {
+        eventId = validateApi.isValidString(xss(req.params.eventId), true);
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        accesor = validateApi
+            .isValidString(usersApi.getLoggedinUser().username, true)
+            .toLowerCase();
+    } catch (e) {
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        const eventExists = await eventsApi.eventExistsById(eventId);
+        if (!eventExists)
+            return res.status(404).render('other/error', {
+                title: 'Unexpected Error: (404)',
+                errorMsg: `Error: Could not find an event with id '${eventId}'.`,
+            });
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        event = await eventsApi.getEventById(eventId, accesor);
+    } catch (e) {
+        return res.status(403).render('other/error', {
+            title: 'Unexpected Error: (403)',
+            errorMsg: e,
+        });
+    }
+
+    event.deadline = convertApi.dateToReadableString(new Date(event.deadline));
+
+    return res.render('events/view', {
+        title: 'View an Event',
+        titleExists: event.title.trim().length > 0,
+        descExists: event.description.trim().length > 0,
+        event,
+    });
 });
 
 module.exports = router;

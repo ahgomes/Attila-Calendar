@@ -6,16 +6,18 @@
 >
     <h2>Create an Event</h2>
 
-    <label for='input-title'>
-        Title<span class='event-form-require'>*</span>:
-    </label><br />
-    <input
-        id='input-title'
-        name='input_title'
-        value='{{titleView.value}}'
-        required
-    />
-    <br />
+    <div class='event-flex-container'>
+        <label class='event-input-label' for='input-title'>
+            Title<span class='event-form-require'>*</span>:
+        </label>
+        <input
+            id='input-title'
+            name='input_title'
+            class='event-input-fill'
+            value='{{{titleView.value}}}'
+            required
+        />
+    </div>
     {{#if titleView.noError}}
         <div id='input-title-error' class='event-form-error' hidden></div>
     {{else}}
@@ -33,7 +35,7 @@
         id='input-desc'
         name='input_desc'
         required
-    >{{descView.value}}</textarea>
+    >{{{descView.value}}}</textarea>
     <br />
     {{#if descView.noError}}
         <div id='input-desc-error' class='event-form-error' hidden></div>
@@ -45,17 +47,19 @@
 
     <br />
 
-    <label for='input-priority'>
-        Priority<span class='event-form-require'>*</span>:
-    </label><br />
-    <input
-        id='input-priority'
-        type='number'
-        name='input_priority'
-        value='{{priorityView.value}}'
-        required
-    />
-    <br />
+    <div class='event-flex-container'>
+        <label class='event-input-label' for='input-priority'>
+            Priority<span class='event-form-require'>*</span>:
+        </label>
+        <input
+            id='input-priority'
+            type='number'
+            name='input_priority'
+            class='event-input-fill'
+            value='{{priorityView.value}}'
+            required
+        />
+    </div>
     {{#if priorityView.noError}}
         <div id='input-priority-error' class='event-form-error' hidden></div>
     {{else}}
@@ -66,17 +70,19 @@
 
     <br />
 
-    <label for='input-date'>
-        Deadline Date<span class='event-form-require'>*</span>:
-    </label><br />
-    <input
-        id='input-date'
-        type='date'
-        name='input_date'
-        value='{{dateView.value}}'
-        required
-    />
-    <br />
+    <div class='event-flex-container'>
+        <label class='event-input-label' for='input-date'>
+            Deadline Date<span class='event-form-require'>*</span>:
+        </label>
+        <input
+            id='input-date'
+            type='date'
+            name='input_date'
+            class='event-input-fill'
+            value='{{dateView.value}}'
+            required
+        />
+    </div>
     {{#if dateView.noError}}
         <div id='input-date-error' class='event-form-error' hidden></div>
     {{else}}
@@ -87,17 +93,19 @@
 
     <br />
 
-    <label for='input-time'>
-        Deadline Time<span class='event-form-require'>*</span>:
-    </label><br />
-    <input
-        id='input-time'
-        type='time'
-        name='input_time'
-        value='{{timeView.value}}'
-        required
-    />
-    <br />
+    <div class='event-flex-container'>
+        <label class='event-input-label' for='input-time'>
+            Deadline Time<span class='event-form-require'>*</span>:
+        </label>
+        <input
+            id='input-time'
+            type='time'
+            name='input_time'
+            class='event-input-fill'
+            value='{{timeView.value}}'
+            required
+        />
+    </div>
     {{#if timeView.noError}}
         <div id='input-time-error' class='event-form-error' hidden></div>
     {{else}}
@@ -108,5 +116,7 @@
 
     <br />
 
-    <button id='submit-button' type='submit'>Create Event</button>
+    <button id='submit-button' class='center-element' type='submit'>
+        Create Event
+    </button>
 </form>

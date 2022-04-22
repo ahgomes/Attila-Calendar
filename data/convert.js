@@ -138,7 +138,7 @@ module.exports = {
      * @param {string} date_str The date string to be converted in the form 'YYYY-MM-DD'
      * @param {string} time_str The time string to be converted in the form 'HH:MM'
      *
-     * @returns {Date} Returns a date object using the date {date_str} and the time {time_str}
+     * @returns {Date} Returns a date object using the date {date_str} and the time {time_str}. Note: The timezone is stored in UTC
      *
      * @throws Errors when {date_str} is not a string
      * @throws Errors when {time_str} is not a string
@@ -166,5 +166,49 @@ module.exports = {
             minutes = timeObj.minutes;
 
         return new Date(year, month - 1, day, hours, minutes);
+    },
+
+    /**
+     * Converts a date object into a date string.
+     *
+     * @param {Date} date The date object to be converted
+     *
+     * @returns {string} Returns the date string of {date} in the form 'YYYY-MM-DD'. Note: The timezone is stored in local time
+     *
+     * @throws Errors when {date} is not a date object
+     */
+    dateToDateString(date) {
+        validateApi.checkNumberOfArgs(arguments.length, 1, 1);
+
+        date = validateApi.isValidDate(date);
+
+        const month = `${date.getMonth() + 1}`;
+        const day = `${date.getDate()}`;
+        const year = `${date.getFullYear()}`;
+
+        return `${year.padStart(4, '0')}-${month.padStart(
+            2,
+            '0'
+        )}-${day.padStart(2, '0')}`;
+    },
+
+    /**
+     * Converts a date object into a time string. NOTE:
+     *
+     * @param {Date} date The date object to be converted
+     *
+     * @returns {string} Returns the time string of {date} in the form 'HH:MM'. Note: The timezone is stored in local time
+     *
+     * @throws Errors when {date} is not a date object
+     */
+    dateToTimeString(date) {
+        validateApi.checkNumberOfArgs(arguments.length, 1, 1);
+
+        date = validateApi.isValidDate(date);
+
+        const hours = `${date.getHours()}`;
+        const minutes = `${date.getMinutes()}`;
+
+        return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
     },
 };

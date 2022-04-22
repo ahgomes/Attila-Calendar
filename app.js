@@ -9,6 +9,14 @@ const express_handlebars = require('express-handlebars');
 app.use('/public', static);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/', (req, res, next) => {
+    if (req.body?._method) {
+        req.method = req.body._method;
+        delete req.body._method;
+    }
+
+    next();
+});
 
 app.use(
     session({

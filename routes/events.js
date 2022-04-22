@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const xss = require('xss');
+const { events } = require('../config/mongoCollections');
 
 const data = require('../data');
 const usersApi = data.usersApi;
@@ -8,25 +9,29 @@ const eventsApi = data.eventsApi;
 const convertApi = data.convertApi;
 const validateApi = data.validateApi;
 
-router.get('/', (req, res) => {
+// /events
+
+router.route('/').get((req, res) => {
     return res.render('events/main', {
         title: 'Events Page',
     });
 });
 
-router.get('/create', (req, res) => {
+// /events/create
+
+router.route('/create').get((req, res) => {
     return res.render('events/create', {
         title: 'Create an Event',
         scriptSource: '/public/js/events/createEvent.js',
-        titleView: { noError: true },
-        descView: { noError: true },
-        priorityView: { noError: true },
-        dateView: { noError: true },
-        inputView: { noError: true },
+        titleView: { value: '', noError: true },
+        descView: { value: '', noError: true },
+        priorityView: { value: '', noError: true },
+        dateView: { value: '', noError: true },
+        timeView: { value: '', noError: true },
     });
 });
 
-router.post('/create', (req, res) => {
+router.route('/create').post(async (req, res) => {
     let { input_title, input_desc, input_priority, input_date, input_time } =
         req.body;
 
@@ -66,9 +71,9 @@ router.post('/create', (req, res) => {
             .isValidString(usersApi.getLoggedinUser().username, true)
             .toLowerCase();
     } catch (e) {
-        return res.status(400).render('other/error', {
-            title: 'Unexpected Error: (400)',
-            errorMsg: 'Error: Could not locate logged-in user.',
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
         });
     }
 
@@ -141,7 +146,7 @@ router.post('/create', (req, res) => {
     }
 
     try {
-        eventsApi.createNewEvent(
+        await eventsApi.createNewEvent(
             owner,
             input_title,
             input_desc,
@@ -156,6 +161,79 @@ router.post('/create', (req, res) => {
     }
 
     return res.redirect('/events');
+});
+
+// /events/edit/{eventId}
+
+router.route('/edit/:eventId').get(async (req, res) => {
+    let eventId = null,
+        accesor = null,
+        event = null;
+
+    try {
+        eventId = validateApi.isValidString(xss(req.params.eventId), true);
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        accesor = validateApi
+            .isValidString(usersApi.getLoggedinUser().username, true)
+            .toLowerCase();
+    } catch (e) {
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        const eventExists = await eventsApi.eventExistsById(eventId);
+        if (!eventExists)
+            return res.status(404).render('other/error', {
+                title: 'Unexpected Error: (404)',
+                errorMsg: `Error: Could not find an event with id '${eventId}'.`,
+            });
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        event = await eventsApi.getEventById(eventId, accesor);
+    } catch (e) {
+        return res.status(403).render('other/error', {
+            title: 'Unexpected Error: (403)',
+            errorMsg: e,
+        });
+    }
+
+    const deadline = new Date(event.deadline);
+
+    return res.render('events/edit', {
+        title: 'Edit an Event',
+        eventId,
+        titleView: { value: event.title, noError: true },
+        descView: { value: event.description, noError: true },
+        priorityView: { value: event.priority, noError: true },
+        dateView: {
+            value: convertApi.dateToDateString(deadline),
+            noError: true,
+        },
+        timeView: {
+            value: convertApi.dateToTimeString(deadline),
+            noError: true,
+        },
+    });
+});
+
+router.route('/edit/:eventId').put(async (req, res) => {
+    res.redirect('/events');
 });
 
 module.exports = router;

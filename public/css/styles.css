@@ -43,10 +43,6 @@ ol {
     margin: 0;
 }
 
-.hidden {
-    display: none;
-}
-
 .center-element {
     display: block;
     margin: auto;
@@ -258,7 +254,8 @@ main {
     EVENTS PAGE
 ------------------------------------------------------------------ */
 
-#create-event-form {
+#create-event-form,
+#edit-event-form {
     width: fit-content;
     padding: 10px;
     background-color: white;

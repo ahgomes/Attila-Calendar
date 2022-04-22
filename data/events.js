@@ -6,7 +6,7 @@ const validateApi = require('./validate');
 
 module.exports = {
     /**
-     * Determines if a user is authorized to view the resource.
+     * Checks if a user is authorized to view the resource.
      *
      * @param {string} username The username of the user
      * @param {Array<string>} owners The list of usernames who are authorized to view the resource
@@ -22,6 +22,30 @@ module.exports = {
             .map((elem) => elem.toLowerCase());
 
         return owners.includes(username);
+    },
+
+    /**
+     * Checks if an event exists with the given id.
+     *
+     * @async
+     *
+     * @param {string} eventId The id of the event
+     *
+     * @returns {boolean} Returns true if the event exists. Otherwise, returns false
+     *
+     * @throws Errors when {eventId} is not a string, or is an empty string
+     * @throws Errors when {eventId} is an invalid object id
+     */
+    async eventExistsById(eventId) {
+        validateApi.checkNumberOfArgs(arguments.length, 1, 1);
+
+        eventId = validateApi.isValidString(eventId, true);
+        const parsed_eventId = validateApi.isValidObjectId(eventId);
+
+        const eventsCollection = await events();
+        const event = await eventsCollection.findOne({ _id: parsed_eventId });
+
+        return event !== null;
     },
 
     /**

@@ -9,7 +9,7 @@
     <h2>Edit an Event</h2>
 
     <label for='input-title'>
-        Title<span class='form-require'>*</span>:
+        Title<span class='event-form-require'>*</span>:
     </label><br />
     <input
         id='input-title'
@@ -19,9 +19,9 @@
     />
     <br />
     {{#if titleView.noError}}
-        <div id='input-title-error' class='form-error' hidden></div>
+        <div id='input-title-error' class='event-form-error' hidden></div>
     {{else}}
-        <div id='input-title-error' class='form-error'>
+        <div id='input-title-error' class='event-form-error'>
             {{titleView.errorMsg}}
         </div>
     {{/if}}
@@ -29,7 +29,7 @@
     <br />
 
     <label for='input-desc'>
-        Description<span class='form-require'>*</span>:
+        Description<span class='event-form-require'>*</span>:
     </label><br />
     <textarea
         id='input-desc'
@@ -38,9 +38,9 @@
     >{{descView.value}}</textarea>
     <br />
     {{#if descView.noError}}
-        <div id='input-desc-error' class='form-error' hidden></div>
+        <div id='input-desc-error' class='event-form-error' hidden></div>
     {{else}}
-        <div id='input-desc-error' class='form-error'>
+        <div id='input-desc-error' class='event-form-error'>
             {{descView.errorMsg}}
         </div>
     {{/if}}
@@ -48,7 +48,7 @@
     <br />
 
     <label for='input-priority'>
-        Priority<span class='form-require'>*</span>:
+        Priority<span class='event-form-require'>*</span>:
     </label><br />
     <input
         id='input-priority'
@@ -59,9 +59,9 @@
     />
     <br />
     {{#if priorityView.noError}}
-        <div id='input-priority-error' class='form-error' hidden></div>
+        <div id='input-priority-error' class='event-form-error' hidden></div>
     {{else}}
-        <div id='input-priority-error' class='form-error'>
+        <div id='input-priority-error' class='event-form-error'>
             {{priorityView.errorMsg}}
         </div>
     {{/if}}
@@ -69,7 +69,7 @@
     <br />
 
     <label for='input-date'>
-        Deadline Date<span class='form-require'>*</span>:
+        Deadline Date<span class='event-form-require'>*</span>:
     </label><br />
     <input
         id='input-date'
@@ -80,9 +80,9 @@
     />
     <br />
     {{#if dateView.noError}}
-        <div id='input-date-error' class='form-error' hidden></div>
+        <div id='input-date-error' class='event-form-error' hidden></div>
     {{else}}
-        <div id='input-date-error' class='form-error'>
+        <div id='input-date-error' class='event-form-error'>
             {{dateView.errorMsg}}
         </div>
     {{/if}}
@@ -90,7 +90,7 @@
     <br />
 
     <label for='input-time'>
-        Deadline Time<span class='form-require'>*</span>:
+        Deadline Time<span class='event-form-require'>*</span>:
     </label><br />
     <input
         id='input-time'
@@ -101,9 +101,9 @@
     />
     <br />
     {{#if timeView.noError}}
-        <div id='input-time-error' class='form-error' hidden></div>
+        <div id='input-time-error' class='event-form-error' hidden></div>
     {{else}}
-        <div id='input-time-error' class='form-error'>
+        <div id='input-time-error' class='event-form-error'>
             {{timeView.errorMsg}}
         </div>
     {{/if}}

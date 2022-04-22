@@ -262,12 +262,12 @@ main {
     border: 2px solid black;
 }
 
-.form-require {
-    color: red;
+.event-form-require {
+    color: var(--red);
 }
 
-.form-error {
-    color: red;
+.event-form-error {
+    color: var(--red);
 }
 
 /* ------------------------------------------------------------------

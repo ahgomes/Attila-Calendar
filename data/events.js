@@ -31,7 +31,7 @@ module.exports = {
      *
      * @param {string} eventId The id of the event
      *
-     * @returns {boolean} Returns true if the event exists. Otherwise, returns false
+     * @returns {Promise<boolean>} Returns true if the event exists. Otherwise, returns false
      *
      * @throws Errors when {eventId} is not a string, or is an empty string
      * @throws Errors when {eventId} is an invalid object id

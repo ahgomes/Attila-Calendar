@@ -1,0 +1,44 @@
+<article class='event-widget center-element'>
+    <div class='event-flex-container event-flex-container-center-align'>
+        {{#if titleExists}}
+            <h2 class='event-title'>{{{event.title}}}</h2>
+        {{else}}
+            <h2 class='event-title italics'>(No Title)</h2>
+        {{/if}}
+        <span>
+            <a class='event-edit-gear' href='/events/edit/{{event._id}}'>Edit</a>
+            <a class='event-edit-gear' href='/events/delete/{{event._id}}'>Delete</a>
+        </span>
+    </div>
+
+    <div class='event-flex-container event-flex-container-right-align'>
+        {{#if descExists}}
+            <p class='event-post'>{{{event.description}}}</p>
+        {{else}}
+            <p class='event-post italics'>(No Description)</p>
+        {{/if}}
+    </div>
+
+    <span>Priority: {{event.priority}}</span><br />
+    <span>Deadline: {{event.deadline}}</span>
+
+    <div class='event-comment-container'>
+        <div class='event-flex-container event-flex-container-center-align'>
+            <h2>Comments:</h2>
+            <a
+                class='event-edit-gear'
+                href='/events/edit/{{event._id}}/comments'
+            >Edit</a>
+        </div>
+
+        <div class='event-flex-container event-flex-container-right-align'>
+            {{#if noCommentsExist}}
+                <p class='event-post italics'>(No Comments)</p>
+            {{else}}
+                {{#each event.comments}}
+                    {{> commentWidget params=this}}
+                {{/each}}
+            {{/if}}
+        </div>
+    </div>
+</article>

@@ -182,18 +182,15 @@ module.exports = {
 
         date = validateApi.isValidDate(date);
 
-        const month = `${date.getMonth() + 1}`;
-        const day = `${date.getDate()}`;
-        const year = `${date.getFullYear()}`;
+        const month = `${date.getMonth() + 1}`.padStart(2, '0');
+        const day = `${date.getDate()}`.padStart(2, '0');
+        const year = `${date.getFullYear()}`.padStart(4, '0');
 
-        return `${year.padStart(4, '0')}-${month.padStart(
-            2,
-            '0'
-        )}-${day.padStart(2, '0')}`;
+        return `${year}-${month}-${day}`;
     },
 
     /**
-     * Converts a date object into a time string. NOTE:
+     * Converts a date object into a time string.
      *
      * @param {Date} date The date object to be converted
      *
@@ -206,9 +203,41 @@ module.exports = {
 
         date = validateApi.isValidDate(date);
 
-        const hours = `${date.getHours()}`;
-        const minutes = `${date.getMinutes()}`;
+        const hours = `${date.getHours()}`.padStart(2, '0');
+        const minutes = `${date.getMinutes()}`.padStart(2, '0');
 
-        return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+        return `${hours}:${minutes}`;
+    },
+
+    /**
+     * Converts a date object into a readable string.
+     *
+     * @param {Date} date The date object to be converted
+     *
+     * @returns {string} Returns the readable string of {date} in the form 'MM/DD/YYYY @ HH:MM (TIMEZONE)'. Note: The timezone is stored in local time
+     *
+     * @throws Errors when {date} is not a date object
+     */
+    dateToReadableString(date) {
+        validateApi.checkNumberOfArgs(arguments.length, 1, 1);
+
+        date = validateApi.isValidDate(date);
+
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const year = date.getFullYear();
+
+        let hours = date.getHours() % 12;
+        hours = !hours ? 12 : hours;
+        const minutes = `${date.getMinutes()}`.padStart(2, '0');
+
+        const meridian = date.getHours() < 12 ? 'AM' : 'PM';
+
+        /*
+        const timezone =
+            Intl.DateTimeFormat().resolvedOptions().timeZone ?? 'Local time';
+        */
+
+        return `${month}/${day}/${year} @ ${hours}:${minutes} ${meridian}`;
     },
 };

@@ -9,7 +9,7 @@ const eventsApi = data.eventsApi;
 const convertApi = data.convertApi;
 const validateApi = data.validateApi;
 
-// /events
+/* /events */
 
 router.route('/').get((req, res) => {
     return res.render('events/main', {
@@ -17,17 +17,23 @@ router.route('/').get((req, res) => {
     });
 });
 
-// /events/create
+/* /events/create */
 
 router.route('/create').get((req, res) => {
+    const titleView = { value: '', noError: true };
+    const descView = { value: '', noError: true };
+    const priorityView = { value: '', noError: true };
+    const dateView = { value: '', noError: true };
+    const timeView = { value: '', noError: true };
+
     return res.render('events/create', {
         title: 'Create an Event',
         scriptSource: '/public/js/events/createEvent.js',
-        titleView: { value: '', noError: true },
-        descView: { value: '', noError: true },
-        priorityView: { value: '', noError: true },
-        dateView: { value: '', noError: true },
-        timeView: { value: '', noError: true },
+        titleView,
+        descView,
+        priorityView,
+        dateView,
+        timeView,
     });
 });
 
@@ -64,7 +70,8 @@ router.route('/create').post(async (req, res) => {
     let owner = null,
         dateObj = null,
         timeObj = null,
-        deadline = null;
+        deadline = null,
+        event = null;
 
     try {
         owner = validateApi
@@ -146,7 +153,7 @@ router.route('/create').post(async (req, res) => {
     }
 
     try {
-        await eventsApi.createNewEvent(
+        event = await eventsApi.createNewEvent(
             owner,
             input_title,
             input_desc,
@@ -160,15 +167,16 @@ router.route('/create').post(async (req, res) => {
         });
     }
 
-    return res.redirect('/events');
+    return res.redirect(`/events/view/${event._id.toString()}`);
 });
 
-// /events/edit/{eventId}
+/* /events/edit/{eventId} */
 
 router.route('/edit/:eventId').get(async (req, res) => {
     let eventId = null,
         accesor = null,
-        event = null;
+        event = null,
+        deadline = null;
 
     try {
         eventId = validateApi.isValidString(xss(req.params.eventId), true);
@@ -213,23 +221,36 @@ router.route('/edit/:eventId').get(async (req, res) => {
         });
     }
 
-    const deadline = new Date(event.deadline);
+    try {
+        deadline = validateApi.isValidDate(new Date(event.deadline));
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    const titleView = { value: event.title, noError: true };
+    const descView = { value: event.description, noError: true };
+    const priorityView = { value: event.priority, noError: true };
+    const dateView = {
+        value: convertApi.dateToDateString(deadline),
+        noError: true,
+    };
+    const timeView = {
+        value: convertApi.dateToTimeString(deadline),
+        noError: true,
+    };
 
     return res.render('events/edit', {
         title: 'Edit an Event',
         scriptSource: '/public/js/events/editEvent.js',
         eventId,
-        titleView: { value: event.title, noError: true },
-        descView: { value: event.description, noError: true },
-        priorityView: { value: event.priority, noError: true },
-        dateView: {
-            value: convertApi.dateToDateString(deadline),
-            noError: true,
-        },
-        timeView: {
-            value: convertApi.dateToTimeString(deadline),
-            noError: true,
-        },
+        titleView,
+        descView,
+        priorityView,
+        dateView,
+        timeView,
     });
 });
 
@@ -311,7 +332,8 @@ router.route('/edit/:eventId').put(async (req, res) => {
 
     let dateObj = null,
         timeObj = null,
-        deadline = null;
+        deadline = null,
+        event = null;
 
     try {
         input_title = validateApi.isValidString(titleView.value, true);
@@ -382,7 +404,7 @@ router.route('/edit/:eventId').put(async (req, res) => {
     }
 
     try {
-        await eventsApi.editEventById(
+        event = await eventsApi.editEventById(
             eventId,
             accesor,
             input_title,
@@ -397,7 +419,227 @@ router.route('/edit/:eventId').put(async (req, res) => {
         });
     }
 
-    return res.redirect('/events');
+    return res.redirect(`/events/view/${event._id.toString()}`);
+});
+
+/* /events/view/{eventId} */
+
+router.route('/view/:eventId').get(async (req, res) => {
+    let eventId = null,
+        accesor = null,
+        event = null;
+
+    try {
+        eventId = validateApi.isValidString(xss(req.params.eventId), true);
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        accesor = validateApi
+            .isValidString(usersApi.getLoggedinUser().username, true)
+            .toLowerCase();
+    } catch (e) {
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        const eventExists = await eventsApi.eventExistsById(eventId);
+        if (!eventExists)
+            return res.status(404).render('other/error', {
+                title: 'Unexpected Error: (404)',
+                errorMsg: `Error: Could not find an event with id '${eventId}'.`,
+            });
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        event = await eventsApi.getEventById(eventId, accesor);
+    } catch (e) {
+        return res.status(403).render('other/error', {
+            title: 'Unexpected Error: (403)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        event.deadline = convertApi.dateToReadableString(
+            new Date(event.deadline)
+        );
+        event.comments = event.comments.map((elem) => {
+            elem.createdOn = convertApi.dateToReadableString(
+                new Date(elem.createdOn)
+            );
+            elem.showDelete = false;
+            return elem;
+        });
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    return res.render('events/view', {
+        title: 'View an Event',
+        titleExists: event.title.trim().length > 0,
+        descExists: event.description.trim().length > 0,
+        noCommentsExist: !event.comments.length,
+        event,
+    });
+});
+
+/* /events/edit/{eventId}/comments */
+
+router.route('/edit/:eventId/comments').get(async (req, res) => {
+    let eventId = null,
+        accesor = null,
+        event = null;
+
+    try {
+        eventId = validateApi.isValidString(xss(req.params.eventId), true);
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        accesor = validateApi
+            .isValidString(usersApi.getLoggedinUser().username, true)
+            .toLowerCase();
+    } catch (e) {
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        const eventExists = await eventsApi.eventExistsById(eventId);
+        if (!eventExists)
+            return res.status(404).render('other/error', {
+                title: 'Unexpected Error: (404)',
+                errorMsg: `Error: Could not find an event with id '${eventId}'.`,
+            });
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        event = await eventsApi.getEventById(eventId, accesor);
+    } catch (e) {
+        return res.status(403).render('other/error', {
+            title: 'Unexpected Error: (403)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        event.comments = event.comments.map((elem) => {
+            elem.createdOn = convertApi.dateToReadableString(
+                new Date(elem.createdOn)
+            );
+            elem.showDelete = true;
+            return elem;
+        });
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    return res.render('events/comment', {
+        title: "Edit an Event's Comments",
+        scriptSource: '/public/js/events/editComment.js',
+        commentView: { value: '', noError: true },
+        noCommentsExist: !event.comments.length,
+        event,
+    });
+});
+
+router.route('/edit/:eventId/comments').post(async (req, res) => {
+    let eventId = null,
+        username = null,
+        comment = null;
+
+    try {
+        eventId = validateApi.isValidString(xss(req.params.eventId), true);
+    } catch (e) {
+        return res.status(400).json({ errorMsg: e });
+    }
+
+    try {
+        username = validateApi
+            .isValidString(usersApi.getLoggedinUser().username, true)
+            .toLowerCase();
+    } catch (e) {
+        return res.status(401).json({ errorMsg: e });
+    }
+
+    try {
+        const eventExists = await eventsApi.eventExistsById(eventId);
+        if (!eventExists)
+            return res.status(404).json({
+                errorMsg: `Error: Could not find an event with id '${eventId}'.`,
+            });
+    } catch (e) {
+        return res.status(400).json({ errorMsg: e });
+    }
+
+    try {
+        await eventsApi.getEventById(eventId, username);
+    } catch (e) {
+        return res.status(403).json({ errorMsg: e });
+    }
+
+    let { input_comment } = req.body;
+
+    try {
+        input_comment = validateApi.isValidString(xss(input_comment), false);
+    } catch (e) {
+        return res.status(400).json({ errorMsg: e });
+    }
+
+    try {
+        comment = await eventsApi.addCommentById(
+            eventId,
+            username,
+            input_comment
+        );
+    } catch (e) {
+        return res.status(500).json({ errorMsg: e });
+    }
+
+    try {
+        comment.createdOn = convertApi.dateToReadableString(
+            new Date(comment.createdOn)
+        );
+    } catch (e) {
+        return res.status(400).json({ errorMsg: e });
+    }
+
+    comment.showDelete = true;
+
+    return res.render('partials/commentWidget', {
+        layout: null,
+        params: comment,
+    });
 });
 
 module.exports = router;

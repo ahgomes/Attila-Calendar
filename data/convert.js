@@ -233,9 +233,11 @@ module.exports = {
 
         const meridian = date.getHours() < 12 ? 'AM' : 'PM';
 
+        /*
         const timezone =
             Intl.DateTimeFormat().resolvedOptions().timeZone ?? 'Local time';
+        */
 
-        return `${month}/${day}/${year} @ ${hours}:${minutes} ${meridian} (${timezone})`;
+        return `${month}/${day}/${year} @ ${hours}:${minutes} ${meridian}`;
     },
 };

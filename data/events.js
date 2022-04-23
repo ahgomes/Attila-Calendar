@@ -436,7 +436,7 @@ module.exports = {
         if (updateInfo.modifiedCount < 1)
             throw `Error: Could not add the user comment to the event with id '${eventId}'.`;
 
-        return await this.getCommentById(newComment._id.toString(), accesor);
+        return await this.getCommentById(newComment._id.toString(), username);
     },
 
     /**

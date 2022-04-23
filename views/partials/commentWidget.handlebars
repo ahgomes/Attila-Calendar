@@ -1,0 +1,13 @@
+<div id='{{params._id}}' class='comment-post-container'>
+    <div class='event-flex-container event-flex-container-center-align'>
+        <h3 class='comment-title'>{{params.owner}}</h3>
+        {{#if params.showDelete}}
+            <a
+                class='event-edit-gear'
+                href='/events/comments/{{params._id}}'
+            >Delete</a>
+        {{/if}}
+    </div>
+    <p class='comment-post'>{{{params.comment}}}</p>
+    <span>({{params.createdOn}})</span>
+</div>

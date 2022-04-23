@@ -260,6 +260,7 @@ main {
 
 #create-event-form,
 #edit-event-form,
+#edit-comment-form,
 .event-widget {
     width: 300px;
     padding: 10px;
@@ -279,6 +280,21 @@ main {
     align-items: flex-end;
 }
 
+.event-flex-container-center-align {
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.event-edit-gear {
+    font-weight: bold;
+    color: black;
+    margin-left: 10px;
+}
+
+.event-edit-gear:hover {
+    color: blue;
+}
+
 .event-input-label {
     padding-right: 5px;
 }
@@ -287,7 +303,8 @@ main {
     flex-grow: 1;
 }
 
-#input-desc {
+#input-desc,
+#input-comment {
     width: 100%;
     box-sizing: border-box;
 }
@@ -296,8 +313,14 @@ main {
     color: var(--red);
 }
 
-.event-post-container {
+.event-title,
+.comment-title {
+    overflow-wrap: anywhere;
+}
+
+.event-comment-container {
     padding-left: 5px;
+    margin-top: 10px;
     border-left: 2px dotted black;
     box-sizing: border-box;
 }
@@ -311,6 +334,25 @@ main {
     background-color: lightgray;
     border-left: 2px dotted black;
     box-sizing: border-box;
+}
+
+.comment-post-container {
+    width: 98%;
+    padding: 10px;
+    margin-top: 0;
+    margin-bottom: 16px;
+    background-color: lightgray;
+    border-left: 2px dotted black;
+    box-sizing: border-box;
+}
+
+.comment-post {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
 }
 
 /* ------------------------------------------------------------------

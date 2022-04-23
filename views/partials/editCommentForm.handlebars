@@ -1,0 +1,43 @@
+<form id='edit-comment-form' class='center-element'>
+    <div class='event-comment-container'>
+        <h2>Comments:</h2>
+
+        <div
+            id='comment-container'
+            class='event-flex-container event-flex-container-right-align'
+        >
+            {{#if noCommentsExist}}
+                <p class='event-post italics'>(No Comments)</p>
+            {{else}}
+                {{#each event.comments}}
+                    {{> commentWidget params=this}}
+                {{/each}}
+            {{/if}}
+        </div>
+    </div>
+
+    <br />
+
+    <label for='input-comment'>
+        Comment<span class='event-form-require'>*</span>:
+    </label><br />
+    <textarea
+        id='input-comment'
+        name='input_comment'
+        required
+    >{{{commentView.value}}}</textarea>
+    <br />
+    {{#if commentView.noError}}
+        <div id='input-comment-error' class='event-form-error' hidden></div>
+    {{else}}
+        <div id='input-comment-error' class='event-form-error'>
+            {{commentView.errorMsg}}
+        </div>
+    {{/if}}
+
+    <br />
+
+    <button id='submit-button' class='center-element' type='submit'>
+        Add Comment
+    </button>
+</form>

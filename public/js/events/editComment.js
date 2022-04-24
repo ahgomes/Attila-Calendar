@@ -28,10 +28,11 @@
             };
 
             try {
+                const result = await $.ajax(addCommentRequest);
+
                 DOMcomment.val('');
-                DOMcomments.append(
-                    $.parseHTML(await $.ajax(addCommentRequest))
-                );
+                DOMcomments.append($.parseHTML(result));
+                $('#comment-container > p').remove();
             } catch (e) {
                 DOMcommentError.text(e.responseJSON.errorMsg).show();
             }

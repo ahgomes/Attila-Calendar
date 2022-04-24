@@ -261,6 +261,12 @@ main {
 #create-event-form,
 #edit-event-form,
 #edit-comment-form,
+#delete-event-form {
+    width: 400px;
+    padding: 10px;
+    border: 2px solid black;
+}
+
 .event-widget {
     width: 300px;
     padding: 10px;
@@ -328,7 +334,7 @@ main {
 .event-post {
     white-space: pre-wrap;
     overflow-wrap: break-word;
-    width: 98%;
+    width: 100%;
     padding: 10px;
     margin-top: 0;
     background-color: lightgray;

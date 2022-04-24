@@ -176,7 +176,8 @@ router.route('/edit/:eventId').get(async (req, res) => {
     let eventId = null,
         accesor = null,
         event = null,
-        deadline = null;
+        date_str = null,
+        time_str = null;
 
     try {
         eventId = validateApi.isValidString(xss(req.params.eventId), true);
@@ -222,7 +223,9 @@ router.route('/edit/:eventId').get(async (req, res) => {
     }
 
     try {
-        deadline = validateApi.isValidDate(new Date(event.deadline));
+        event.deadline = validateApi.isValidDate(new Date(event.deadline));
+        date_str = convertApi.dateToDateString(event.deadline);
+        time_str = convertApi.dateToTimeString(event.deadline);
     } catch (e) {
         return res.status(400).render('other/error', {
             title: 'Unexpected Error: (400)',
@@ -233,16 +236,10 @@ router.route('/edit/:eventId').get(async (req, res) => {
     const titleView = { value: event.title, noError: true };
     const descView = { value: event.description, noError: true };
     const priorityView = { value: event.priority, noError: true };
-    const dateView = {
-        value: convertApi.dateToDateString(deadline),
-        noError: true,
-    };
-    const timeView = {
-        value: convertApi.dateToTimeString(deadline),
-        noError: true,
-    };
+    const dateView = { value: date_str, noError: true };
+    const timeView = { value: time_str, noError: true };
 
-    return res.render('events/edit', {
+    return res.render('events/editEvent', {
         title: 'Edit an Event',
         scriptSource: '/public/js/events/editEvent.js',
         eventId,
@@ -382,7 +379,7 @@ router.route('/edit/:eventId').put(async (req, res) => {
         !dateView.noError ||
         !timeView.noError
     )
-        return res.status(400).render('events/edit', {
+        return res.status(400).render('events/editEvent', {
             title: 'Edit an Event',
             scriptSource: '/public/js/events/editEvent.js',
             titleView,
@@ -473,16 +470,7 @@ router.route('/view/:eventId').get(async (req, res) => {
     }
 
     try {
-        event.deadline = convertApi.dateToReadableString(
-            new Date(event.deadline)
-        );
-        event.comments = event.comments.map((elem) => {
-            elem.createdOn = convertApi.dateToReadableString(
-                new Date(elem.createdOn)
-            );
-            elem.showDelete = false;
-            return elem;
-        });
+        event = convertApi.prettifyEvent(event, false);
     } catch (e) {
         return res.status(400).render('other/error', {
             title: 'Unexpected Error: (400)',
@@ -495,6 +483,9 @@ router.route('/view/:eventId').get(async (req, res) => {
         titleExists: event.title.trim().length > 0,
         descExists: event.description.trim().length > 0,
         noCommentsExist: !event.comments.length,
+        showView: false,
+        showEdit: true,
+        showDelete: true,
         event,
     });
 });
@@ -550,13 +541,7 @@ router.route('/edit/:eventId/comments').get(async (req, res) => {
     }
 
     try {
-        event.comments = event.comments.map((elem) => {
-            elem.createdOn = convertApi.dateToReadableString(
-                new Date(elem.createdOn)
-            );
-            elem.showDelete = true;
-            return elem;
-        });
+        event = convertApi.prettifyEvent(event, true);
     } catch (e) {
         return res.status(400).render('other/error', {
             title: 'Unexpected Error: (400)',
@@ -564,7 +549,7 @@ router.route('/edit/:eventId/comments').get(async (req, res) => {
         });
     }
 
-    return res.render('events/comment', {
+    return res.render('events/editComments', {
         title: "Edit an Event's Comments",
         scriptSource: '/public/js/events/editComment.js',
         commentView: { value: '', noError: true },
@@ -627,19 +612,145 @@ router.route('/edit/:eventId/comments').post(async (req, res) => {
     }
 
     try {
-        comment.createdOn = convertApi.dateToReadableString(
-            new Date(comment.createdOn)
-        );
+        comment = convertApi.prettifyComment(comment, true);
     } catch (e) {
         return res.status(400).json({ errorMsg: e });
     }
-
-    comment.showDelete = true;
 
     return res.render('partials/commentWidget', {
         layout: null,
         params: comment,
     });
+});
+
+/* /events/delete/{eventId} */
+
+router.route('/delete/:eventId').get(async (req, res) => {
+    let eventId = null,
+        accesor = null,
+        event = null;
+
+    try {
+        eventId = validateApi.isValidString(xss(req.params.eventId), true);
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        accesor = validateApi
+            .isValidString(usersApi.getLoggedinUser().username, true)
+            .toLowerCase();
+    } catch (e) {
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        const eventExists = await eventsApi.eventExistsById(eventId);
+        if (!eventExists)
+            return res.status(404).render('other/error', {
+                title: 'Unexpected Error: (404)',
+                errorMsg: `Error: Could not find an event with id '${eventId}'.`,
+            });
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        event = await eventsApi.getEventById(eventId, accesor);
+    } catch (e) {
+        return res.status(403).render('other/error', {
+            title: 'Unexpected Error: (403)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        event = convertApi.prettifyEvent(event, false);
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    return res.render('events/deleteEvent', {
+        title: 'Delete an Event',
+        titleExists: event.title.trim().length > 0,
+        descExists: event.description.trim().length > 0,
+        noCommentsExist: !event.comments.length,
+        showView: false,
+        showEdit: false,
+        showDelete: false,
+        event,
+    });
+});
+
+router.route('/delete/:eventId').delete(async (req, res) => {
+    let eventId = null,
+        accesor = null;
+
+    try {
+        eventId = validateApi.isValidString(xss(req.params.eventId), true);
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        accesor = validateApi
+            .isValidString(usersApi.getLoggedinUser().username, true)
+            .toLowerCase();
+    } catch (e) {
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        const eventExists = await eventsApi.eventExistsById(eventId);
+        if (!eventExists)
+            return res.status(404).render('other/error', {
+                title: 'Unexpected Error: (404)',
+                errorMsg: `Error: Could not find an event with id '${eventId}'.`,
+            });
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        await eventsApi.getEventById(eventId, accesor);
+    } catch (e) {
+        return res.status(403).render('other/error', {
+            title: 'Unexpected Error: (403)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        await eventsApi.deleteEventById(eventId, accesor);
+    } catch (e) {
+        return res.status(500).render('other/error', {
+            title: 'Unexpected Error: (500)',
+            errorMsg: e,
+        });
+    }
+
+    return res.redirect('/events');
 });
 
 module.exports = router;

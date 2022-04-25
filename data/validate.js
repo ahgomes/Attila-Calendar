@@ -148,4 +148,20 @@ module.exports = {
         this.isValidArray(arg, isNotEmpty);
         return arg.map((elem) => this.isValidString(elem, shouldTrim));
     },
+
+    /**
+     * Checks if the given argument is an object.
+     *
+     * @param {Object} arg The argument to be checked
+     * @returns {Object} Returns the initial argument {arg}
+     *
+     * @throws Errors when {arg} is not an object, or is null
+     */
+    isValidObject(arg) {
+        this.checkNumberOfArgs(arguments.length, 1, 1);
+
+        if (typeof arg !== 'object') throw `Error: '${arg}' is not an object.`;
+        if (!arg) throw `Error: Object is null.`;
+        return arg;
+    },
 };

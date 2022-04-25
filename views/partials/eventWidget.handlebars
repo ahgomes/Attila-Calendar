@@ -1,3 +1,16 @@
+{{!
+    To use this partial, pass in these arguments into the render:
+    {
+        titleExists: event.title.trim().length > 0,
+        descExists: event.description.trim().length > 0,
+        noCommentsExist: !event.comments.length,
+        showView: true/false,   // true -> shows 'View' link that redirects to /event/view/{eventId}
+        showEdit: true/false,   // true -> shows 2 'Edit' links that redirects to /event/edit/{eventId} and /event/edit/{eventId}/comments
+        showDelete: true/false, // true -> shows 'Delete' link that redirects to /event/delete/{eventId}
+        event // use 'event = convertApi.prettifyEvent(event, true/false)' so the event renders properly. The true/false arg determines whether comments are displayed with a link to delete the comment
+    }
+}}
+
 <article class='event-widget center-element'>
     <div class='event-flex-container event-flex-container-center-align'>
         {{#if titleExists}}
@@ -6,8 +19,15 @@
             <h2 class='event-title italics'>(No Title)</h2>
         {{/if}}
         <span>
-            <a class='event-edit-gear' href='/events/edit/{{event._id}}'>Edit</a>
-            <a class='event-edit-gear' href='/events/delete/{{event._id}}'>Delete</a>
+            {{#if showView}}
+                <a class='event-edit-gear' href='/events/view/{{event._id}}'>View</a>
+            {{/if}}
+            {{#if showEdit}}
+                <a class='event-edit-gear' href='/events/edit/{{event._id}}'>Edit</a>
+            {{/if}}
+            {{#if showDelete}}
+                <a class='event-edit-gear' href='/events/delete/{{event._id}}'>Delete</a>
+            {{/if}}
         </span>
     </div>
 
@@ -25,10 +45,12 @@
     <div class='event-comment-container'>
         <div class='event-flex-container event-flex-container-center-align'>
             <h2>Comments:</h2>
-            <a
-                class='event-edit-gear'
-                href='/events/edit/{{event._id}}/comments'
-            >Edit</a>
+            {{#if showEdit}}
+                <a
+                    class='event-edit-gear'
+                    href='/events/edit/{{event._id}}/comments'
+                >Edit</a>
+            {{/if}}
         </div>
 
         <div class='event-flex-container event-flex-container-right-align'>

@@ -314,6 +314,38 @@ module.exports = {
     },
 
     /**
+     * Checks if a comment exists with the given id.
+     *
+     * @async
+     *
+     * @param {string} commentId The id of the comment
+     *
+     * @returns {Promise<boolean>} Returns true if the comment exists. Otherwise, returns false
+     *
+     * @throws Errors when {commentId} is not a string, or is an empty string
+     * @throws Errors when {commentId} is an invalid object id
+     */
+    async commentExistsById(commentId) {
+        validateApi.checkNumberOfArgs(arguments.length, 1, 1);
+
+        commentId = validateApi.isValidString(commentId, true);
+        const parsed_commentId = validateApi.isValidObjectId(commentId);
+
+        const eventsCollection = await events();
+        const event = await eventsCollection.findOne({
+            'comments._id': parsed_commentId,
+        });
+
+        if (!event) return false;
+
+        const comment = event.comments.find(
+            ({ _id }) => _id.toString() === commentId
+        );
+
+        return comment !== null;
+    },
+
+    /**
      * Finds a user comment with the given id.
      *
      * @async
@@ -447,8 +479,7 @@ module.exports = {
      * @param {string} commentId The id of the comment
      * @param {string} accesor The username of the user who wants to access the comment
      *
-     *
-     * @returns {void} Returns the deleted user comment. See getCommentById() for the full user comment schema
+     * @returns {Object} Returns the deleted user comment. See getCommentById() for the full user comment schema
      *
      * @throws Errors when {commentId} is not a string, or is an empty string
      * @throws Errors when {commentId} is an invalid object id

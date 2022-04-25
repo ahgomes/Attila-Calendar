@@ -1,0 +1,18 @@
+<form
+    id='delete-event-form'
+    class='center-element'
+    action='/events/delete/{{event._id}}'
+    method='POST'
+>
+    <input name='_method' value='DELETE' hidden />
+
+    <h2>Are You Sure You Want to Delete This Event?</h2>
+
+    {{> eventWidget}}
+
+    <br />
+
+    <button id='submit-button' class='center-element' type='submit'>
+        Delete Event
+    </button>
+</form>

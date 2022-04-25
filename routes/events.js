@@ -753,4 +753,49 @@ router.route('/delete/:eventId').delete(async (req, res) => {
     return res.redirect('/events');
 });
 
+/* /events/delete/comment/{commentId} */
+
+router.route('/delete/comment/:commentId').delete(async (req, res) => {
+    let commentId = null,
+        accesor = null;
+
+    try {
+        commentId = validateApi.isValidString(xss(req.params.commentId), true);
+    } catch (e) {
+        return res.status(400).json({ errorMsg: e });
+    }
+
+    try {
+        accesor = validateApi
+            .isValidString(usersApi.getLoggedinUser().username, true)
+            .toLowerCase();
+    } catch (e) {
+        return res.status(401).json({ errorMsg: e });
+    }
+
+    try {
+        const commentExists = await eventsApi.commentExistsById(commentId);
+        if (!commentExists)
+            return res.status(404).json({
+                errorMsg: `Error: Could not find a user comment with id '${commentId}'.`,
+            });
+    } catch (e) {
+        return res.status(400).json({ errorMsg: e });
+    }
+
+    try {
+        await eventsApi.getCommentById(commentId, accesor);
+    } catch (e) {
+        return res.status(403).json({ errorMsg: e });
+    }
+
+    try {
+        await eventsApi.deleteCommentById(commentId, accesor);
+    } catch (e) {
+        return res.status(500).json({ errorMsg: e });
+    }
+
+    return res.json({ deleteCommentId: commentId });
+});
+
 module.exports = router;

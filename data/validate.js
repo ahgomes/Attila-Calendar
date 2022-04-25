@@ -148,4 +148,39 @@ module.exports = {
         this.isValidArray(arg, isNotEmpty);
         return arg.map((elem) => this.isValidString(elem, shouldTrim));
     },
+    /**
+     * Checks if the given username is alphanumeric with no spaces, and is not too short.
+     *
+     * @param {Array<string>} username The argument to be checked
+     * 
+     * @throws Errors when {username} has spaces or is not alphanumeric
+     * @throws Errors when {username} is too short
+     */
+    checkUsername(username){
+        let regex = /^[0-9a-zA-Z]+$/;
+        if (!username.match(regex)){
+            throw 'Username must be alphanumeric, with no spaces';
+        }
+        if (username.length < 4){
+            throw 'Username is too short';
+        }
+    },
+    /**
+     * Checks if the given username is alphanumeric with no spaces, and is not too short.
+     *
+     * @param {Array<string>} password The argument to be checked
+     * 
+     * @throws Errors when {password} has spaces
+     * @throws Errors when {password} is too short
+     */
+    checkPassword (password){
+        for (let i of password){
+            if (i == ' '){
+                throw 'No spaces allowed in password';
+            }
+        }
+        if (password.length < 6){
+            throw 'Password is too short';
+        }
+    }    
 };

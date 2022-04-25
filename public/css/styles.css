@@ -79,12 +79,12 @@ ol {
     font-weight: 900;
     text-align: center;
     cursor: pointer;
-    color: var(--grey);
+    color: var(--charcoal);
 }
 
 #cal-head #btn-last:hover,
 #cal-head #btn-next:hover {
-    color: var(--charcoal);
+    background: var(--grey);
 }
 
 /* -- CALENDAR ACTUAL -- */
@@ -111,7 +111,7 @@ ol {
     display: table-cell;
     padding: 5px;
     width: 150px;
-    border: 1px solid var(--black);
+    border: 1px solid var(--grey);
     overflow: hidden;
 }
 
@@ -127,21 +127,21 @@ ol {
     padding-top: 10px;
     text-align: center;
     text-transform: uppercase;
-    border: 1px solid var(--black);
+    border: 1px solid var(--grey);
     border-bottom: 0px;
     font-size: 12px;
     vertical-align: middle;
 }
 
 /* date title */
-#cal .row .cell h3 {
+#cal .row .cell h2 {
     text-align: center;
     font-size: 12px;
     margin: 5px auto 10px;
     width: 24px;
 }
 
-#cal .row .today h3 {
+#cal .row .today h2 {
     background: var(--red);
     color: var(--white);
     border-radius: 2px;
@@ -177,7 +177,7 @@ ol {
     padding: 20px;
     height: 90vh;
     width: 30%;
-    border: 1px solid var(--black);
+    border: 1px solid var(--grey);
     box-sizing: border-box;
     background: var(--white);
 }

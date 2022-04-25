@@ -57,13 +57,15 @@
             const deleteCommentRequest = {
                 method: 'DELETE',
                 url: anchor.attr('href'),
+                contentType: 'application/json',
+                data: JSON.stringify({ isAjaxRequest: true }),
             };
 
             try {
                 const result = await $.ajax(deleteCommentRequest);
 
                 DOMcomment.val('');
-                $(`#${result.deleteCommentId}`).remove();
+                $(`#${result.deletedCommentId}`).remove();
 
                 if ($('#comment-container').children().length < 1)
                     DOMcomments.append(

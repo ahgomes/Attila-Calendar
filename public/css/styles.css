@@ -261,7 +261,8 @@ main {
 #create-event-form,
 #edit-event-form,
 #edit-comment-form,
-#delete-event-form {
+#delete-event-form,
+#delete-comment-form {
     width: 400px;
     padding: 10px;
     border: 2px solid black;

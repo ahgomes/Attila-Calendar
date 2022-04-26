@@ -469,7 +469,7 @@ router.route('/view/:eventId').get(async (req, res) => {
     }
 
     try {
-        event = convertApi.prettifyEvent(event, false);
+        event = convertApi.prettifyEvent(event, false, accesor);
     } catch (e) {
         return res.status(400).render('other/error', {
             title: 'Unexpected Error: (400)',
@@ -540,7 +540,7 @@ router.route('/edit/:eventId/comments').get(async (req, res) => {
     }
 
     try {
-        event = convertApi.prettifyEvent(event, true);
+        event = convertApi.prettifyEvent(event, true, accesor);
     } catch (e) {
         return res.status(400).render('other/error', {
             title: 'Unexpected Error: (400)',
@@ -560,7 +560,8 @@ router.route('/edit/:eventId/comments').get(async (req, res) => {
 router.route('/edit/:eventId/comments').post(async (req, res) => {
     let eventId = null,
         username = null,
-        comment = null;
+        comment = null,
+        createdOn = null;
 
     try {
         eventId = validateApi.isValidString(xss(req.params.eventId), true);
@@ -596,6 +597,7 @@ router.route('/edit/:eventId/comments').post(async (req, res) => {
 
     try {
         input_comment = validateApi.isValidString(xss(input_comment), false);
+        createdOn = validateApi.isValidDate(new Date());
     } catch (e) {
         return res.status(400).json({ errorMsg: e });
     }
@@ -604,14 +606,15 @@ router.route('/edit/:eventId/comments').post(async (req, res) => {
         comment = await eventsApi.addCommentById(
             eventId,
             username,
-            input_comment
+            input_comment,
+            createdOn
         );
     } catch (e) {
         return res.status(500).json({ errorMsg: e });
     }
 
     try {
-        comment = convertApi.prettifyComment(comment, true);
+        comment = convertApi.prettifyComment(comment, true, username);
     } catch (e) {
         return res.status(400).json({ errorMsg: e });
     }
@@ -673,7 +676,7 @@ router.route('/delete/:eventId').get(async (req, res) => {
     }
 
     try {
-        event = convertApi.prettifyEvent(event, false);
+        event = convertApi.prettifyEvent(event, false, accesor);
     } catch (e) {
         return res.status(400).render('other/error', {
             title: 'Unexpected Error: (400)',
@@ -802,8 +805,15 @@ router.route('/delete/comment/:commentId').get(async (req, res) => {
         });
     }
 
+    if (accesor !== comment.owner.toLowerCase()) {
+        return res.status(403).render('other/error', {
+            title: 'Unexpected Error: (403)',
+            errorMsg: `Error: User '${accesor}' is not authorized to delete the user comment with id '${comment._id.toString()}'.`,
+        });
+    }
+
     try {
-        comment = convertApi.prettifyComment(comment, false);
+        comment = convertApi.prettifyComment(comment, false, accesor);
     } catch (e) {
         return res.status(400).render('other/error', {
             title: 'Unexpected Error: (400)',
@@ -819,6 +829,7 @@ router.route('/delete/comment/:commentId').get(async (req, res) => {
 
 router.route('/delete/comment/:commentId').delete(async (req, res) => {
     let commentId = null,
+        comment = null,
         accesor = null;
 
     let { isAjaxRequest } = req.body;
@@ -881,13 +892,25 @@ router.route('/delete/comment/:commentId').delete(async (req, res) => {
     }
 
     try {
-        await eventsApi.getCommentById(commentId, accesor);
+        comment = await eventsApi.getCommentById(commentId, accesor);
     } catch (e) {
         if (isAjaxRequest) return res.status(403).json({ errorMsg: e });
 
         return res.status(403).render('other/error', {
             title: 'Unexpected Error: (403)',
             errorMsg: e,
+        });
+    }
+
+    if (accesor !== comment.owner.toLowerCase()) {
+        if (isAjaxRequest)
+            return res.status(403).json({
+                errorMsg: `Error: User '${accesor}' is not authorized to delete the user comment with id '${comment._id.toString()}'.`,
+            });
+
+        return res.status(403).render('other/error', {
+            title: 'Unexpected Error: (403)',
+            errorMsg: `Error: User '${accesor}' is not authorized to delete the user comment with id '${comment._id.toString()}'.`,
         });
     }
 

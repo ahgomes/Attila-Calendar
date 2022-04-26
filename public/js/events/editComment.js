@@ -46,6 +46,7 @@
                 DOMcomment.val('');
                 DOMcomments.append(DOMresult);
                 $('#comment-container > p').remove();
+                DOMcommentError.text('').hide();
             } catch (e) {
                 DOMcommentError.text(e.responseJSON?.errorMsg ?? e).show();
             }
@@ -75,6 +76,7 @@
                             .addClass('event-post italics')
                             .text('(No Comments)')
                     );
+                DOMcommentError.text('').hide();
             } catch (e) {
                 DOMcommentError.text(e.responseJSON?.errorMsg ?? e).show();
             }

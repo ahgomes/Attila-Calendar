@@ -16,12 +16,14 @@
 
         let noErrors = true;
 
-        const commentValue = DOMcomment.val();
-        if (!commentValue) {
-            noErrors = false;
-            DOMcommentError.text('Comment is empty.').show();
-        } else {
+        let commentValue = null;
+
+        try {
+            commentValue = validateApi.isValidString(DOMcomment.val(), false);
             DOMcommentError.text('').hide();
+        } catch (e) {
+            noErrors = false;
+            DOMcommentError.text(e).show();
         }
 
         if (noErrors) {
@@ -74,7 +76,7 @@
                             .text('(No Comments)')
                     );
             } catch (e) {
-                DOMcommentError.text(e.responseJSON.errorMsg).show();
+                DOMcommentError.text(e.responseJSON?.errorMsg ?? e).show();
             }
         });
     }

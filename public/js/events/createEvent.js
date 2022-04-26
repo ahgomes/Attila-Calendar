@@ -16,68 +16,58 @@
     DOMform.submit(function (e) {
         let noErrors = true;
 
-        const titleValue = DOMtitle.val().trim();
-        if (!titleValue) {
-            noErrors = false;
-            DOMtitleError.text('Title is empty.').show();
-        } else {
+        let titleValue = null,
+            descValue = null,
+            priorityValue = null,
+            dateValue = null,
+            timeValue = null;
+
+        try {
+            titleValue = validateApi.isValidString(DOMtitle.val(), true);
             DOMtitleError.text('').hide();
+        } catch (e) {
+            noErrors = false;
+            DOMtitleError.text(e).show();
         }
 
-        const descValue = DOMdesc.val();
-        if (!descValue) {
-            noErrors = false;
-            DOMdescError.text('Description is empty.').show();
-        } else {
+        try {
+            descValue = validateApi.isValidString(DOMdesc.val(), false);
             DOMdescError.text('').hide();
+        } catch (e) {
+            noErrors = false;
+            DOMdescError.text(e).show();
         }
 
-        const priorityValue = DOMpriority.val().trim();
-        const priority = Number(priorityValue);
-        if (
-            Number.isNaN(priority) ||
-            !Number.isFinite(priority) ||
-            !Number.isSafeInteger(priority) ||
-            priority < 1 ||
-            priority > 5
-        ) {
-            noErrors = false;
-            DOMpriorityError.text(
-                'Priority is not an integer in the range 1-5 inclusive.'
-            ).show();
-        } else {
+        try {
+            priorityValue = validateApi.isValidString(DOMpriority.val(), true);
+            const priority = validateApi.isValidNumber(
+                convertApi.stringToNumber(priorityValue),
+                true
+            );
+            if (priority < 1 || priority > 5)
+                throw `Error: Priority '${priorityValue}' must be in the range 1-5 inclusive.`;
             DOMpriorityError.text('').hide();
+        } catch (e) {
+            noErrors = false;
+            DOMpriorityError.text(e).show();
         }
 
-        const dateValue = DOMdate.val().trim();
-        const dateArray = dateValue.split('-');
-        if (
-            dateArray.length !== 3 ||
-            dateArray[0].length !== 4 ||
-            dateArray[1].length !== 2 ||
-            dateArray[2].length !== 2
-        ) {
-            noErrors = false;
-            DOMdateError.text(
-                "Deadline date is not in the form 'YYYY-MM-DD'."
-            ).show();
-        } else {
+        try {
+            dateValue = validateApi.isValidString(DOMdate.val(), true);
+            convertApi.dateStringToObject(dateValue);
             DOMdateError.text('').hide();
+        } catch (e) {
+            noErrors = false;
+            DOMdateError.text(e).show();
         }
 
-        const timeValue = DOMtime.val().trim();
-        const timeArray = timeValue.split(':');
-        if (
-            timeArray.length !== 2 ||
-            timeArray[0].length !== 2 ||
-            timeArray[1].length !== 2
-        ) {
-            noErrors = false;
-            DOMtimeError.text(
-                "Deadline time is not in the form 'HH:MM'."
-            ).show();
-        } else {
+        try {
+            timeValue = validateApi.isValidString(DOMtime.val(), true);
+            convertApi.timeStringToObject(timeValue);
             DOMtimeError.text('').hide();
+        } catch (e) {
+            noErrors = false;
+            DOMtimeError.text(e).show();
         }
 
         if (!noErrors) e.preventDefault();

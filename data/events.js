@@ -202,7 +202,7 @@ module.exports = {
 
         eventId = validateApi.isValidString(eventId, true);
         accesor = validateApi.isValidString(accesor, true).toLowerCase();
-        title = validateApi.isValidString(title, false);
+        title = validateApi.isValidString(title, true);
         description = validateApi.isValidString(description, false);
         priority = validateApi.isValidNumber(priority, true);
         deadline = validateApi.isValidDate(deadline);

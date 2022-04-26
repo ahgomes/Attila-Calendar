@@ -56,7 +56,7 @@ module.exports = {
      * @param {string} eventId The id of the event
      * @param {string} accesor The username of the user who wants to access the event
      *
-     * @returns {Object} Returns the specified event of the form {_id: ObjectId, owners: Array<'string'>, title: 'string', description: 'string', priority: number, deadline: Date, comments: Subdocument<{_id: ObjectId, owner: 'string', comment: 'string', createdOn: Date}>}
+     * @returns {Promise<Object>} Returns the specified event of the form {_id: ObjectId, owners: Array<'string'>, title: 'string', description: 'string', priority: number, deadline: Date, comments: Subdocument<{_id: ObjectId, owner: 'string', comment: 'string', createdOn: Date}>}
      *
      * @throws Errors when {eventId} is not a string, or is an empty string
      * @throws Errors when {eventId} is an invalid object id
@@ -93,7 +93,7 @@ module.exports = {
      * @param {number} priority The event's priority from 1-5 inclusive
      * @param {Date} deadline The date of the event's deadline, stored in the UTC format
      *
-     * @returns {Object} Returns the created event. See getEventById() for the full event schema
+     * @returns {Promise<Object>} Returns the created event. See getEventById() for the full event schema
      *
      * @throws Errors when {title} is not a string, or is an empty string
      * @throws Errors when {description} is not a string, or is an empty string
@@ -139,7 +139,7 @@ module.exports = {
      * @param {string} eventId The id of the event
      * @param {string} accesor The username of the user who wants to access the event
      *
-     * @returns {Object} Returns the deleted event. See getEventById() for the full event schema
+     * @returns {Promise<Object>} Returns the deleted event. See getEventById() for the full event schema
      *
      * @throws Errors when {eventId} is not a string, or is an empty string
      * @throws Errors when {eventId} is an invalid object id
@@ -178,7 +178,7 @@ module.exports = {
      * @param {number} priority The new event's priority from 1-5 inclusive
      * @param {Date} deadline The new date of the event's deadline, stored in the UTC format
      *
-     * @returns {Object} Returns the edited event. See getEventById() for the full event schema
+     * @returns {Promise<Object>} Returns the edited event. See getEventById() for the full event schema
      *
      * @throws Errors when {eventId} is not a string, or is an empty string
      * @throws Errors when {eventId} is an invalid object id
@@ -244,7 +244,7 @@ module.exports = {
      * @param {string} username The username of the user
      * @param {string} accesor The username of the user who wants to access the event
      *
-     * @returns {void} Returns the edited event after adding the user. See getEventById() for the full event schema
+     * @returns {Promise<void>} Returns the edited event after adding the user. See getEventById() for the full event schema
      *
      * @throws Errors when {eventId} is not a string, or is an empty string
      * @throws Errors when {eventId} is an invalid object id
@@ -265,7 +265,7 @@ module.exports = {
         const eventsCollection = await events();
         const updateInfo = await eventsCollection.updateOne(
             { _id: event._id },
-            { $push: { owners: username, $sort: 1 } }
+            { $push: { owners: { $each: [username], $sort: 1 } } }
         );
 
         if (updateInfo.modifiedCount < 1)
@@ -283,7 +283,7 @@ module.exports = {
      * @param {string} username The username of the user
      * @param {string} accesor The username of the user who wants to access the event
      *
-     * @returns {void} Returns the edited event after removing the user. See getEventById() for the full event schema
+     * @returns {Promise<void>} Returns the edited event after removing the user. See getEventById() for the full event schema
      *
      * @throws Errors when {eventId} is not a string, or is an empty string
      * @throws Errors when {eventId} is an invalid object id
@@ -308,7 +308,7 @@ module.exports = {
         );
 
         if (updateInfo.modifiedCount < 1)
-            throw `Error: Could not add user '${username}' to the event with id '${eventId}'.`;
+            throw `Error: Could not remove user '${username}' to the event with id '${eventId}'.`;
 
         return await this.getEventById(event._id.toString(), accesor);
     },
@@ -353,7 +353,7 @@ module.exports = {
      * @param {string} commentId The id of the comment
      * @param {string} accesor The username of the user who wants to access the comment
      *
-     * @returns {object} Returns the specified user comment of the form {_id: ObjectId, owner: 'string', comment: 'string', createdOn: Date}
+     * @returns {Promise<Object>} Returns the specified user comment of the form {_id: ObjectId, owner: 'string', comment: 'string', createdOn: Date}
      *
      * @throws Errors when {commentId} is not a string, or is an empty string
      * @throws Errors when {commentId} is an invalid object id
@@ -396,7 +396,7 @@ module.exports = {
      * @param {string} commentId The id of the comment
      * @param {string} accesor The username of the user who wants to access the comment
      *
-     * @returns {object} Returns the specified event. See getEventById() for the full event schema
+     * @returns {Promise<Object>} Returns the specified event. See getEventById() for the full event schema
      *
      * @throws Errors when {commentId} is not a string, or is an empty string
      * @throws Errors when {commentId} is an invalid object id
@@ -432,8 +432,9 @@ module.exports = {
      * @param {string} eventId The id of the event
      * @param {string} username The username of the user
      * @param {string} comment The comment of the user
+     * @param {Date} createdOn The comment's creation date
      *
-     * @returns {Object} Returns the created user comment. See getCommentById() for the full user comment schema
+     * @returns {Promise<Object>} Returns the created user comment. See getCommentById() for the full user comment schema
      *
      * @throws Errors when {eventId} is not a string, or is an empty string
      * @throws Errors when {eventId} is an invalid object id
@@ -441,22 +442,24 @@ module.exports = {
      * @throws Errors when {comment} is not a string, or is an empty string
      * @throws Errors when the user comment cannot be found
      * @throws Errors when {username} does not have access to {eventId}
+     * @throws Errors when {createdOn} is not a date object, or if the date is invalid
      * @throws Errors when the user comment cannot be added to the event
      */
-    async addCommentById(eventId, username, comment) {
-        validateApi.checkNumberOfArgs(arguments.length, 3, 3);
+    async addCommentById(eventId, username, comment, createdOn) {
+        validateApi.checkNumberOfArgs(arguments.length, 4, 4);
 
         eventId = validateApi.isValidString(eventId, true);
         username = validateApi.isValidString(username, true).toLowerCase();
         comment = validateApi.isValidString(comment, false);
+        createdOn = validateApi.isValidDate(createdOn);
 
         const event = await this.getEventById(eventId, username);
 
         const newComment = {
             _id: new ObjectId(),
             owner: username,
-            comment: comment,
-            createdOn: new Date(),
+            comment,
+            createdOn,
         };
 
         const eventsCollection = await events();
@@ -479,12 +482,13 @@ module.exports = {
      * @param {string} commentId The id of the comment
      * @param {string} accesor The username of the user who wants to access the comment
      *
-     * @returns {Object} Returns the deleted user comment. See getCommentById() for the full user comment schema
+     * @returns {Promise<Object>} Returns the deleted user comment. See getCommentById() for the full user comment schema
      *
      * @throws Errors when {commentId} is not a string, or is an empty string
      * @throws Errors when {commentId} is an invalid object id
      * @throws Errors when the user comment cannot be found
      * @throws Errors when {accesor} does not have access to the event containing {commentId}
+     * @throws Errors when {accesor} is not the owner of the user comment
      * @throws Errors when the user comment cannot be removed from its event
      */
     async deleteCommentById(commentId, accesor) {
@@ -495,6 +499,9 @@ module.exports = {
 
         const event = await this.getEventFromCommentById(commentId, accesor);
         const comment = await this.getCommentById(commentId, accesor);
+
+        if (accesor !== comment.owner.toLowerCase())
+            throw `Error: User '${accesor}' is not authorized to delete the user comment with id '${comment._id.toString()}'.`;
 
         const eventsCollection = await events();
         const updateInfo = await eventsCollection.updateOne(

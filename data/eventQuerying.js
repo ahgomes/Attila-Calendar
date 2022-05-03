@@ -26,9 +26,14 @@ const searchEvents = async function searchEvents(text) {
     text = validateApi.isValidString(text, true)
     const eventsCollection = await events()
     
-    // case sensitive?
-    textIndex = await eventsCollection.createIndex({title: "text", description: "text"})
-    const findEvents = await eventsCollection.find({$text: {$search: text}}).toArray()
+    // case sensitive mongodb query for title and description
+    const findEvents = await eventsCollection.find({$or: [{title: {$regex: text, $options: 'i'}}, {description: {$regex: text, $options: 'i'}}]}).toArray()
+
+    // textIndex = await eventsCollection.createIndex({title: "text", description: "text"})
+    // const findEvents = await eventsCollection.find({$text: {$search: text}}).toArray()
+
+    // textIndex = await eventsCollection.createIndex({title: 1, description: 1}, {collation: {locale: 'en', strength: 2}})
+    // const findEvents = await eventsCollection.find({$text: {$search: text}}).collation({locale: 'en', strength: 2}).toArray()
 
     console.log(findEvents)
     if (findEvents.length > 0) {
@@ -70,7 +75,7 @@ const filterEventPriority = async function filterEventPriority(priority) {
     }
 }
 
-searchEvent("hello")
+searchEvents("programm")
 
 module.exports = {
     listUserEvents,

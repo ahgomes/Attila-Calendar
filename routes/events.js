@@ -7,6 +7,7 @@ const usersApi = data.usersApi;
 const eventsApi = data.eventsApi;
 const convertApi = data.convertApi;
 const validateApi = data.validateApi;
+const eventQuerying = data.eventQuerying;
 
 /* /events */
 
@@ -15,6 +16,18 @@ router.route('/').get((req, res) => {
         title: 'Events Page',
     });
 });
+
+/* MY CODE /events/search */
+router.route('/search').post((req, res) => {
+    try {
+        eventSearch = req.body
+        eventQuerying = await eventQuerying.listUserEvents(eventSearch.searchTerm)
+        res.status(200).render('events/searchEvents', {title: "Events Found", eventSearch: eventSearch.searchTerm, events: eventQuerying})
+    } catch (e) {
+        res.status(500).send(e)
+    }
+});
+
 
 /* /events/create */
 

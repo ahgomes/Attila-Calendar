@@ -88,7 +88,7 @@ function fill_cal(curr) {
     for (; i < (row_count + 1) * 7; i++) {
         let cell = $(`#td-${(i < 7 ? '0' : '') + i.toString(7)}`);
         cell.attr('data-date', `${str_part}-${(date < 10 ? '0' + date : date)}`)
-            .prepend($('<h3>').text(date));
+            .prepend($('<h2>').text(date));
 
         if (i < curr_start) cell.addClass('last');
         else if (i >= curr_start + curr_end) cell.addClass('next');

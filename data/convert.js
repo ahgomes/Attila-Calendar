@@ -240,4 +240,62 @@ module.exports = {
 
         return `${month}/${day}/${year} @ ${hours}:${minutes} ${meridian}`;
     },
+
+    /**
+     * Converts objects in an event into strings to make it more readable.
+     *
+     * @param {Object} event The event to be pretiffied
+     * @param {boolean} showDelete Determines whether comments are displayed with a link to delete the comment
+     * @param {string} accesor The username of the user who wants to access the event
+     *
+     * @returns {Object} Returns the initial event prettified
+     *
+     * @throws Errors when {event} is not an object, or is null
+     * @throws Errors when {showDelete} is not a boolean
+     * @throws Errors when {accesor} is not a string, or is an empty string
+     */
+    prettifyEvent(event, showDelete, accesor) {
+        validateApi.checkNumberOfArgs(arguments.length, 3, 3);
+
+        event = validateApi.isValidObject(event);
+        showDelete = validateApi.isValidBoolean(showDelete);
+        accesor = validateApi.isValidString(accesor, true).toLowerCase();
+
+        event.deadline = this.dateToReadableString(new Date(event.deadline));
+        event.comments = event.comments.map((elem) =>
+            this.prettifyComment(elem, showDelete, accesor)
+        );
+
+        return event;
+    },
+
+    /**
+     * Converts objects in a comment into strings to make it more readable.
+     *
+     * @param {Object} comment The comment to be pretiffied
+     * @param {boolean} showDelete Determines whether comments are displayed with a link to delete the comment
+     * @param {string} accesor The username of the user who wants to access the comment
+     *
+     * @returns {Object} Returns the initial comment prettified
+     *
+     * @throws Errors when {comment} is not an object, or is null
+     * @throws Errors when {showDelete} is not a boolean
+     */
+    prettifyComment(comment, showDelete, accesor) {
+        validateApi.checkNumberOfArgs(arguments.length, 3, 3);
+
+        comment = validateApi.isValidObject(comment);
+        showDelete = validateApi.isValidBoolean(showDelete);
+        accesor = validateApi.isValidString(accesor, true).toLowerCase();
+
+        comment.createdOn = this.dateToReadableString(
+            new Date(comment.createdOn)
+        );
+        comment.commentExists = comment.comment.trim().length > 0;
+        comment.showDelete = showDelete
+            ? accesor === comment.owner.toLowerCase()
+            : showDelete;
+
+        return comment;
+    },
 };

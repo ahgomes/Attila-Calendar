@@ -1,6 +1,4 @@
-const { ObjectId } = require('mongodb');
-
-module.exports = {
+validateApi = {
     /**
      * Checks if the number of arguments passed into your function matches the expected argument count.
      *
@@ -76,23 +74,6 @@ module.exports = {
     },
 
     /**
-     * Checks if the given argument is a valid object id.
-     *
-     * @param {string} arg The argument to be checked
-     * @returns {ObjectId} Returns the initial argument {arg} as an object id
-     *
-     * @throws Errors when {arg} is an invalid object id
-     */
-    isValidObjectId(arg) {
-        this.checkNumberOfArgs(arguments.length, 1, 1);
-
-        const trimmed_id = this.isValidString(arg, true);
-        if (!ObjectId.isValid(trimmed_id))
-            throw `Error: Id '${trimmed_id}' is an invalid object id.`;
-        return ObjectId(trimmed_id);
-    },
-
-    /**
      * Checks if the given argument is a date object.
      *
      * @param {Date} arg The argument to be checked
@@ -148,41 +129,6 @@ module.exports = {
         this.isValidArray(arg, isNotEmpty);
         return arg.map((elem) => this.isValidString(elem, shouldTrim));
     },
-    /**
-     * Checks if the given username is alphanumeric with no spaces, and is not too short.
-     *
-     * @param {Array<string>} username The argument to be checked
-     * 
-     * @throws Errors when {username} has spaces or is not alphanumeric
-     * @throws Errors when {username} is too short
-     */
-    checkUsername(username){
-        let regex = /^[0-9a-zA-Z]+$/;
-        if (!username.match(regex)){
-            throw 'Username must be alphanumeric, with no spaces';
-        }
-        if (username.length < 4){
-            throw 'Username is too short';
-        }
-    },
-    /**
-     * Checks if the given username is alphanumeric with no spaces, and is not too short.
-     *
-     * @param {Array<string>} password The argument to be checked
-     * 
-     * @throws Errors when {password} has spaces
-     * @throws Errors when {password} is too short
-     */
-    checkPassword (password){
-        for (let i of password){
-            if (i == ' '){
-                throw 'No spaces allowed in password';
-            }
-        }
-        if (password.length < 6){
-            throw 'Password is too short';
-        }
-    },    
 
     /**
      * Checks if the given argument is an object.

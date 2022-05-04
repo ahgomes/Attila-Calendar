@@ -1,0 +1,18 @@
+<form
+    id='delete-comment-form'
+    class='center-element'
+    action='/events/delete/comment/{{params._id}}'
+    method='POST'
+>
+    <input name='_method' value='DELETE' hidden />
+
+    <h2>Are You Sure You Want to Delete This Comment?</h2>
+
+    {{> commentWidget}}
+
+    <br />
+
+    <button id='submit-button' class='center-element' type='submit'>
+        Delete Comment
+    </button>
+</form>

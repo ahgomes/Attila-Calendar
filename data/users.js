@@ -7,7 +7,7 @@ const validate = require('./validate');
 
 module.exports = {
     /**
-     * Creates the user and adds it tothe user database.
+     * Creates the user and adds it to the user database.
      *
      * @returns {Object} Returns the whether the user was created in the form {userInserted: true}
      *
@@ -15,9 +15,11 @@ module.exports = {
      *
      * @todo IMPLEMENT FUNCTION
      */
-    async createUser(username,password) {  
+    async createUser(username,password,first_name,last_name) {  
         validate.isValidString(username, true);
         validate.isValidString(password, true);
+        validate.isValidString(first_name, true);
+        validate.isValidString(last_name, true);
         username = username.toLowerCase();
         username = username.trim();
         validate.checkUsername(username);
@@ -31,7 +33,10 @@ module.exports = {
 
         let newUser = {
             username: username,
-            password: hash
+            first_name: first_name,
+            last_name: last_name,
+            hashed_password: hash,
+            calendars: []
             
         };
 
@@ -40,6 +45,102 @@ module.exports = {
         return {userInserted: true};
         
 
+    },
+    /**
+     * Changes the to the new username for the user with the given old username.
+     *
+     * @returns {Object} Returns the whether the username was updated in the form {usernameChanged: true}
+     *
+     * @throws Errors when the the username fails the validation
+     *
+     * @todo IMPLEMENT FUNCTION
+     */
+     async changeUsername(old_username, new_username) {  
+        validate.isValidString(old_username, true);
+        validate.isValidString(new_username, true);
+        new_username = new_username.toLowerCase();
+        new_username = new_username.trim();
+        validate.checkUsername(new_username);
+
+        const userCollection = await users();
+        const user = await userCollection.findOne({'username': old_username});
+        if (user == null) throw new Error('No user with that username exists');
+        
+        let newUser = {
+            username: new_username,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            hashed_password: user.hashed_password,
+            calendars: user.calendars
+            
+        };
+
+        const insertUser = await userCollection.updateOne({'username': old_username},{$set: newUser});
+        if (insertUser.modifiedCount == 0) throw new Error('Could not change username');
+        return {usernameChanged: true};
+    },
+    /**
+     * Changes the password for the user with the given username.
+     *
+     * @returns {Object} Returns the whether the password was updated in the form {passwordChanged: true}
+     *
+     * @throws Errors when the the password fails the validation
+     *
+     * @todo IMPLEMENT FUNCTION
+     */
+     async changePassword(username, password) {  
+        validate.isValidString(username, true);
+        validate.isValidString(password, true);
+        validate.checkPassword(password);
+
+        const userCollection = await users();
+        const user = await userCollection.findOne({'username': username});
+        if (user == null) throw new Error('No user with that username exists');
+        
+        let hash = await bcrypt.hash(password, saltRounds);
+
+        let newUser = {
+            username: user.username,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            hashed_password: hash,
+            calendars: user.calendars
+            
+        };
+
+        const insertUser = await userCollection.updateOne({'username': username},{$set: newUser});
+        if (insertUser.modifiedCount == 0) throw new Error('Could not change password');
+        return {passwordChanged: true};
+    },
+    /**
+     * Changes the first and last name for the user with the given username.
+     *
+     * @returns {Object} Returns the whether the name was updated in the form {nameChanged: true}
+     *
+     * @throws Errors when the the password fails the validation
+     *
+     * @todo IMPLEMENT FUNCTION
+     */
+     async changeName(username, first_name, last_name) {  
+        validate.isValidString(first_name, true);
+        validate.isValidString(last_name, true);
+
+        const userCollection = await users();
+        const user = await userCollection.findOne({'username': username});
+        if (user == null) throw new Error('No user with that username exists');
+
+        let newUser = {
+            username: user.username,
+            first_name: first_name,
+            last_name: last_name,
+            hashed_password: user.hashed_password,
+            calendars: user.calendars
+            
+        };
+
+        const insertUser = await userCollection.updateOne({'username': username},{$set: newUser});
+        if (insertUser.modifiedCount == 0) throw new Error('Could not change first and last names');
+        return {nameChanged: true};
     },
     /**
      * Gets the logged-in user.

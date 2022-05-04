@@ -1,0 +1,15 @@
+    <header>
+        <h1>Change Name</h1>
+    </header>
+	{{#if errorMsg}}
+	<div id="error" class="error">{{errorMsg}}</div>
+  {{/if}}
+	<br>
+    <p>Enter your new first name and last name below</p>
+	<form action='/user/signup' method="POST" id="signup-form">
+        <label id="firstNameLabel" for="first_name" value = {{first_name}}>Enter First Name:</label>
+        <input name="first_name" type="text" id="first_name"/>
+        <label id="lastNameLabel" for="last_name" value = {{last_name}}>Enter Last Name:</label>
+        <input name="last_name" type="text" id="last_name"/>
+        <button type="submit">Change Name</button>		
+	</form>

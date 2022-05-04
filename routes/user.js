@@ -3,7 +3,7 @@ const router = express.Router();
 const data = require('../data');
 const usersData = data.usersApi;
 const validate = data.validateApi;
-
+const xss = require('xss');
 
 router
   .route('/signup')
@@ -17,12 +17,16 @@ router
     }
   })
   .post(async (req, res) => {
-    console.log("POST: SIGNUP");
-    let username = req.body.username;
-    let password = req.body.password;
+    let username = xss(req.body.username);
+    let password = xss(req.body.password);
+    let first_name = xss(req.body.first_name);
+    let last_name = xss(req.body.last_name);
+    console.log(username);
     try {
         validate.isValidString(username, true);
         validate.isValidString(password, true);
+        validate.isValidString(first_name, true);
+        validate.isValidString(last_name, true);
         username = username.toLowerCase();
         username = username.trim();
         validate.checkUsername(username);
@@ -32,18 +36,15 @@ router
         return;
     }
     try{
-        console.log("CREATING");
         let inserted = await usersData.createUser(username, password);
         if (inserted.userInserted == true){
             res.redirect('/user');
             return;
         }else{
-            console.log("CREATING FAILED " + e);
             res.status(500).render('other/error', {title: 'Error',errorMsg: `Error: ${e}`});
             return;
         }
     }catch(e){
-        console.log("CREATING FAILED " + e);
         res.status(400).render('users/signup', {title: 'signup', errorMsg: `Error: ${e}`});
         return;
     }
@@ -52,7 +53,9 @@ router
 router
   .route('/login')
   .post(async (req, res) => {
-    let { username, password } = req.body;
+    let username = xss(req.body.username);
+    let password = xss(req.body.password);
+    console.log(username);
     try {
         validate.isValidString(username, true);
         validate.isValidString(password, true);
@@ -84,6 +87,113 @@ router
         return; //res.render('other/user', {title: 'user'});
     }else{
         res.redirect('/');
+        return;
+    }
+  });
+  router
+  .route('/changeName')
+  .get(async (req, res) => {
+    if(req.session.user){
+        res.render('other/changeName', {title: 'Change Name'});
+        return;
+    }else{
+        res.redirect('/user/login');
+        return;
+    }
+  })
+  .post(async (req, res) => {
+    let first_name = xss(req.body.first_name);
+    let last_name = xss(req.body.last_name);
+    try {
+        validate.isValidString(first_name, true);
+        validate.isValidString(last_name, true);
+    }catch (e) {
+        res.render('other/changeName', {title: 'Change Name', errorMsg: `Error: ${e}`});
+        return;
+    }
+    try{
+        let updated = await usersData.changeName(req.session.user, first_name, last_name);
+        if (updated.nameChanged == true){
+            res.redirect('/user');
+            return;
+        }else{
+            res.status(500).render('other/error', {title: 'Error',errorMsg: `Error: ${e}`});
+            return;
+        }
+    }catch(e){
+        res.status(400).render('other/changeName', {title: 'Change Name', errorMsg: `Error: ${e}`});
+        return;
+    }
+  });
+  
+  router
+  .route('/changeUsername')
+  .get(async (req, res) => {
+    if(req.session.user){
+        res.render('other/changeUsername', {title: 'Change Username'});
+        return;
+    }else{
+        res.redirect('/user/login');
+        return;
+    }
+  })
+  .post(async (req, res) => {
+    let new_username = xss(req.body.username);
+    try {
+        validate.isValidString(new_username, true);
+        new_username = new_username.toLowerCase();
+        new_username = new_username.trim();
+        validate.checkUsername(new_username);
+    }catch (e) {
+        res.render('other/changeUsername', {title: 'Change Username', errorMsg: `Error: ${e}`});
+        return;
+    }
+    try{
+        let updated = await usersData.changeUsername(req.session.user, new_username);
+        if (updated.usernameChanged == true){
+            res.redirect('/user');
+            return;
+        }else{
+            res.status(500).render('other/error', {title: 'Error',errorMsg: `Error: ${e}`});
+            return;
+        }
+    }catch(e){
+        res.status(400).render('other/changeUsername', {title: 'Change Username', errorMsg: `Error: ${e}`});
+        return;
+    }
+  });
+
+  router
+  .route('/changePassword')
+  .get(async (req, res) => {
+    if(req.session.user){
+        res.render('other/changePassword', {title: 'Change Password'});
+        return;
+    }else{
+        res.redirect('/user/login');
+        return;
+    }
+  })
+  .post(async (req, res) => {
+    let password = xss(req.body.password);
+    try {
+        validate.isValidString(password, true);
+        validate.checkPassword(password);
+    }catch (e) {
+        res.render('other/changePassword', {title: 'Change Password', errorMsg: `Error: ${e}`});
+        return;
+    }
+    try{
+        let updated = await usersData.changePassword(req.session.user, password);
+        if (updated.passwordChanged == true){
+            res.redirect('/user');
+            return;
+        }else{
+            res.status(500).render('other/error', {title: 'Error', errorMsg: `Error: ${e}`});
+            return;
+        }
+    }catch(e){
+        res.status(400).render('other/changePassword', {title: 'Change Password', errorMsg: `Error: ${e}`});
         return;
     }
   });

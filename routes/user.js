@@ -1,45 +1,50 @@
 const express = require('express');
 const router = express.Router();
 const data = require('../data');
-const usersData = data.users;
-const validate = data.validate;
+const usersData = data.usersApi;
+const validate = data.validateApi;
+
 
 router
   .route('/signup')
   .get(async (req, res) => {
     if(req.session.user){
-        res.redirect('/private');
+        res.redirect('/user');
         return;
     }else{
-        res.render('users/signup', {title: 'signup'});
+        res.render('other/signup', {title: 'signup'});
         return;
     }
   })
   .post(async (req, res) => {
+    console.log("POST: SIGNUP");
     let username = req.body.username;
     let password = req.body.password;
     try {
-        validate.isValidArrayOfStrings(username, true, true);
-        validate.isValidArrayOfStrings(password, true, true);
+        validate.isValidString(username, true);
+        validate.isValidString(password, true);
         username = username.toLowerCase();
         username = username.trim();
         validate.checkUsername(username);
         validate.checkPassword(password);
     }catch (e) {
-        res.render('users/signup', {title: 'signup', error: `Error: ${e}`});
+        res.render('other/signup', {title: 'signup', errorMsg: `Error: ${e}`});
         return;
     }
     try{
+        console.log("CREATING");
         let inserted = await usersData.createUser(username, password);
         if (inserted.userInserted == true){
-            res.redirect('/user/login');
+            res.redirect('/user');
             return;
         }else{
-            res.status(500).render('users/e500', {title: 'Error',e: `Error: ${e}`});
+            console.log("CREATING FAILED " + e);
+            res.status(500).render('other/error', {title: 'Error',errorMsg: `Error: ${e}`});
             return;
         }
     }catch(e){
-        res.status(400).render('users/signup', {title: 'signup', error: `Error: ${e}`});
+        console.log("CREATING FAILED " + e);
+        res.status(400).render('users/signup', {title: 'signup', errorMsg: `Error: ${e}`});
         return;
     }
   });
@@ -49,8 +54,8 @@ router
   .post(async (req, res) => {
     let { username, password } = req.body;
     try {
-        validate.isValidArrayOfStrings(username, true, true);
-        validate.isValidArrayOfStrings(password, true, true);
+        validate.isValidString(username, true);
+        validate.isValidString(password, true);
         username = username.toLowerCase();
         username = username.trim();
         validate.checkUsername(username);
@@ -58,16 +63,15 @@ router
         let check = await usersData.checkUser(username, password);
         if (check.authenticated == true){
             req.session.user = username;
-            res.redirect('/');
+            res.redirect('/user');
             return;
         }else{
-            
-            res.status(400).render('users/login', {title: 'signup',error: `Error: ${e}`});
+            res.status(400).render('other/login', {title: 'signup',errorMsg: `Error: ${e}`});
             return;
         }
         
     } catch (e) {
-        res.status(400).render('users/login', {title: 'signup',error: `Error: ${e}`});
+        res.status(400).render('other/login', {title: 'signup',errorMsg: `Error: ${e}`});
         return;
     }
   });
@@ -75,11 +79,11 @@ router
   .route('/logout')
   .get(async (req,res) => {
     if(req.session.user){
-        res.redirect('/');
-        return;
-    }else{
         req.session.destroy();
-        res.status(200).sendFile(path.resolve('public/logout.html'));
+        res.redirect('/');
+        return; //res.render('other/user', {title: 'user'});
+    }else{
+        res.redirect('/');
         return;
     }
   });
@@ -88,11 +92,10 @@ router
   .get(async (req,res) => {
       if(req.session.user){
           //res.redirect('/');
-          return res.render('other/user', {
-                    title: 'User Page',
-                });
+          return res.render('other/user', {title: 'User Page',username: req.session.user});
       }else{
-        res.status(200).render('users/login', {title: 'login'});
+        //res.redirect('/user/login');
+        res.status(200).render('other/login', {title: 'login'});
         return;
       }
       

@@ -16,8 +16,8 @@ module.exports = {
      * @todo IMPLEMENT FUNCTION
      */
     async createUser(username,password) {  
-        validate.isValidArrayOfStrings(username, true, true);
-        validate.isValidArrayOfStrings(password, true, true);
+        validate.isValidString(username, true);
+        validate.isValidString(password, true);
         username = username.toLowerCase();
         username = username.trim();
         validate.checkUsername(username);
@@ -51,8 +51,8 @@ module.exports = {
      * @todo IMPLEMENT FUNCTION
      */
     async checkUser(username,password) {
-        validate.isValidArrayOfStrings(username, true, true);
-        validate.isValidArrayOfStrings(password, true, true);
+        validate.isValidString(username, true);
+        validate.isValidString(password, true);
         username = username.toLowerCase();
         username = username.trim();
         validate.checkUsername(username);

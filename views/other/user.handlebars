@@ -1,3 +1,10 @@
-<h1>This is the User Page</h1>
-
-<p>Test text</p>
+<header>
+        <h1>Profile</h1>
+    </header>
+  {{#if errorMsg}}
+	<div id="error" class="error">{{errorMsg}}</div>
+  {{/if}}
+	<br>
+    
+	<p id="username" class ="username">Username: {{username}}</p>
+    <p>Need to logout? <a href="/user/logout">Click here!</a></p>

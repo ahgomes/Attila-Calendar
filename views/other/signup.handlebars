@@ -1,0 +1,16 @@
+    <header>
+        <h1>Signup</h1>
+    </header>
+	{{#if errorMsg}}
+	<div id="error" class="error">{{errorMsg}}</div>
+  {{/if}}
+	<br>
+    <p>Please create a username with 4 or more alphanumeric characters and a password with 6 or more characters that aren't spaces </p>
+	<form action='/user/signup' method="POST" id="signup-form">
+		<label id="usernameLabel" for="username">Enter Username:</label>
+        <input name="username" type="text" id="username"/>
+        <label id="passwordLabel" for="password">Enter Password:</label>
+        <input name="password" type="text" id="password"/>
+        <button type="submit">Signup</button>		
+	</form>
+    <p>Already have an account? <a href="/user">Click here to log-in</a></p>

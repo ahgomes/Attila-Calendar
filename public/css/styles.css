@@ -292,13 +292,13 @@ main {
     align-items: baseline;
 }
 
-.event-edit-gear {
+.event-gear {
     font-weight: bold;
     color: black;
     margin-left: 10px;
 }
 
-.event-edit-gear:hover {
+.event-gear:hover {
     color: blue;
 }
 

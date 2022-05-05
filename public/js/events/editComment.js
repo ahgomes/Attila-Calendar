@@ -20,6 +20,8 @@
 
         try {
             commentValue = validateApi.isValidString(DOMcomment.val(), false);
+            if (commentValue.length > 1000)
+                throw `Error: Comment cannot exceed 1000 characters. (${commentValue.length} characters detected)`;
             DOMcommentError.text('').hide();
         } catch (e) {
             noErrors = false;

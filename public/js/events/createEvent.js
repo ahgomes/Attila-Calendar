@@ -24,6 +24,8 @@
 
         try {
             titleValue = validateApi.isValidString(DOMtitle.val(), true);
+            if (titleValue.length > 300)
+                throw `Error: Title cannot exceed 300 characters. (${titleValue.length} characters detected)`;
             DOMtitleError.text('').hide();
         } catch (e) {
             noErrors = false;
@@ -32,6 +34,8 @@
 
         try {
             descValue = validateApi.isValidString(DOMdesc.val(), false);
+            if (descValue.length > 2000)
+                throw `Error: Description cannot exceed 2000 characters. (${descValue.length} characters detected)`;
             DOMdescError.text('').hide();
         } catch (e) {
             noErrors = false;

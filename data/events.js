@@ -95,8 +95,8 @@ module.exports = {
      *
      * @returns {Promise<Object>} Returns the created event. See getEventById() for the full event schema
      *
-     * @throws Errors when {title} is not a string, or is an empty string
-     * @throws Errors when {description} is not a string, or is an empty string
+     * @throws Errors when {title} is not a string, or is an empty string, or is more than 300 characters
+     * @throws Errors when {description} is not a string, or is an empty string, or is more than 2000 characters
      * @throws Errors when {priority} is not a finite integer in the range 1-5 inclusive
      * @throws Errors when {deadline} is not a date object, or if the date is invalid
      * @throws Errors when the event cannot be created
@@ -110,6 +110,10 @@ module.exports = {
         priority = validateApi.isValidNumber(priority, true);
         deadline = validateApi.isValidDate(deadline);
 
+        if (title.length > 300)
+            throw `Error: Title cannot exceed 300 characters. (${title.length} characters detected)`;
+        if (description.length > 2000)
+            throw `Error: Description cannot exceed 2000 characters. (${description.length} characters detected)`;
         if (priority < 1 || priority > 5)
             throw `Error: Priority '${priority}' must be in the range 1-5 inclusive.`;
 
@@ -182,8 +186,8 @@ module.exports = {
      *
      * @throws Errors when {eventId} is not a string, or is an empty string
      * @throws Errors when {eventId} is an invalid object id
-     * @throws Errors when {title} is not a string, or is an empty string
-     * @throws Errors when {description} is not a string, or is an empty string
+     * @throws Errors when {title} is not a string, or is an empty string, or is more than 300 characters
+     * @throws Errors when {description} is not a string, or is an empty string, or is more than 2000 characters
      * @throws Errors when {priority} is not a finite integer in the range 1-5 inclusive
      * @throws Errors when {deadline} is not a date object, or if the date is invalid
      * @throws Errors when the event cannot be found
@@ -207,6 +211,10 @@ module.exports = {
         priority = validateApi.isValidNumber(priority, true);
         deadline = validateApi.isValidDate(deadline);
 
+        if (title.length > 300)
+            throw `Error: Title cannot exceed 300 characters. (${title.length} characters detected)`;
+        if (description.length > 2000)
+            throw `Error: Description cannot exceed 2000 characters. (${description.length} characters detected)`;
         if (priority < 1 || priority > 5)
             throw `Error: Priority '${priority}' must be in the range 1-5 inclusive.`;
 
@@ -439,7 +447,7 @@ module.exports = {
      * @throws Errors when {eventId} is not a string, or is an empty string
      * @throws Errors when {eventId} is an invalid object id
      * @throws Errors when {username} is not a string, or is an empty string
-     * @throws Errors when {comment} is not a string, or is an empty string
+     * @throws Errors when {comment} is not a string, or is an empty string, or is more than 1000 characters
      * @throws Errors when the user comment cannot be found
      * @throws Errors when {username} does not have access to {eventId}
      * @throws Errors when {createdOn} is not a date object, or if the date is invalid
@@ -452,6 +460,9 @@ module.exports = {
         username = validateApi.isValidString(username, true).toLowerCase();
         comment = validateApi.isValidString(comment, false);
         createdOn = validateApi.isValidDate(createdOn);
+
+        if (comment.length > 1000)
+            throw `Error: Comment cannot exceed 1000 characters. (${comment.length} characters detected)`;
 
         const event = await this.getEventById(eventId, username);
 

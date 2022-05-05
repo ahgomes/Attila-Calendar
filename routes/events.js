@@ -85,6 +85,8 @@ router.route('/create').post(async (req, res) => {
 
     try {
         input_title = validateApi.isValidString(titleView.value, true);
+        if (input_title.length > 300)
+            throw `Error: Title cannot exceed 300 characters. (${input_title.length} characters detected)`;
     } catch (e) {
         titleView.noError = false;
         titleView.errorMsg = e;
@@ -92,6 +94,8 @@ router.route('/create').post(async (req, res) => {
 
     try {
         input_desc = validateApi.isValidString(descView.value, false);
+        if (input_desc.length > 2000)
+            throw `Error: Description cannot exceed 2000 characters. (${input_desc.length} characters detected)`;
     } catch (e) {
         descView.noError = false;
         descView.errorMsg = e;
@@ -333,6 +337,8 @@ router.route('/edit/:eventId').put(async (req, res) => {
 
     try {
         input_title = validateApi.isValidString(titleView.value, true);
+        if (input_title.length > 300)
+            throw `Error: Title cannot exceed 300 characters. (${input_title.length} characters detected)`;
     } catch (e) {
         titleView.noError = false;
         titleView.errorMsg = e;
@@ -340,6 +346,8 @@ router.route('/edit/:eventId').put(async (req, res) => {
 
     try {
         input_desc = validateApi.isValidString(descView.value, false);
+        if (input_desc.length > 2000)
+            throw `Error: Description cannot exceed 2000 characters. (${input_desc.length} characters detected)`;
     } catch (e) {
         descView.noError = false;
         descView.errorMsg = e;
@@ -597,6 +605,8 @@ router.route('/edit/:eventId/comments').post(async (req, res) => {
 
     try {
         input_comment = validateApi.isValidString(xss(input_comment), false);
+        if (input_comment.length > 1000)
+            throw `Error: Comment cannot exceed 1000 characters. (${input_comment.length} characters detected)`;
         createdOn = validateApi.isValidDate(new Date());
     } catch (e) {
         return res.status(400).json({ errorMsg: e });

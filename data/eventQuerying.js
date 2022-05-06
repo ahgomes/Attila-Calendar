@@ -53,7 +53,7 @@ const searchEvents = async function searchEvents(text) {
 }
 
 // Need to find a way to format the date properly
-const filterEventDate = async function filterEventDate(deadline) {
+const searchByEventDate = async function searchByEventDate(deadline) {
     deadline = validateApi.isValidDate(deadline)
     
     const eventsCollection = await events()
@@ -66,6 +66,10 @@ const filterEventDate = async function filterEventDate(deadline) {
     else {
         return "Sorry, no events could be found."
     }
+}
+
+const filterEventDate = async function filterEventDate(date) {
+
 }
 
 const filterEventPriority = async function filterEventPriority(priority) {
@@ -89,6 +93,7 @@ module.exports = {
     getEventById,
     listUserEvents,
     searchEvents,
+    searchByEventDate,
     filterEventDate,
     filterEventPriority
 };

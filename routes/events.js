@@ -18,16 +18,38 @@ router.route('/').get((req, res) => {
     });
 });
 
-/* MY CODE /events/search */
+/* /events/search */
+// TODO: fix priority search (validation issue)
+
 router.route('/searchPage').post(async (req, res) => {
     try {
         eventSearch = req.body
-        eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm)
+        console.log("eventSearch:", eventSearch)
+ 
+        if (eventSearch.searchOption == "User") {
+            eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm)
+        }
+        else if (eventSearch.searchOption == "Title/Description") {
+            eventQuery = await eventQuerying.searchEvents(eventSearch.searchTerm)
+        }
+        else if (eventSearch.searchOption == "Date") {
+            eventQuery = await eventQuerying.searchByEventDate(eventSearch.searchTerm)
+        }
+        else if (eventSearch.searchOption == "Priority") {
+            eventQuery = await eventQuerying.filterEventPriority(eventSearch.searchTerm)
+        }
+        // else {
+        //     eventQuery = "Sorry, no events could be found."
+        // }
+        console.log("eventQuery: ", eventQuery)
+
         res.status(200).render('events/searchEvents', {title: "Events Found", eventSearch: eventSearch.searchTerm, events: eventQuery})
     } catch (e) {
         res.status(500).send(e)
     }
 });
+
+/* /events/search/{eventId} */
 
 router.route('/searchPage/:id').get(async (req, res) => {
     try {
@@ -37,7 +59,6 @@ router.route('/searchPage/:id').get(async (req, res) => {
         res.status(500).send(e)
     }
 })
-
 
 /* /events/create */
 

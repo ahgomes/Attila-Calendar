@@ -1,20 +1,17 @@
 <h1>This is the Events Page</h1>
 
-<input list="browsers" name="browser">
-    <datalist id="browsers">
-        <option value="User">
-        <option value="Title/Description">
-        <option value="Date">
-        <option value="Priority">
-    </datalist>
-
 <form action="/events/searchPage" method="POST">
+    <label for="searchOption"></label>
+    <select name = "searchOption" id="searchType">
+        <option value="User">User</option>
+        <option value="Title/Description">Title/Description</option>
+        <option value="Date">Date</option>
+        <option value="Priority">Priority</option>
+    </select>
     <label for="searchEvents">
         <input type="text" id="searchEvents" name ="searchTerm"/>
     </label>
     <button type="submit">Submit</button>
 </form>
-
-<p>Test text</p>
 
 <a href='/events/create'>Create an Event</a>

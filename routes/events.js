@@ -3,6 +3,7 @@ const router = express.Router();
 const xss = require('xss');
 
 const data = require('../data');
+const { getEventById } = require('../data/events');
 const usersApi = data.usersApi;
 const eventsApi = data.eventsApi;
 const convertApi = data.convertApi;
@@ -18,15 +19,24 @@ router.route('/').get((req, res) => {
 });
 
 /* MY CODE /events/search */
-router.route('/search').post((req, res) => {
+router.route('/searchPage').post(async (req, res) => {
     try {
         eventSearch = req.body
-        eventQuerying = await eventQuerying.listUserEvents(eventSearch.searchTerm)
-        res.status(200).render('events/searchEvents', {title: "Events Found", eventSearch: eventSearch.searchTerm, events: eventQuerying})
+        eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm)
+        res.status(200).render('events/searchEvents', {title: "Events Found", eventSearch: eventSearch.searchTerm, events: eventQuery})
     } catch (e) {
         res.status(500).send(e)
     }
 });
+
+router.route('/searchPage/:id').get(async (req, res) => {
+    try {
+        findEvent = await eventQuerying.getEventById(req.params.id)
+        res.status(200).render('events/showEvent', {title: findEvent.title, event: findEvent})
+    } catch (e) {
+        res.status(500).send(e)
+    }
+})
 
 
 /* /events/create */

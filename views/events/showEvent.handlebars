@@ -1,0 +1,32 @@
+<article>
+    <h1>{{event.title}}</h1>
+    <section>
+        <dt>Owner(s):</dt>
+        <dd>
+            <ul>
+                {{#each event.owners}}
+                <li>{{this}}</li>
+                {{/each}}
+            </ul>
+        </dd>
+        <dt>Description:</dt>
+        <dd>{{event.description}}</dd>
+        <dt>Priority:</dt>
+        <dd>{{event.priority}}</dd>
+        <dt>Deadline:</dt>
+        <dd>{{event.deadline}}</dd>
+        <dt>Comments:</dt>
+        <dd>
+            <ul>
+                {{#each event.comments}}
+                <dt>Owner:</dt>    
+                <dd>{{this.owner}}</dd>
+                <dt>Comment:</dt>
+                <dd>{{this.comment}}</dd>
+                <dt>Created On:</dt>
+                <dd>{{this.createdOn}}</dd>
+                {{/each}}
+            </ul>
+        </dd>
+    </section>
+</article>

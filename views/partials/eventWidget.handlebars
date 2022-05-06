@@ -1,63 +1,56 @@
 {{!
-    To use this partial, pass in these arguments into the render:
-    {
-        titleExists: event.title.trim().length > 0,
-        descExists: event.description.trim().length > 0,
-        noCommentsExist: !event.comments.length,
-        showView: true/false,   // true -> shows 'View' link that redirects to /event/view/{eventId}
-        showEdit: true/false,   // true -> shows 2 'Edit' links that redirects to /event/edit/{eventId} and /event/edit/{eventId}/comments
-        showDelete: true/false, // true -> shows 'Delete' link that redirects to /event/delete/{eventId}
-        event // use 'event = convertApi.prettifyEvent(event, true/false)' so the event renders properly. The true/false arg determines whether comments are displayed with a link to delete the comment
-    }
+    To use this partial, pass in an eventView into the render
+    Use 'eventView = convertApi.eventToEventView(...)' using the event to get the eventView
+    Make sure to do 'event = convertApi.prettifyEvent(...)' so the event renders properly
 }}
 
 <article class='event-widget center-element'>
     <div class='event-flex-container event-flex-container-center-align'>
-        {{#if titleExists}}
-            <h2 class='event-title'>{{{event.title}}}</h2>
+        {{#if eventView.titleExists}}
+            <h2 class='event-title'>{{{eventView.event.title}}}</h2>
         {{else}}
             <h2 class='event-title italics'>(No Title)</h2>
         {{/if}}
         <span class='event-flex-container event-flex-container-center-align'>
-            {{#if showView}}
-                <a class='event-gear' href='/events/view/{{event._id}}'>View</a>
+            {{#if eventView.showView}}
+                <a class='event-gear' href='/events/view/{{eventView.event._id}}'>View</a>
             {{/if}}
-            {{#if showEdit}}
-                <a class='event-gear' href='/events/edit/{{event._id}}'>Edit</a>
+            {{#if eventView.showEdit}}
+                <a class='event-gear' href='/events/edit/{{eventView.event._id}}'>Edit</a>
             {{/if}}
-            {{#if showDelete}}
-                <a class='event-gear' href='/events/delete/{{event._id}}'>Delete</a>
+            {{#if eventView.showDelete}}
+                <a class='event-gear' href='/events/delete/{{eventView.event._id}}'>Delete</a>
             {{/if}}
         </span>
     </div>
 
     <div class='event-flex-container event-flex-container-right-align'>
-        {{#if descExists}}
-            <p class='event-post'>{{{event.description}}}</p>
+        {{#if eventView.descExists}}
+            <p class='event-post'>{{{eventView.event.description}}}</p>
         {{else}}
             <p class='event-post italics'>(No Description)</p>
         {{/if}}
     </div>
 
-    <span>Priority: {{event.priority}}</span><br />
-    <span>Deadline: {{event.deadline}}</span>
+    <span>Priority: {{eventView.event.priority}}</span><br />
+    <span>Deadline: {{eventView.event.deadline}}</span>
 
     <div class='event-comment-container'>
         <div class='event-flex-container event-flex-container-center-align'>
             <h2>Comments:</h2>
-            {{#if showEdit}}
+            {{#if eventView.showEdit}}
                 <a
                     class='event-gear'
-                    href='/events/edit/{{event._id}}/comments'
+                    href='/events/edit/{{eventView.event._id}}/comments'
                 >Edit</a>
             {{/if}}
         </div>
 
         <div class='event-flex-container event-flex-container-right-align'>
-            {{#if noCommentsExist}}
+            {{#if eventView.noCommentsExist}}
                 <p class='event-post italics'>(No Comments)</p>
             {{else}}
-                {{#each event.comments}}
+                {{#each eventView.event.comments}}
                     {{> commentWidget params=this}}
                 {{/each}}
             {{/if}}

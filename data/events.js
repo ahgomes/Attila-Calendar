@@ -2,6 +2,7 @@ const mongoCollections = require('../config/mongoCollections');
 const events = mongoCollections.events;
 
 const { ObjectId } = require('mongodb');
+const calendarsApi = require('./calendars');
 const validateApi = require('./validate');
 
 module.exports = {
@@ -88,6 +89,7 @@ module.exports = {
      * @async
      *
      * @param {string} owner The username of the event owner
+     * @param {string} calendarId The id of the calendar
      * @param {string} title The title of the event
      * @param {string} description The description of the event
      * @param {number} priority The event's priority from 1-5 inclusive
@@ -95,20 +97,34 @@ module.exports = {
      *
      * @returns {Promise<Object>} Returns the created event. See getEventById() for the full event schema
      *
+     * @throws Errors when {owner} is not a string, or is an empty string
+     * @throws Errors when {calendarId} is not a string, or is an empty string
+     * @throws Errors when {calendarId} is an invalid object id
+     * @throws Errors when {owner} does not have access to {calendarId}
      * @throws Errors when {title} is not a string, or is an empty string, or is more than 300 characters
      * @throws Errors when {description} is not a string, or is an empty string, or is more than 2000 characters
      * @throws Errors when {priority} is not a finite integer in the range 1-5 inclusive
      * @throws Errors when {deadline} is not a date object, or if the date is invalid
      * @throws Errors when the event cannot be created
      */
-    async createNewEvent(owner, title, description, priority, deadline) {
-        validateApi.checkNumberOfArgs(arguments.length, 5, 5);
+    async createNewEvent(
+        owner,
+        calendarId,
+        title,
+        description,
+        priority,
+        deadline
+    ) {
+        validateApi.checkNumberOfArgs(arguments.length, 6, 6);
 
         owner = validateApi.isValidString(owner, true).toLowerCase();
+        calendarId = validateApi.isValidString(calendarId, true);
         title = validateApi.isValidString(title, true);
         description = validateApi.isValidString(description, false);
         priority = validateApi.isValidNumber(priority, true);
         deadline = validateApi.isValidDate(deadline);
+
+        const calendar = await calendarsApi.getCalendarById(calendarId, owner);
 
         if (title.length > 300)
             throw `Error: Title cannot exceed 300 characters. (${title.length} characters detected)`;
@@ -132,7 +148,15 @@ module.exports = {
         if (!insertInfo.acknowledged || !insertInfo.insertedId)
             throw `Error: Could not create the event.`;
 
-        return await this.getEventById(insertInfo.insertedId.toString(), owner);
+        const eventId = insertInfo.insertedId.toString();
+
+        await calendarsApi.addEventById(
+            calendar._id.toString(),
+            eventId,
+            owner
+        );
+
+        return await this.getEventById(eventId, owner);
     },
 
     /**

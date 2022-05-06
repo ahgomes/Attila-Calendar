@@ -272,6 +272,7 @@ main {
     width: 300px;
     padding: 10px;
     border: 2px solid black;
+    box-sizing: border-box;
 }
 
 .event-form-require {

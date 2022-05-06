@@ -3,7 +3,6 @@ const router = express.Router();
 const xss = require('xss');
 
 const data = require('../data');
-const { getEventById } = require('../data/events');
 const usersApi = data.usersApi;
 const eventsApi = data.eventsApi;
 const convertApi = data.convertApi;
@@ -24,7 +23,7 @@ router.route('/').get((req, res) => {
 router.route('/searchPage').post(async (req, res) => {
     try {
         eventSearch = req.body
-        console.log("eventSearch:", eventSearch)
+        // console.log("eventSearch:", eventSearch)
  
         if (eventSearch.searchOption == "User") {
             eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm)
@@ -41,7 +40,7 @@ router.route('/searchPage').post(async (req, res) => {
         // else {
         //     eventQuery = "Sorry, no events could be found."
         // }
-        console.log("eventQuery: ", eventQuery)
+        // console.log("eventQuery: ", eventQuery)
 
         res.status(200).render('events/searchEvents', {title: "Events Found", eventSearch: eventSearch.searchTerm, events: eventQuery})
     } catch (e) {

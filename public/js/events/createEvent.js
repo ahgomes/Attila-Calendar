@@ -1,13 +1,15 @@
 (function ($) {
     const DOMform = $('#create-event-form');
 
-    const DOMtitle = $('#input-title'),
+    const DOMcalendar = $('#input-calendar'),
+        DOMtitle = $('#input-title'),
         DOMdesc = $('#input-desc'),
         DOMpriority = $('#input-priority'),
         DOMdate = $('#input-date'),
         DOMtime = $('#input-time');
 
-    const DOMtitleError = $('#input-title-error'),
+    const DOMcalendarError = $('#input-calendar-error'),
+        DOMtitleError = $('#input-title-error'),
         DOMdescError = $('#input-desc-error'),
         DOMpriorityError = $('#input-priority-error'),
         DOMdateError = $('#input-date-error'),
@@ -16,11 +18,22 @@
     DOMform.submit(function (e) {
         let noErrors = true;
 
-        let titleValue = null,
+        let calendarValue = null,
+            titleValue = null,
             descValue = null,
             priorityValue = null,
             dateValue = null,
             timeValue = null;
+
+        try {
+            if (!DOMcalendar.val())
+                throw `Error: Calendar must to have a selected value.`;
+            calendarValue = validateApi.isValidString(DOMcalendar.val(), true);
+            DOMcalendarError.text('').hide();
+        } catch (e) {
+            noErrors = false;
+            DOMcalendarError.text(e).show();
+        }
 
         try {
             titleValue = validateApi.isValidString(DOMtitle.val(), true);

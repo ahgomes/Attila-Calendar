@@ -3,7 +3,6 @@ const router = express.Router();
 const xss = require('xss');
 
 const data = require('../data');
-const { getEventById } = require('../data/events');
 const usersApi = data.usersApi;
 const calendarsApi = data.calendarsApi;
 const eventsApi = data.eventsApi;
@@ -22,23 +21,29 @@ router.route('/').get((req, res) => {
 /* MY CODE /events/search */
 router.route('/searchPage').post(async (req, res) => {
     try {
-        eventSearch = req.body
-        eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm)
-        res.status(200).render('events/searchEvents', {title: "Events Found", eventSearch: eventSearch.searchTerm, events: eventQuery})
+        eventSearch = req.body;
+        eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm);
+        res.status(200).render('events/searchEvents', {
+            title: 'Events Found',
+            eventSearch: eventSearch.searchTerm,
+            events: eventQuery,
+        });
     } catch (e) {
-        res.status(500).send(e)
+        res.status(500).send(e);
     }
 });
 
 router.route('/searchPage/:id').get(async (req, res) => {
     try {
-        findEvent = await eventQuerying.getEventById(req.params.id)
-        res.status(200).render('events/showEvent', {title: findEvent.title, event: findEvent})
+        findEvent = await eventQuerying.getEventById(req.params.id);
+        res.status(200).render('events/showEvent', {
+            title: findEvent.title,
+            event: findEvent,
+        });
     } catch (e) {
-        res.status(500).send(e)
+        res.status(500).send(e);
     }
-})
-
+});
 
 /* /events/create */
 

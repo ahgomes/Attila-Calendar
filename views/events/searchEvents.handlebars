@@ -1,0 +1,13 @@
+<article>
+    <h1>Events Found</h1>
+    <h2>Search Term: {{eventSearch}}</h2>
+    <section>
+        <ul>
+            {{#each events}}
+            <li>
+                <a href = "/events/searchPage/{{this._id}}">{{this.title}}</a>
+            </li>
+            {{/each}}
+        </ul>
+    </section>
+</article>

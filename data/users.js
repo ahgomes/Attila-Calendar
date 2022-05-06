@@ -165,7 +165,7 @@ module.exports = {
         if (user == null) throw new Error("Either the username or password is invalid");
         //bcrypt to compare hashed password from db and given db
         try {
-            comparePasswords = await bcrypt.compare(password, user.password);
+            comparePasswords = await bcrypt.compare(password, user.hashed_password);
           } catch (e) {
             throw new Error('bcrypt failed');
           }
@@ -176,14 +176,19 @@ module.exports = {
     /**
      * Gets the logged-in user.
      *
-     * @returns {Object} Returns the user in the form {username: 'string', first_name: 'string', last_name: 'string'} if the user is currently logged-in
+     * @returns {Object} Returns the user object if the user is currently logged-in
      *
      * @throws Errors when the there is no user logged-in
      *
      * @todo IMPLEMENT FUNCTION
      */
-    getLoggedinUser() {
+    async getLoggedinUser(req) {
         // TODO
-        return { username: 'foobar', first_name: 'Foo', last_name: 'Bar' };
+        const username = req.session.user;
+        if (username == null) throw new Error("There is no user logged in");
+        const userCollection = await users();
+        const user =  await userCollection.findOne({'username': username});
+        if (user == null) throw new Error("Failed to get user");
+        return user;
     },
 };

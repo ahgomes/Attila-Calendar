@@ -21,7 +21,6 @@ router
     let password = xss(req.body.password);
     let first_name = xss(req.body.first_name);
     let last_name = xss(req.body.last_name);
-    console.log(username);
     try {
         validate.isValidString(username, true);
         validate.isValidString(password, true);
@@ -32,20 +31,20 @@ router
         validate.checkUsername(username);
         validate.checkPassword(password);
     }catch (e) {
-        res.render('other/signup', {title: 'signup', errorMsg: `Error: ${e}`});
+        res.render('other/signup', {title: 'signup', errorMsg: e});
         return;
     }
     try{
-        let inserted = await usersData.createUser(username, password);
+        let inserted = await usersData.createUser(username, password, first_name, last_name);
         if (inserted.userInserted == true){
             res.redirect('/user');
             return;
         }else{
-            res.status(500).render('other/error', {title: 'Error',errorMsg: `Error: ${e}`});
+            res.status(500).render('other/error', {title: 'Error',errorMsg: e});
             return;
         }
     }catch(e){
-        res.status(400).render('users/signup', {title: 'signup', errorMsg: `Error: ${e}`});
+        res.status(400).render('other/signup', {title: 'signup', errorMsg: e});
         return;
     }
   });
@@ -69,12 +68,12 @@ router
             res.redirect('/user');
             return;
         }else{
-            res.status(400).render('other/login', {title: 'signup',errorMsg: `Error: ${e}`});
+            res.status(400).render('other/login', {title: 'signup',errorMsg: e});
             return;
         }
         
     } catch (e) {
-        res.status(400).render('other/login', {title: 'signup',errorMsg: `Error: ${e}`});
+        res.status(400).render('other/login', {title: 'signup',errorMsg: e});
         return;
     }
   });
@@ -108,7 +107,7 @@ router
         validate.isValidString(first_name, true);
         validate.isValidString(last_name, true);
     }catch (e) {
-        res.render('other/changeName', {title: 'Change Name', errorMsg: `Error: ${e}`});
+        res.render('other/changeName', {title: 'Change Name', errorMsg: e});
         return;
     }
     try{
@@ -117,11 +116,11 @@ router
             res.redirect('/user');
             return;
         }else{
-            res.status(500).render('other/error', {title: 'Error',errorMsg: `Error: ${e}`});
+            res.status(500).render('other/error', {title: 'Error',errorMsg: e});
             return;
         }
     }catch(e){
-        res.status(400).render('other/changeName', {title: 'Change Name', errorMsg: `Error: ${e}`});
+        res.status(400).render('other/changeName', {title: 'Change Name', errorMsg: e});
         return;
     }
   });
@@ -145,7 +144,7 @@ router
         new_username = new_username.trim();
         validate.checkUsername(new_username);
     }catch (e) {
-        res.render('other/changeUsername', {title: 'Change Username', errorMsg: `Error: ${e}`});
+        res.render('other/changeUsername', {title: 'Change Username', errorMsg: e});
         return;
     }
     try{
@@ -154,11 +153,11 @@ router
             res.redirect('/user');
             return;
         }else{
-            res.status(500).render('other/error', {title: 'Error',errorMsg: `Error: ${e}`});
+            res.status(500).render('other/error', {title: 'Error',errorMsg: e});
             return;
         }
     }catch(e){
-        res.status(400).render('other/changeUsername', {title: 'Change Username', errorMsg: `Error: ${e}`});
+        res.status(400).render('other/changeUsername', {title: 'Change Username', errorMsg: e});
         return;
     }
   });
@@ -180,7 +179,7 @@ router
         validate.isValidString(password, true);
         validate.checkPassword(password);
     }catch (e) {
-        res.render('other/changePassword', {title: 'Change Password', errorMsg: `Error: ${e}`});
+        res.render('other/changePassword', {title: 'Change Password', errorMsg: e});
         return;
     }
     try{
@@ -189,11 +188,11 @@ router
             res.redirect('/user');
             return;
         }else{
-            res.status(500).render('other/error', {title: 'Error', errorMsg: `Error: ${e}`});
+            res.status(500).render('other/error', {title: 'Error', errorMsg: e});
             return;
         }
     }catch(e){
-        res.status(400).render('other/changePassword', {title: 'Change Password', errorMsg: `Error: ${e}`});
+        res.status(400).render('other/changePassword', {title: 'Change Password', errorMsg: e});
         return;
     }
   });

@@ -32,6 +32,7 @@ app.engine(
     express_handlebars.engine({
         defaultLayout: 'main',
         partialsDir: ['views/partials/'],
+        helpers: { ifEqual: (arg1, arg2) => arg1 === arg2 },
     })
 );
 app.set('view engine', 'handlebars');

@@ -18,8 +18,7 @@ router.route('/').get((req, res) => {
     });
 });
 
-/* /events/search */
-// TODO: fix priority search (validation issue)
+/* /events/searchPage */
 
 router.route('/searchPage').post(async (req, res) => {
     try {
@@ -62,7 +61,8 @@ router.route('/searchPage').post(async (req, res) => {
     }
 });
 
-/* /events/search/{eventId} */
+/* /events/searchPage/{eventId} */
+// Will probably delete and use /view/{eventId} route instead
 
 router.route('/searchPage/:id').get(async (req, res) => {
     try {

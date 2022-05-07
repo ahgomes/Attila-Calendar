@@ -5,7 +5,7 @@
         <ul>
             {{#each events}}
             <li>
-                <a href = "/events/searchPage/{{this._id}}">{{this.title}}</a>
+                <a href = "/events/view/{{this._id}}">{{this.title}}</a>
             </li>
             {{/each}}
         </ul>
@@ -30,5 +30,5 @@
         {{/each}}
     </table>
 
-    <script></script>
+    <script>"/events/filterEventPriority.js"</script>
 </article>

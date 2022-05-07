@@ -30,3 +30,18 @@
         Create Event with Current Date
     </button>
 </form>
+
+
+<h1>All of Your Events (Full View)</h1>
+<div class='event-list-container-full'>
+    {{#each events}}
+        {{> eventWidget eventView=this}}
+    {{/each}}
+</div>
+
+<h1>All of Your Events (Compact View)</h1>
+<div class='event-list-container-compact'>
+    {{#each events}}
+        {{> eventWidgetCompact eventView=this}}
+    {{/each}}
+</div>

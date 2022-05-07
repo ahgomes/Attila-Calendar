@@ -35,7 +35,17 @@ router.route('/searchPage').post(async (req, res) => {
             eventQuery = await eventQuerying.searchByEventDate(eventSearch.searchTerm)
         }
         else if (eventSearch.searchOption == "Priority") {
-            eventQuery = await eventQuerying.filterEventPriority(eventSearch.searchTerm)
+            eventSearch.searchTerm = Number(eventSearch.searchTerm)
+            if (Number.isInteger(eventSearch.searchTerm)) {
+                eventSearch.searchTerm = parseInt(eventSearch.searchTerm)
+                if (eventSearch.searchTerm >= 1 && eventSearch.searchTerm <= 5) {
+                    eventQuery = await eventQuerying.filterEventPriority(eventSearch.searchTerm)
+                }
+            }
+            else {
+                return "Please enter a valid integer value between 1-5 for event priority."
+            }
+            
         }
         // else {
         //     eventQuery = "Sorry, no events could be found."
@@ -44,7 +54,7 @@ router.route('/searchPage').post(async (req, res) => {
 
         res.status(200).render('events/searchEvents', {title: "Events Found", eventSearch: eventSearch.searchTerm, events: eventQuery})
     } catch (e) {
-        res.status(500).send(e)
+        res.status(500).send(e.message)
     }
 });
 
@@ -52,11 +62,44 @@ router.route('/searchPage').post(async (req, res) => {
 
 router.route('/searchPage/:id').get(async (req, res) => {
     try {
-        findEvent = await eventQuerying.getEventById(req.params.id)
-        res.status(200).render('events/showEvent', {title: findEvent.title, event: findEvent})
+        accesor = validateApi
+            .isValidString(usersApi.getLoggedinUser().username, true)
+            .toLowerCase();
     } catch (e) {
-        res.status(500).send(e)
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
     }
+    
+    try {
+        findEvent = await eventQuerying.getEventById(req.params.id);
+    } catch (e) {
+        return res.status(403).render('other/error', {
+            title: 'Unexpected Error: (403)',
+            errorMsg: e,
+        });
+    }
+    
+    try {
+        findEvent = convertApi.prettifyEvent(findEvent, true, accesor);
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    return res.status(200).render('events/view', {
+        title: 'View an Event',
+        titleExists: findEvent.title.trim().length > 0,
+        descExists: findEvent.description.trim().length > 0,
+        noCommentsExist: !findEvent.comments.length,
+        showView: true,
+        showEdit: false,
+        showDelete: false,
+        findEvent,
+        })
 })
 
 /* /events/create */

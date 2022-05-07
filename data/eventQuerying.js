@@ -73,7 +73,7 @@ const filterEventDate = async function filterEventDate(date) {
 }
 
 const filterEventPriority = async function filterEventPriority(priority) {
-    priority = validateApi.isValidNumber(priority, true)
+    // priority = validateApi.isValidNumber(priority, true)
 
     const eventsCollection = await events()
     const findPriorityEvents = await eventsCollection.find({priority: {$eq: priority}}).toArray()

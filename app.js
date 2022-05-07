@@ -32,7 +32,13 @@ app.engine(
     express_handlebars.engine({
         defaultLayout: 'main',
         partialsDir: ['views/partials/'],
-        helpers: { ifEqual: (arg1, arg2) => arg1 === arg2 },
+        helpers: {
+            // what a savior https://stackoverflow.com/questions/34252817/handlebarsjs-check-if-a-string-is-equal-to-a-value
+            ifEqual: (arg1, arg2, options) =>
+                arg1.toString() === arg2.toString()
+                    ? options.fn(this)
+                    : options.inverse(this),
+        },
     })
 );
 app.set('view engine', 'handlebars');

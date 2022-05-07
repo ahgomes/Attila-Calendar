@@ -182,6 +182,7 @@ module.exports = {
         accesor = validateApi.isValidString(accesor, true).toLowerCase();
 
         const event = await this.getEventById(eventId, accesor);
+        await calendarsApi.getUserFromEventById(event._id.toString(), accesor);
 
         const eventsCollection = await events();
         const deleteInfo = await eventsCollection.deleteOne({
@@ -190,6 +191,8 @@ module.exports = {
 
         if (deleteInfo.deletedCount < 1)
             throw `Error: Could not delete the event with id '${eventId}'.`;
+
+        await calendarsApi.removeEventById(event._id.toString(), accesor);
 
         return event;
     },
@@ -364,17 +367,16 @@ module.exports = {
         const parsed_commentId = validateApi.isValidObjectId(commentId);
 
         const eventsCollection = await events();
-        const event = await eventsCollection.findOne({
-            'comments._id': parsed_commentId,
-        });
+        const event = await eventsCollection.findOne(
+            {
+                'comments._id': parsed_commentId,
+            },
+            { projection: { 'comments.$': 1 } }
+        );
 
         if (!event) return false;
 
-        const comment = event.comments.find(
-            ({ _id }) => _id.toString() === commentId
-        );
-
-        return comment !== null;
+        return true;
     },
 
     /**
@@ -400,9 +402,12 @@ module.exports = {
         accesor = validateApi.isValidString(accesor, true).toLowerCase();
 
         const eventsCollection = await events();
-        const event = await eventsCollection.findOne({
-            'comments._id': parsed_commentId,
-        });
+        const event = await eventsCollection.findOne(
+            {
+                'comments._id': parsed_commentId,
+            },
+            { projection: { owners: 1, 'comments.$': 1 } }
+        );
 
         if (!event)
             throw `Error: Could not find an event containing the user comment with comment id '${commentId}'.`;
@@ -410,14 +415,7 @@ module.exports = {
         if (!this.isAuthorized(accesor, event.owners))
             throw `Error: User '${accesor}' is not authorized to access the event with id '${event._id.toString()}'.`;
 
-        const comment = event.comments.find(
-            ({ _id }) => _id.toString() === commentId
-        );
-
-        if (!comment)
-            throw `Error: Could not find a user comment with id '${commentId}'.`;
-
-        return comment;
+        return event.comments[0];
     },
 
     /**

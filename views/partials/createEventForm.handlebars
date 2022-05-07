@@ -16,7 +16,7 @@
             class='event-input-fill'
         >
             {{#each calendarView.values}}
-                <option value='{{this._id}}' {{#ifEqual calendarView.value this._id}}{{/ifEqual}}>{{this.title}}</option>
+                <option value='{{this._id}}' {{#ifEqual ../calendarView.value this._id}}selected{{/ifEqual}}>{{this.title}}</option>
             {{/each}}
         </select>
     </div>

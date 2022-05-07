@@ -54,7 +54,7 @@ router.route('/create').get(async (req, res) => {
         deadline = null;
 
     try {
-        calendars = await usersApi.getLoggedinUser().calendars;
+        calendars = (await usersApi.getLoggedinUser(req)).calendars;
     } catch (e) {
         return res.status(401).render('other/error', {
             title: 'Unexpected Error: (401)',
@@ -147,7 +147,7 @@ router.route('/create').post(async (req, res) => {
         event = null;
 
     try {
-        const loggedInUser = await usersApi.getLoggedinUser();
+        const loggedInUser = await usersApi.getLoggedinUser(req);
         owner = validateApi
             .isValidString(loggedInUser.username, true)
             .toLowerCase();
@@ -280,7 +280,7 @@ router.route('/edit/:eventId').get(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(await usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -356,7 +356,7 @@ router.route('/edit/:eventId').put(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(await usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -532,7 +532,7 @@ router.route('/view/:eventId').get(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(await usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -598,7 +598,7 @@ router.route('/edit/:eventId/comments').get(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(await usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -662,7 +662,7 @@ router.route('/edit/:eventId/comments').post(async (req, res) => {
 
     try {
         username = validateApi
-            .isValidString(await usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).json({ errorMsg: e });
@@ -737,7 +737,7 @@ router.route('/delete/:eventId').get(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(await usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -800,7 +800,7 @@ router.route('/delete/:eventId').delete(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(await usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -825,6 +825,7 @@ router.route('/delete/:eventId').delete(async (req, res) => {
 
     try {
         await eventsApi.getEventById(eventId, accesor);
+        await calendarsApi.getUserFromEventById(eventId, accesor);
     } catch (e) {
         return res.status(403).render('other/error', {
             title: 'Unexpected Error: (403)',
@@ -862,7 +863,7 @@ router.route('/delete/comment/:commentId').get(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(await usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -947,7 +948,7 @@ router.route('/delete/comment/:commentId').delete(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(await usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         if (isAjaxRequest) return res.status(401).json({ errorMsg: e });

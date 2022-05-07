@@ -4,6 +4,7 @@ const data = require('../data');
 const usersData = data.usersApi;
 const validate = data.validateApi;
 const xss = require('xss');
+const { getLoggedinUser } = require('../data/users');
 
 router
   .route('/signup')
@@ -54,7 +55,6 @@ router
   .post(async (req, res) => {
     let username = xss(req.body.username);
     let password = xss(req.body.password);
-    console.log(username);
     try {
         validate.isValidString(username, true);
         validate.isValidString(password, true);
@@ -96,7 +96,7 @@ router
         res.render('other/changeName', {title: 'Change Name'});
         return;
     }else{
-        res.redirect('/user/login');
+        res.redirect('/user');
         return;
     }
   })
@@ -124,43 +124,6 @@ router
         return;
     }
   });
-  
-  router
-  .route('/changeUsername')
-  .get(async (req, res) => {
-    if(req.session.user){
-        res.render('other/changeUsername', {title: 'Change Username'});
-        return;
-    }else{
-        res.redirect('/user/login');
-        return;
-    }
-  })
-  .post(async (req, res) => {
-    let new_username = xss(req.body.username);
-    try {
-        validate.isValidString(new_username, true);
-        new_username = new_username.toLowerCase();
-        new_username = new_username.trim();
-        validate.checkUsername(new_username);
-    }catch (e) {
-        res.render('other/changeUsername', {title: 'Change Username', errorMsg: e});
-        return;
-    }
-    try{
-        let updated = await usersData.changeUsername(req.session.user, new_username);
-        if (updated.usernameChanged == true){
-            res.redirect('/user');
-            return;
-        }else{
-            res.status(500).render('other/error', {title: 'Error',errorMsg: e});
-            return;
-        }
-    }catch(e){
-        res.status(400).render('other/changeUsername', {title: 'Change Username', errorMsg: e});
-        return;
-    }
-  });
 
   router
   .route('/changePassword')
@@ -169,7 +132,7 @@ router
         res.render('other/changePassword', {title: 'Change Password'});
         return;
     }else{
-        res.redirect('/user/login');
+        res.redirect('/user');
         return;
     }
   })
@@ -201,7 +164,8 @@ router
   .get(async (req,res) => {
       if(req.session.user){
           //res.redirect('/');
-          return res.render('other/user', {title: 'User Page',username: req.session.user});
+          user = await usersData.getLoggedinUser(req);
+          return res.render('other/user', {title: 'User Page', first_name: user.first_name, last_name: user.last_name, username: req.session.user});
       }else{
         //res.redirect('/user/login');
         res.status(200).render('other/login', {title: 'login'});
@@ -210,10 +174,5 @@ router
       
   });
 
-// router.route('/').get((req, res) => {
-//     return res.render('other/user', {
-//         title: 'User Page',
-//     });
-// });
 
 module.exports = router;

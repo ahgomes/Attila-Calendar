@@ -341,6 +341,11 @@ main {
     overflow-wrap: anywhere;
 }
 
+.comment-title {
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
 .event-priority-1 {
     background-color: #ff9f9f;
 }

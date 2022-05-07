@@ -271,7 +271,22 @@ main {
 .event-widget {
     width: 300px;
     padding: 10px;
+    margin-bottom: 10px;
     border: 2px solid black;
+    box-sizing: border-box;
+}
+
+.event-widget-compact-container {
+    color: black;
+    text-decoration: none;
+}
+
+.event-widget-compact {
+    width: 90%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 2px solid black;
+    border-radius: 10px;
     box-sizing: border-box;
 }
 
@@ -326,6 +341,22 @@ main {
     overflow-wrap: anywhere;
 }
 
+.event-priority-1 {
+    background-color: #ff9f9f;
+}
+.event-priority-2 {
+    background-color: #ffbd89;
+}
+.event-priority-3 {
+    background-color: #fffe9f;
+}
+.event-priority-4 {
+    background-color: #acff9f;
+}
+.event-priority-5 {
+    background-color: white;
+}
+
 .event-comment-container {
     padding-left: 5px;
     margin-top: 10px;
@@ -333,7 +364,8 @@ main {
     box-sizing: border-box;
 }
 
-.event-post {
+.event-post,
+.event-post-compact {
     white-space: pre-wrap;
     overflow-wrap: break-word;
     width: 100%;
@@ -342,6 +374,10 @@ main {
     background-color: lightgray;
     border-left: 2px dotted black;
     box-sizing: border-box;
+}
+
+.event-post-compact {
+    margin-bottom: 5px;
 }
 
 .comment-post-container {
@@ -361,6 +397,14 @@ main {
     padding-bottom: 10px;
     border-top: 2px solid black;
     border-bottom: 2px solid black;
+}
+
+.event-list-container-full {
+    width: 400px;
+}
+
+.event-list-container-compact {
+    width: 300px;
 }
 
 /* ------------------------------------------------------------------

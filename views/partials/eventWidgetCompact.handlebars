@@ -1,0 +1,35 @@
+{{!
+    To use this partial, pass in an eventView into the render
+    Use 'eventView = convertApi.eventToEventView(...)' using the event to get the eventView
+    Make sure to do 'event = convertApi.prettifyEvent(...)' so the event renders properly
+}}
+
+<a
+    class='event-widget-compact-container'
+    href='/events/view/{{eventView.event._id}}'
+>
+    <article
+        class='event-widget-compact {{eventView.priorityColor}} center-element'
+    >
+        <div class='event-flex-container event-flex-container-center-align'>
+            {{#if eventView.titleExists}}
+                <h2 class='event-title'>{{{eventView.event.title}}}</h2>
+            {{else}}
+                <h2 class='event-title italics'>(No Title)</h2>
+            {{/if}}
+            <span>
+                {{eventView.event.deadline}}
+            </span>
+        </div>
+
+        <div class='event-flex-container event-flex-container-right-align'>
+            {{#if eventView.descExists}}
+                <p
+                    class='event-post-compact'
+                >{{{eventView.event.description}}}</p>
+            {{else}}
+                <p class='event-post-compact italics'>(No Description)</p>
+            {{/if}}
+        </div>
+    </article>
+</a>

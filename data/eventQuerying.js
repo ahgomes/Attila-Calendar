@@ -72,7 +72,7 @@ const filterEventDate = async function filterEventDate(date) {
 
 }
 
-const filterEventPriority = async function filterEventPriority(priority) {
+const searchEventPriority = async function searchEventPriority(priority) {
     // priority = validateApi.isValidNumber(priority, true)
 
     const eventsCollection = await events()
@@ -87,7 +87,40 @@ const filterEventPriority = async function filterEventPriority(priority) {
     }
 }
 
-getEventById("626723e796b5e390a8ec9e85")
+const filterEventPriority = async function filterEventPriority(searchType, searchTerm, order) {
+    const eventsCollection = await events()
+    filterEvents = null;
+    // returns events in sorted order by priority
+    if (order === "asc") {
+        order = 1
+    } else {
+        order = -1
+    }
+    console.log(searchType, searchTerm, order)
+    console.log("before")
+    if (searchType === "User") {
+        filterEvents = await eventsCollection.find({owners: {$in: [searchTerm]}}).sort({priority: order}).toArray()
+    }
+    console.log("after")
+    console.log(filterEvents)
+    return filterEvents
+}
+
+// const filterEventPriorityAsc = async function filterEventPriorityAsc(priority) {
+//     const eventsCollection = await events()
+//     // return events in sorted order by ascending priority
+//     const sortedEvents = await eventsCollection.find({priority: {$eq: priority}}).sort({priority: 1}).toArray()
+//     return sortedEvents
+// }
+
+// const filterEventPriorityDesc = async function filterEventPriorityDesc(priority) {
+//     const eventsCollection = await events()
+//     // return events in sorted order by descending priority
+//     const sortedEvents = await eventsCollection.find({priority: {$eq: priority}}).sort({priority: -1}).toArray()
+//     return sortedEvents
+// }
+
+filterEventPriority("User", "adrian", "asc")
 
 module.exports = {
     getEventById,
@@ -95,5 +128,8 @@ module.exports = {
     searchEvents,
     searchByEventDate,
     filterEventDate,
+    searchEventPriority,
     filterEventPriority
+    // filterEventPriorityAsc,
+    // filterEventPriorityDesc
 };

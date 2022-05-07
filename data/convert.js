@@ -244,7 +244,7 @@ module.exports = {
     /**
      * Converts objects in an event into strings to make it more readable.
      *
-     * @param {Object} event The event to be pretiffied
+     * @param {Object} event The event to be prettified
      * @param {boolean} showDelete Determines whether comments are displayed with a link to delete the comment
      * @param {string} accesor The username of the user who wants to access the event
      *
@@ -272,8 +272,8 @@ module.exports = {
     /**
      * Converts objects in a comment into strings to make it more readable.
      *
-     * @param {Object} comment The comment to be pretiffied
-     * @param {boolean} showDelete Determines whether comments are displayed with a link to delete the comment
+     * @param {Object} comment The comment to be prettified
+     * @param {boolean} showDelete Determines whether comments are displayed with a link to delete itself
      * @param {string} accesor The username of the user who wants to access the comment
      *
      * @returns {Object} Returns the initial comment prettified
@@ -297,5 +297,39 @@ module.exports = {
             : showDelete;
 
         return comment;
+    },
+
+    /**
+     * Converts an event to an event view to be rendered in an event widget.
+     *
+     * @param {Object} event The event to be converted
+     * @param {boolean} showView Determines whether the event is displayed with a link to view itself
+     * @param {boolean} showEdit Determines whether the event is displayed with a link to edit itself
+     * @param {boolean} showDelete Determines whether the event is displayed with a link to delete itself
+     *
+     * @returns {Object} Returns the initial event as an event view
+     *
+     * @throws Errors when {event} is not an object, or is null
+     * @throws Errors when {showView} is not a boolean
+     * @throws Errors when {showEdit} is not a boolean
+     * @throws Errors when {showDelete} is not a boolean
+     */
+    eventToEventView(event, showView, showEdit, showDelete) {
+        validateApi.checkNumberOfArgs(arguments.length, 4, 4);
+
+        event = validateApi.isValidObject(event);
+        showView = validateApi.isValidBoolean(showView);
+        showEdit = validateApi.isValidBoolean(showEdit);
+        showDelete = validateApi.isValidBoolean(showDelete);
+
+        return {
+            titleExists: event.title.trim().length > 0,
+            descExists: event.description.trim().length > 0,
+            noCommentsExist: !event.comments.length,
+            showView,
+            showEdit,
+            showDelete,
+            event,
+        };
     },
 };

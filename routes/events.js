@@ -24,7 +24,34 @@ router.route('/').get((req, res) => {
 router.route('/searchPage').post(async (req, res) => {
     try {
         eventSearch = req.body;
-        eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm);
+
+        if (eventSearch.searchOption == "User") {
+            eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm)
+        }
+        else if (eventSearch.searchOption == "Title/Description") {
+            eventQuery = await eventQuerying.searchEvents(eventSearch.searchTerm)
+        }
+        else if (eventSearch.searchOption == "Date") {
+            eventQuery = await eventQuerying.searchByEventDate(eventSearch.searchTerm)
+        }
+        else if (eventSearch.searchOption == "Priority") {
+            eventSearch.searchTerm = Number(eventSearch.searchTerm)
+            if (Number.isInteger(eventSearch.searchTerm)) {
+                if (eventSearch.searchTerm >= 1 && eventSearch.searchTerm <= 5) {
+                    eventQuery = await eventQuerying.filterEventPriority(eventSearch.searchTerm)
+                }
+                else {
+                    return "Priority needs to be between 1 and 5"
+                }
+            }
+            else {
+                return "Priority needs to be a valid integer"
+            }
+        }
+        else {
+            return "Sorry, no events could be found."
+        }
+
         res.status(200).render('events/searchEvents', {
             title: 'Events Found',
             eventSearch: eventSearch.searchTerm,

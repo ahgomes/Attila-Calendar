@@ -326,6 +326,7 @@ module.exports = {
             titleExists: event.title.trim().length > 0,
             descExists: event.description.trim().length > 0,
             noCommentsExist: !event.comments.length,
+            priorityColor: `event-priority-${event.priority}`,
             showView,
             showEdit,
             showDelete,

@@ -18,3 +18,15 @@
 <p>Test text</p>
 
 <a href='/events/create'>Create an Event</a>
+
+<form action='/events/create' method='POST'>
+    <input name='_method' value='GET' hidden />
+
+    <input name='has_date' value='true' hidden />
+
+    <br />
+
+    <button type='submit'>
+        Create Event with Current Date
+    </button>
+</form>

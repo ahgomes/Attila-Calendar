@@ -7,6 +7,30 @@
     <h2>Create an Event</h2>
 
     <div class='event-flex-container'>
+        <label for='input-calendar'>
+            Calendar<span class='event-form-require'>*</span>:
+        </label>
+        <select
+            id='input-calendar'
+            name='input_calendar'
+            class='event-input-fill'
+        >
+            {{#each calendarView.values}}
+                <option value='{{this._id}}' {{#ifEqual ../calendarView.value this._id}}selected{{/ifEqual}}>{{this.title}}</option>
+            {{/each}}
+        </select>
+    </div>
+    {{#if calendarView.noError}}
+        <div id='input-calendar-error' class='event-form-error' hidden></div>
+    {{else}}
+        <div id='input-calendar-error' class='event-form-error'>
+            {{calendarView.errorMsg}}
+        </div>
+    {{/if}}
+
+    <br />
+
+    <div class='event-flex-container'>
         <label class='event-input-label' for='input-title'>
             Title<span class='event-form-require'>*</span>:
         </label>

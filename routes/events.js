@@ -3,8 +3,8 @@ const router = express.Router();
 const xss = require('xss');
 
 const data = require('../data');
-const { getEventById } = require('../data/events');
 const usersApi = data.usersApi;
+const calendarsApi = data.calendarsApi;
 const eventsApi = data.eventsApi;
 const convertApi = data.convertApi;
 const validateApi = data.validateApi;
@@ -21,36 +21,75 @@ router.route('/').get((req, res) => {
 /* MY CODE /events/search */
 router.route('/searchPage').post(async (req, res) => {
     try {
-        eventSearch = req.body
-        eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm)
-        res.status(200).render('events/searchEvents', {title: "Events Found", eventSearch: eventSearch.searchTerm, events: eventQuery})
+        eventSearch = req.body;
+        eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm);
+        res.status(200).render('events/searchEvents', {
+            title: 'Events Found',
+            eventSearch: eventSearch.searchTerm,
+            events: eventQuery,
+        });
     } catch (e) {
-        res.status(500).send(e)
+        res.status(500).send(e);
     }
 });
 
 router.route('/searchPage/:id').get(async (req, res) => {
     try {
-        findEvent = await eventQuerying.getEventById(req.params.id)
-        res.status(200).render('events/showEvent', {title: findEvent.title, event: findEvent})
+        findEvent = await eventQuerying.getEventById(req.params.id);
+        res.status(200).render('events/showEvent', {
+            title: findEvent.title,
+            event: findEvent,
+        });
     } catch (e) {
-        res.status(500).send(e)
+        res.status(500).send(e);
     }
-})
-
+});
 
 /* /events/create */
 
-router.route('/create').get((req, res) => {
+router.route('/create').get(async (req, res) => {
+    let { has_calendar, has_date } = req.body;
+
+    let calendars = null,
+        deadline = null;
+
+    try {
+        calendars = (await usersApi.getLoggedinUser(req)).calendars;
+    } catch (e) {
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        has_calendar = xss(has_calendar);
+        deadline =
+            xss(has_date).toLowerCase() === 'true'
+                ? convertApi.dateToDateString(new Date())
+                : '';
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    const calendarView = {
+        value: has_calendar,
+        values: calendars,
+        noError: true,
+    };
     const titleView = { value: '', noError: true };
     const descView = { value: '', noError: true };
     const priorityView = { value: '', noError: true };
-    const dateView = { value: '', noError: true };
+    const dateView = { value: deadline, noError: true };
     const timeView = { value: '', noError: true };
 
     return res.render('events/create', {
         title: 'Create an Event',
         scriptSource: '/public/js/events/createEvent.js',
+        calendarView,
         titleView,
         descView,
         priorityView,
@@ -60,9 +99,21 @@ router.route('/create').get((req, res) => {
 });
 
 router.route('/create').post(async (req, res) => {
-    let { input_title, input_desc, input_priority, input_date, input_time } =
-        req.body;
+    let {
+        input_calendar,
+        input_title,
+        input_desc,
+        input_priority,
+        input_date,
+        input_time,
+    } = req.body;
 
+    const calendarView = {
+        value: xss(input_calendar),
+        values: [],
+        noError: true,
+        errorMsg: null,
+    };
     const titleView = {
         value: xss(input_title),
         noError: true,
@@ -96,14 +147,24 @@ router.route('/create').post(async (req, res) => {
         event = null;
 
     try {
+        const loggedInUser = await usersApi.getLoggedinUser(req);
         owner = validateApi
-            .isValidString(usersApi.getLoggedinUser().username, true)
+            .isValidString(loggedInUser.username, true)
             .toLowerCase();
+        calendarView.values = loggedInUser.calendars;
     } catch (e) {
         return res.status(401).render('other/error', {
             title: 'Unexpected Error: (401)',
             errorMsg: e,
         });
+    }
+
+    try {
+        input_calendar = validateApi.isValidString(calendarView.value, true);
+        await calendarsApi.getCalendarById(input_calendar, owner);
+    } catch (e) {
+        calendarView.noError = false;
+        calendarView.errorMsg = e;
     }
 
     try {
@@ -151,6 +212,7 @@ router.route('/create').post(async (req, res) => {
     }
 
     if (
+        !calendarView.noError ||
         !titleView.noError ||
         !descView.noError ||
         !priorityView.noError ||
@@ -160,6 +222,7 @@ router.route('/create').post(async (req, res) => {
         return res.status(400).render('events/create', {
             title: 'Create an Event',
             scriptSource: '/public/js/events/createEvent.js',
+            calendarView,
             titleView,
             descView,
             priorityView,
@@ -181,6 +244,7 @@ router.route('/create').post(async (req, res) => {
     try {
         event = await eventsApi.createNewEvent(
             owner,
+            input_calendar,
             input_title,
             input_desc,
             input_priority,
@@ -216,7 +280,7 @@ router.route('/edit/:eventId').get(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -292,7 +356,7 @@ router.route('/edit/:eventId').put(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -454,7 +518,8 @@ router.route('/edit/:eventId').put(async (req, res) => {
 router.route('/view/:eventId').get(async (req, res) => {
     let eventId = null,
         accesor = null,
-        event = null;
+        event = null,
+        eventView = null;
 
     try {
         eventId = validateApi.isValidString(xss(req.params.eventId), true);
@@ -467,7 +532,7 @@ router.route('/view/:eventId').get(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -501,6 +566,7 @@ router.route('/view/:eventId').get(async (req, res) => {
 
     try {
         event = convertApi.prettifyEvent(event, false, accesor);
+        eventView = convertApi.eventToEventView(event, false, true, true);
     } catch (e) {
         return res.status(400).render('other/error', {
             title: 'Unexpected Error: (400)',
@@ -510,13 +576,7 @@ router.route('/view/:eventId').get(async (req, res) => {
 
     return res.render('events/view', {
         title: 'View an Event',
-        titleExists: event.title.trim().length > 0,
-        descExists: event.description.trim().length > 0,
-        noCommentsExist: !event.comments.length,
-        showView: false,
-        showEdit: true,
-        showDelete: true,
-        event,
+        eventView,
     });
 });
 
@@ -538,7 +598,7 @@ router.route('/edit/:eventId/comments').get(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -602,7 +662,7 @@ router.route('/edit/:eventId/comments').post(async (req, res) => {
 
     try {
         username = validateApi
-            .isValidString(usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).json({ errorMsg: e });
@@ -663,7 +723,8 @@ router.route('/edit/:eventId/comments').post(async (req, res) => {
 router.route('/delete/:eventId').get(async (req, res) => {
     let eventId = null,
         accesor = null,
-        event = null;
+        event = null,
+        eventView = null;
 
     try {
         eventId = validateApi.isValidString(xss(req.params.eventId), true);
@@ -676,7 +737,7 @@ router.route('/delete/:eventId').get(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -710,6 +771,7 @@ router.route('/delete/:eventId').get(async (req, res) => {
 
     try {
         event = convertApi.prettifyEvent(event, false, accesor);
+        eventView = convertApi.eventToEventView(event, false, false, false);
     } catch (e) {
         return res.status(400).render('other/error', {
             title: 'Unexpected Error: (400)',
@@ -719,13 +781,7 @@ router.route('/delete/:eventId').get(async (req, res) => {
 
     return res.render('events/deleteEvent', {
         title: 'Delete an Event',
-        titleExists: event.title.trim().length > 0,
-        descExists: event.description.trim().length > 0,
-        noCommentsExist: !event.comments.length,
-        showView: false,
-        showEdit: false,
-        showDelete: false,
-        event,
+        eventView,
     });
 });
 
@@ -744,7 +800,7 @@ router.route('/delete/:eventId').delete(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -769,6 +825,7 @@ router.route('/delete/:eventId').delete(async (req, res) => {
 
     try {
         await eventsApi.getEventById(eventId, accesor);
+        await calendarsApi.getUserFromEventById(eventId, accesor);
     } catch (e) {
         return res.status(403).render('other/error', {
             title: 'Unexpected Error: (403)',
@@ -806,7 +863,7 @@ router.route('/delete/comment/:commentId').get(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         return res.status(401).render('other/error', {
@@ -865,11 +922,11 @@ router.route('/delete/comment/:commentId').delete(async (req, res) => {
         comment = null,
         accesor = null;
 
-    let { isAjaxRequest } = req.body;
+    let isAjaxRequest = xss(req.body.isAjaxRequest);
 
     try {
         isAjaxRequest = validateApi.isValidBoolean(
-            xss(isAjaxRequest).toLowerCase() === 'true'
+            isAjaxRequest.toLowerCase() === 'true'
         );
     } catch (e) {
         return res.status(400).render('other/error', {
@@ -891,7 +948,7 @@ router.route('/delete/comment/:commentId').delete(async (req, res) => {
 
     try {
         accesor = validateApi
-            .isValidString(usersApi.getLoggedinUser().username, true)
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
             .toLowerCase();
     } catch (e) {
         if (isAjaxRequest) return res.status(401).json({ errorMsg: e });

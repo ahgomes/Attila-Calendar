@@ -138,7 +138,7 @@ module.exports = {
         const userCollection = await users();
         const user = await userCollection.findOne({ username: username });
         if (user == null) throw new Error('No user with that username exists');
-
+        console.log(user);
         let newUser = {
             username: user.username,
             first_name: first_name,

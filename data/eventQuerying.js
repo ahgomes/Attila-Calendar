@@ -12,7 +12,7 @@ const getEventById = async function getEventById(id) {
 
     const eventCollection = await events();
     const event = await eventCollection.findOne({ _id: ObjectId(id) });
-    console.log(event)
+    // console.log(event)
     return event
 }
 
@@ -22,7 +22,7 @@ const listUserEvents = async function listUserEvents(username) {
     const eventsCollection = await events()
     const listEvents = await eventsCollection.find({owners: {$in: [username]}}).toArray()
 
-    console.log(listEvents)
+    // console.log(listEvents)
     if (listEvents.length > 0) {
         return listEvents
     }
@@ -43,7 +43,7 @@ const searchEvents = async function searchEvents(text) {
     // textIndex = await eventsCollection.createIndex({title: 1, description: 1}, {collation: {locale: 'en', strength: 2}})
     // const findEvents = await eventsCollection.find({$text: {$search: text}}).collation({locale: 'en', strength: 2}).toArray()
 
-    console.log(findEvents)
+    // console.log(findEvents)
     if (findEvents.length > 0) {
         return findEvents
     }
@@ -53,7 +53,7 @@ const searchEvents = async function searchEvents(text) {
 }
 
 // Need to find a way to format the date properly
-const filterEventDate = async function filterEventDate(deadline) {
+const searchByEventDate = async function searchByEventDate(deadline) {
     deadline = validateApi.isValidDate(deadline)
     
     const eventsCollection = await events()
@@ -68,8 +68,12 @@ const filterEventDate = async function filterEventDate(deadline) {
     }
 }
 
+const filterEventDate = async function filterEventDate(date) {
+
+}
+
 const filterEventPriority = async function filterEventPriority(priority) {
-    priority = validateApi.isValidNumber(priority, true)
+    // priority = validateApi.isValidNumber(priority, true)
 
     const eventsCollection = await events()
     const findPriorityEvents = await eventsCollection.find({priority: {$eq: priority}}).toArray()
@@ -89,6 +93,7 @@ module.exports = {
     getEventById,
     listUserEvents,
     searchEvents,
+    searchByEventDate,
     filterEventDate,
     filterEventPriority
 };

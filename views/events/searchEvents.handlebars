@@ -5,9 +5,30 @@
         <ul>
             {{#each events}}
             <li>
-                <a href = "/events/searchPage/{{this._id}}">{{this.title}}</a>
+                <a href = "/events/view/{{this._id}}">{{this.title}}</a>
             </li>
             {{/each}}
         </ul>
     </section>
+
+    <table id="eventsTable">
+        <tr>
+            <th>Title</th>
+            <th>Owner(s)</th>
+            <th>Description</th>
+            <th onclick="sortTable(3)">Priority</th>
+            <th>Deadline</th>
+        </tr>
+        {{#each events}}
+        <tr>
+            <td><a href = "/events/searchPage/{{this._id}}">{{this.title}}</a></td>
+            <td>{{this.owners}}</td>
+            <td>{{this.description}}</td>
+            <td>{{this.priority}}</td>
+            <td>{{this.deadline}}</td>
+        </tr>
+        {{/each}}
+    </table>
+
+    <script>"/events/filterEventPriority.js"</script>
 </article>

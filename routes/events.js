@@ -13,9 +13,43 @@ const eventQuerying = data.eventQuerying;
 
 /* /events */
 
-router.route('/').get((req, res) => {
+router.route('/').get(async (req, res) => {
+    let owner = null,
+        events = null;
+
+    try {
+        owner = validateApi
+            .isValidString((await usersApi.getLoggedinUser(req)).username, true)
+            .toLowerCase();
+    } catch (e) {
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        events = await eventQuerying.listUserEvents(owner);
+        if (Array.isArray(events)) {
+            events = events.map((elem) =>
+                convertApi.eventToEventView(
+                    convertApi.prettifyEvent(elem, false, owner),
+                    true,
+                    false,
+                    false
+                )
+            );
+        }
+    } catch (e) {
+        return res.status(500).render('other/error', {
+            title: 'Unexpected Error: (500)',
+            errorMsg: e,
+        });
+    }
+
     return res.render('events/main', {
         title: 'Events Page',
+        events,
     });
 });
 

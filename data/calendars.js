@@ -45,9 +45,7 @@ module.exports = {
 
         const usersCollection = await users();
         const user = await usersCollection.findOne(
-            {
-                'calendars._id': parsed_calendarId,
-            },
+            { 'calendars._id': parsed_calendarId },
             { projection: { username: 1, 'calendars.$': 1 } }
         );
 
@@ -163,9 +161,7 @@ module.exports = {
         const updateInfo = await usersCollection.updateMany(
             { 'calendars.events': { $all: [parsed_eventId] } },
             { $pull: { 'calendars.$[elem].events': parsed_eventId } },
-            {
-                arrayFilters: [{ 'elem.events': { $all: [parsed_eventId] } }],
-            }
+            { arrayFilters: [{ 'elem.events': { $all: [parsed_eventId] } }] }
         );
 
         if (updateInfo.modifiedCount < 1)

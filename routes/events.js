@@ -114,9 +114,9 @@ router.route('/searchPage/:id').get(async (req, res) => {
 
 router.route('/searchpage/filterPriority').post(async (req, res) => {
     try {
-        console.log(req.body)
-        filterEvents = await eventQuerying.filterEventPriority(req.body.searchOption, req.body.searchTerm, req.body.priorityOrder)
-        console.log(filterEvents)
+        console.log("Route:", req.body)
+        filterEvents = await eventQuerying.filterEventPriority(req.body.eventSearchOption, req.body.eventSearchTerm, req.body.priorityOrder)
+ 
         res.status(200).render('events/searchEvents', {
             title: 'Events Found',
             eventSearchTerm: req.body.eventSearchTerm,

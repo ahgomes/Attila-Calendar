@@ -96,13 +96,13 @@ const filterEventPriority = async function filterEventPriority(searchType, searc
     } else {
         order = -1
     }
-    console.log(searchType, searchTerm, order)
-    console.log("before")
+
+    console.log("Database Query:", searchType, searchTerm, order)
+
     if (searchType === "User") {
         filterEvents = await eventsCollection.find({owners: {$in: [searchTerm]}}).sort({priority: order}).toArray()
     }
-    console.log("after")
-    console.log(filterEvents)
+
     return filterEvents
 }
 

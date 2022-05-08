@@ -8,9 +8,7 @@ const constructorMethod = (app) => {
     app.use('/user', userRoute);
 
     app.route('/').get((req, res) => {
-        return res.render('other/home', {
-            title: 'Home Page',
-        });
+        return res.redirect('/calendar');
     });
 
     app.use('*', (req, res) => {

@@ -184,7 +184,8 @@ main {
 
 /* event block */
 #cal .row .cell .events li,
-#day .events li {
+#day .events li,
+#event-panel .events li {
     padding: 5px 10px;
     border-radius: 2px;
     margin-bottom: 5px;
@@ -192,7 +193,8 @@ main {
 }
 
 #cal .row .cell .events li a,
-#day .events li a {
+#day .events li a,
+#event-panel .events li a {
     font-size: 12px;
     color: var(--black);
     text-decoration: none;
@@ -272,6 +274,14 @@ main {
     border: 1px solid var(--grey);
     box-sizing: border-box;
     background: var(--white);
+}
+
+#event-panel #day-panel-head #event-panel-date {
+    display: inline;
+    font-size: 24px;
+    margin: 0;
+    float: left;
+    line-height: 32px;
 }
 
 /* ------------------------------------------------------------------

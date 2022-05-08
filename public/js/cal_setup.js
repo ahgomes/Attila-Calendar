@@ -38,14 +38,6 @@ let current = new Date();
 
 let events = event_list.map(convert_format);
 
-function get_events() {
-
-}
-
-function get_events_from(start, end) {
-
-}
-
 function create_thgroup() {
     let group = $('<div>').addClass('th-group');
 
@@ -153,6 +145,27 @@ function fill_events(event_data) {
     });
 }
 
+function fill_event_list (event_data) {
+    let msPerDay = 24 * 60 * 60 * 1000;
+    $.each(event_data, (i, el) => {
+        if((el.deadline.getTime() - TODAY.getTime()) / msPerDay <= 7) {
+            $('<li>')
+                .addClass(`event-priority-${el.priority}`)
+                .html(`<a href="/events/view/${el._id}">
+                    ${el.title} - ${deadline.toLocaleDateString('en-us', {
+                        weekday: 'short',
+                        month: 'long',
+                        day: '2-digit',
+                        year: 'numeric'
+                    })}
+                    </a>`)
+                .appendTo(`#event-panel .events`)
+        }    
+    });
+    $('#event-panel #event-panel-head #event-panel-date').text(curr.toLocaleDateString('en-us', {
+        weekday: 'long', year: 'numeric', month: 'long', day: '2-digit'}));
+}
+
 function update_cal(date) {
     $('#cal .row').remove();
     fill_cal(date);
@@ -197,5 +210,6 @@ $(document).on('click','#cal .row .cell h2', (e => {
 
 $(document).ready(_ => {
     create_thgroup();
+    fill_event_list(event_list);
     fill_cal(current);
 });

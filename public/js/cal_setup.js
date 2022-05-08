@@ -109,7 +109,8 @@ function fill_cal(curr) {
     for (; i < (row_count + 1) * 7; i++) {
         let cell = $(`#td-${(i < 7 ? '0' : '') + i.toString(7)}`);
         cell.attr('data-date', `${str_part}-${(date < 10 ? '0' + date : date)}`)
-            .prepend($('<h2>').text(date));
+            .prepend($('<h2>').text(date).attr('title', 'open expanded day view')
+);
 
         if (i < curr_start) cell.addClass('last');
         else if (i >= curr_start + curr_end) cell.addClass('next');
@@ -189,6 +190,14 @@ $('#btn-next').click(_ => {
 $('#day #day-panel-head #day-panel-close').click(_ => {
     $('#day').hide();
 })
+
+$(document).on('submit', '#day form', (e => {
+    let date = e.target
+                .parentElement
+                .firstElementChild.firstElementChild
+                .innerText;
+    $('#day form input[name="date"]').val(date);
+}));
 
 $(document).on('click','#cal .row .cell h2', (e => {
     let event_ol = e.target.parentElement.lastChild; // get events list

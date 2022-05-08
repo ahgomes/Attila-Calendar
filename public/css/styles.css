@@ -186,15 +186,16 @@ main {
 #cal .row .cell .events li,
 #day .events li,
 #event-panel .events li {
-    padding: 5px 10px;
-    border-radius: 2px;
     margin-bottom: 5px;
-    font-size: 12px;
+    border-radius: 2px;
+    overflow-wrap: anywhere;
 }
 
 #cal .row .cell .events li a,
 #day .events li a,
 #event-panel .events li a {
+    display: block;
+    padding: 5px 10px;
     font-size: 12px;
     color: var(--black);
     text-decoration: none;
@@ -243,7 +244,7 @@ main {
 #day #day-panel-head #day-panel-close {
     font-size: 24px;
     float: right;
-    color: var(--grey);
+    color: var(--charcoal);
     cursor: pointer;
 }
 

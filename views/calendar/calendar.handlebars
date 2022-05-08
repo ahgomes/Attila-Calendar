@@ -1,8 +1,8 @@
 <section id="cal-container">
     <section id="cal-head">
         <span id="btn-today">today</span>
-        <span id="btn-last">&lt</span>
-        <span id="btn-next">&gt</span>
+        <span aria-label="last month" id="btn-last">&lt</span>
+        <span aria-label="next month" id="btn-next">&gt</span>
         <h1 id="cal-title"></h1>
     </section>
     <section id="cal">
@@ -10,11 +10,22 @@
     <section id="day" hidden>
         <div id="day-panel-head">
             <h3 id="day-panel-date"></h3>
-            <span id="day-panel-close">x</span>
+            <span aria-label="Close" id="day-panel-close">x</span>
         </div>
         <ol class="events">
 
         </ol>
+        <form action='/events/create' method='POST'>
+            <input name='_method' value='GET' hidden />
+
+            <input name='has_date' value='true' hidden />
+            <input name='has_calendar' value='' hidden />
+            <input name='date' value='' hidden />
+
+            <button type='submit'>
+                Add Event
+            </button>
+        </form>
     </section>
 </section>
 <section id="event-panel">

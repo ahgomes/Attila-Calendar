@@ -72,7 +72,7 @@ const filterEventDate = async function filterEventDate(date) {
 
 }
 
-const filterEventPriority = async function filterEventPriority(priority) {
+const searchEventPriority = async function searchEventPriority(priority) {
     // priority = validateApi.isValidNumber(priority, true)
 
     const eventsCollection = await events()
@@ -87,7 +87,38 @@ const filterEventPriority = async function filterEventPriority(priority) {
     }
 }
 
-getEventById("626723e796b5e390a8ec9e85")
+const filterEventPriority = async function filterEventPriority(searchType, searchTerm, order) {
+    const eventsCollection = await events()
+    filterEvents = null;
+    // returns events in sorted order by priority
+    if (order === "asc") {
+        order = 1
+    } else {
+        order = -1
+    }
+
+    console.log("Database Query:", searchType, searchTerm, order)
+
+    if (searchType === "User") {
+        filterEvents = await eventsCollection.find({owners: {$in: [searchTerm]}}).sort({priority: order}).toArray()
+    }
+    else if (searchType === "Title/Description") {
+        filterEvents = await eventsCollection.find({$or: [{title: {$regex: searchTerm, $options: 'i'}}, {description: {$regex: searchTerm, $options: 'i'}}]}).sort({priority: order}).toArray()
+    }
+    
+    else if (searchType === "Date") {
+        // TODO
+    }
+    else if (searchType === "Priority") {
+        searchTerm = Number(searchTerm)
+        filterEvents = await eventsCollection.find({priority: {$eq: searchTerm}}).toArray()
+    }
+    console.log(filterEvents)
+    return filterEvents
+}
+
+
+filterEventPriority("Priority", "5", "asc")
 
 module.exports = {
     getEventById,
@@ -95,5 +126,8 @@ module.exports = {
     searchEvents,
     searchByEventDate,
     filterEventDate,
+    searchEventPriority,
     filterEventPriority
+    // filterEventPriorityAsc,
+    // filterEventPriorityDesc
 };

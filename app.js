@@ -27,6 +27,22 @@ app.use(
     })
 );
 
+app.use('/events', (req, res, next) => {
+    if (!req.session.user) {
+      return res.redirect('/user');
+    } else {
+      next();
+    }
+  });
+
+  app.use('/calendar', (req, res, next) => {
+    if (!req.session.user) {
+      return res.redirect('/user');
+    } else {
+      next();
+    }
+  });
+
 app.engine(
     'handlebars',
     express_handlebars.engine({

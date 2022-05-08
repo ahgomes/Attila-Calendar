@@ -1,48 +1,31 @@
-<h1>This is the Events Page</h1>
+<h1>Search Events</h1>
 
-<form action="/events/searchPage" method="POST">
-    <label for="searchOption"></label>
-    <select name = "searchOption" id="searchType">
-        <option value="User">User</option>
-        <option value="Title/Description">Title/Description</option>
-        <option value="Date">Date</option>
-        <option value="Priority">Priority</option>
+<form action='/events/searchPage' method='POST'>
+    <label for='searchOption'></label>
+    <select name='searchOption' id='searchType'>
+        <option value='User'>User</option>
+        <option value='Title/Description'>Title/Description</option>
+        <option value='Date'>Date</option>
+        <option value='Priority'>Priority</option>
     </select>
-    <label for="searchEvents">
-        <input type="text" id="searchEvents" name ="searchTerm"/>
-        {{!-- <input type="date" id="searchEvents" name ="searchEventDate"/> --}}
+    <label for='searchEvents'>
+        <input type='text' id='searchEvents' name='searchTerm' />
+        {{! <input type="date" id="searchEvents" name ="searchEventDate"/> }}
     </label>
-    <button type="submit">Submit</button>
+    <button type='submit'>Submit</button>
 </form>
 
 <p>For date enter in format: XX/XX/XXXX</p>
-<br>
-<br>
 
-<a href='/events/create'>Create an Event</a>
+<br />
 
-<form action='/events/create' method='POST'>
-    <input name='_method' value='GET' hidden />
+<a href='/events/create'>Click Here to Create an Event</a>
 
-    <input name='has_date' value='true' hidden />
-    <input name='has_calendar' value='' hidden />
+<br />
+<br />
 
-    <br />
-
-    <button type='submit'>
-        Create Event with Current Date
-    </button>
-</form>
-
-<h1>All of Your Events (Full View)</h1>
-<div class='event-list-container-full'>
-    {{#each events}}
-        {{> eventWidget eventView=this}}
-    {{/each}}
-</div>
-
-<h1>All of Your Events (Compact View)</h1>
-<div class='event-list-container-compact'>
+<h1>All of Your Events</h1>
+<div class='event-list-container-compact center-element'>
     {{#each events}}
         {{> eventWidgetCompact eventView=this}}
     {{/each}}

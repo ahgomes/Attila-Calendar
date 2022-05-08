@@ -1,11 +1,31 @@
 <section id="cal-container">
     <section id="cal-head">
         <span id="btn-today">today</span>
-        <span id="btn-last">&lt</span>
-        <span id="btn-next">&gt</span>
+        <span aria-label="last month" id="btn-last">&lt</span>
+        <span aria-label="next month" id="btn-next">&gt</span>
         <h1 id="cal-title"></h1>
     </section>
     <section id="cal">
+    </section>
+    <section id="day" hidden>
+        <div id="day-panel-head">
+            <h3 id="day-panel-date"></h3>
+            <span aria-label="Close" id="day-panel-close">x</span>
+        </div>
+        <ol class="events">
+
+        </ol>
+        <form action='/events/create' method='POST'>
+            <input name='_method' value='GET' hidden />
+
+            <input name='has_date' value='true' hidden />
+            <input name='has_calendar' value='' hidden />
+            <input name='date' value='' hidden />
+
+            <button type='submit'>
+                Add Event
+            </button>
+        </form>
     </section>
 </section>
 <section id="event-panel">
@@ -14,7 +34,7 @@
 <script>
     let event_list = [
         {{#each event_list}}
-        {title: '{{this.title}}', deadline: new Date('{{this.deadline}}'), priority: {{this.priority}} },
+        {_id: '{{this._id}}', title: '{{this.title}}', deadline: new Date('{{this.deadline}}'), priority: {{this.priority}} },
         {{/each}} ]
 </script>
 <script src="public/js/cal_setup.js" defer></script>

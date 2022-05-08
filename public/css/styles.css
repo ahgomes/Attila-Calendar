@@ -102,7 +102,8 @@ main {
 }
 
 #cal-head #btn-last:hover,
-#cal-head #btn-next:hover {
+#cal-head #btn-next:hover,
+#cal-head #btn-today:hover {
     background: var(--grey);
 }
 
@@ -158,12 +159,22 @@ main {
     font-size: 12px;
     margin: 5px auto 10px;
     width: 24px;
+    border-radius: 2px;
+    padding: 5px 0 2px;
+    cursor: pointer;
+}
+
+#cal .row .cell h2:hover {
+    background: var(--grey);
 }
 
 #cal .row .today h2 {
     background: var(--red);
     color: var(--white);
-    border-radius: 2px;
+}
+
+#cal .row .today h2:hover {
+    background: var(--charcoal);
 }
 
 /* events list in cell */
@@ -172,18 +183,81 @@ main {
 }
 
 /* event block */
-#cal .row .cell .events li {
-    padding: 5px 10px;
-    background: var(--lightblue);
-    border-radius: 2px;
+#cal .row .cell .events li,
+#day .events li {
     margin-bottom: 5px;
+    border-radius: 2px;
+    overflow-wrap: anywhere;
+}
+
+#cal .row .cell .events li a,
+#day .events li a {
+    display: block;
+    padding: 5px 10px;
     font-size: 12px;
+    color: var(--black);
+    text-decoration: none;
 }
 
 /* last month & next month cells */
 #cal .row .last,
 #cal .row .next {
     opacity: 0.5;
+}
+
+/* -- DAY POPUP PANEL -- */
+
+#day {
+    position: fixed;
+    top: 35%;
+    left: 25%;
+    width: 30%;
+    height: 50%;
+    padding: 70px 20px 20px;
+    background: var(--white);
+    border: 2px solid var(--charcoal);
+    overflow: scroll;
+    z-index: 100;
+}
+
+#day #day-panel-head {
+    display: block;
+    position: fixed;
+    top: calc(35% + 2px);
+    background: var(--white);
+    height: 50px;
+    width: inherit;
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+#day #day-panel-head #day-panel-date {
+    display: inline;
+    font-size: 24px;
+    margin: 0;
+    float: left;
+    line-height: 32px;
+}
+
+#day #day-panel-head #day-panel-close {
+    font-size: 24px;
+    float: right;
+    color: var(--charcoal);
+    cursor: pointer;
+}
+
+#day #day-panel-head #day-panel-close:hover {
+    color: var(--red);
+}
+
+#day .events li {
+    font-size: 18px;
+    margin-bottom: 10px;
+    padding: 15px 10px 10px;
+}
+
+#day .events li a {
+    font-size: 18px;
 }
 
 /* -- EVENT SIDE PANEL -- */
@@ -220,12 +294,13 @@ main {
     list-style-type: none;
     overflow: hidden;
     padding: 0px;
-    background-color: #333333;
+    background: var(--charcoal);
 }
 
 .nav-block {
     float: left;
     padding: 10px;
+    transition: background 250ms;
 }
 
 #nav-user-msg {
@@ -234,24 +309,13 @@ main {
 }
 
 .nav-block:hover {
-    animation: nav-block-hover 0.25s;
-    animation-fill-mode: forwards;
+    background: var(--red);
 }
 
 .nav-content {
     font-size: 1.25em;
     text-decoration: none;
     color: white;
-}
-
-@keyframes nav-block-hover {
-    from {
-        background-color: #333333;
-    }
-
-    to {
-        background-color: #9d1535;
-    }
 }
 
 /* ------------------------------------------------------------------
@@ -358,7 +422,7 @@ main {
     background-color: #acff9f;
 }
 .event-priority-5 {
-    background-color: white;
+    background-color: var(--grey);
 }
 
 .event-comment-container {

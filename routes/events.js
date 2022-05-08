@@ -120,13 +120,13 @@ router.route('/searchpage/filterPriority').post(async (req, res) => {
     try {
         console.log("Route:", req.body)
         filterEvents = await eventQuerying.filterEventPriority(req.body.eventSearchOption, req.body.eventSearchTerm, req.body.priorityOrder)
- 
+
         res.status(200).render('events/searchEvents', {
             title: 'Events Found',
             eventSearchTerm: req.body.eventSearchTerm,
             eventSearchOption: req.body.eventSearchOption,
             events: filterEvents,
-        })    
+        })
     } catch (e) {
         res.status(500).send(e)
     }
@@ -135,7 +135,7 @@ router.route('/searchpage/filterPriority').post(async (req, res) => {
 /* /events/create */
 
 router.route('/create').get(async (req, res) => {
-    let { has_calendar, has_date } = req.body;
+    let { has_calendar, has_date, date } = req.body;
 
     let calendars = null,
         deadline = null;
@@ -151,10 +151,11 @@ router.route('/create').get(async (req, res) => {
 
     try {
         has_calendar = xss(has_calendar);
-        deadline =
-            xss(has_date).toLowerCase() === 'true'
-                ? convertApi.dateToDateString(new Date())
-                : '';
+        if (xss(has_date).toLowerCase() === 'true')
+            deadline = xss(date)
+                    ? convertApi.dateToDateString(new Date(date))
+                    : convertApi.dateToDateString(new Date());
+        else deadline = ''
     } catch (e) {
         return res.status(400).render('other/error', {
             title: 'Unexpected Error: (400)',

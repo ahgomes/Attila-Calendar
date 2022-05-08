@@ -9,9 +9,9 @@
 	<br>
     <p>Enter your new first name and last name below</p>
 	<form action='/user/changeName' method="POST" id="change-name-form">
-        <label id="firstNameLabel" for="first_name" value = {{first_name}}>Enter First Name:</label>
-        <input name="first_name" type="text" id="first_name"/>
-        <label id="lastNameLabel" for="last_name" value = {{last_name}}>Enter Last Name:</label>
-        <input name="last_name" type="text" id="last_name"/>
+        <label id="firstNameLabel" for="first_name"> Enter First Name:</label>
+        <input name="first_name" type="text" id="first_name" value = {{first_name}} />
+        <label id="lastNameLabel" for="last_name">Enter Last Name:</label>
+        <input name="last_name" type="text" id="last_name" value = {{last_name}} />
         <button type="submit">Change Name</button>		
 	</form>

@@ -53,23 +53,26 @@ const searchEvents = async function searchEvents(text) {
 }
 
 // Need to find a way to format the date properly
-const searchByEventDate = async function searchByEventDate(deadline) {
+const searchDeadlineDate = async function searchDeadlineDate(deadline) {
     deadline = validateApi.isValidDate(deadline)
     
     const eventsCollection = await events()
     const findEvents = await eventsCollection.find({deadline: {$eq: deadline}}).toArray()
 
     console.log(findEvents)
-    if (findEvents.length > 0) {
-        return findEvents
-    }
-    else {
-        return "Sorry, no events could be found."
-    }
+    // if (findEvents.length > 0) {
+    //     return findEvents
+    // }
+    // else {
+    //     return "Sorry, no events could be found."
+    // }
 }
 
 const filterEventDate = async function filterEventDate(date) {
-
+    
+    const eventsCollection = await events()
+    // find events with the inputted month, day, or year
+    
 }
 
 const searchEventPriority = async function searchEventPriority(priority) {
@@ -118,16 +121,13 @@ const filterEventPriority = async function filterEventPriority(searchType, searc
 }
 
 
-filterEventPriority("Priority", "5", "asc")
 
 module.exports = {
     getEventById,
     listUserEvents,
     searchEvents,
-    searchByEventDate,
+    searchDeadlineDate,
     filterEventDate,
     searchEventPriority,
     filterEventPriority
-    // filterEventPriorityAsc,
-    // filterEventPriorityDesc
 };

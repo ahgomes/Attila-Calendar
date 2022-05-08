@@ -145,6 +145,7 @@ function fill_cal(curr) {
 function fill_events(event_data) {
     $.each(event_data, (i, el) => {
         $('<li>')
+            .addClass(`event-priority-${el.priority}`)
             .html(`<a href="/events/view/${el._id}">
                 ${el.time} - ${el.title}
                 </a>`)
@@ -178,7 +179,6 @@ $('#day #day-panel-head #day-panel-close').click(_ => {
 
 $(document).on('click','#cal .row .cell h2', (e => {
     let event_ol = e.target.parentElement.lastChild; // get events list
-    console.log(event_ol.innerHTML);
     if (event_ol.innerHTML.length > 0)
         $('#day .events').html(event_ol.innerHTML);
     else

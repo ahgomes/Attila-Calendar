@@ -184,16 +184,14 @@ main {
 
 /* event block */
 #cal .row .cell .events li,
-#day .events li,
-#event-panel .events li {
+#day .events li {
     margin-bottom: 5px;
     border-radius: 2px;
     overflow-wrap: anywhere;
 }
 
 #cal .row .cell .events li a,
-#day .events li a,
-#event-panel .events li a {
+#day .events li a {
     display: block;
     padding: 5px 10px;
     font-size: 12px;
@@ -203,7 +201,8 @@ main {
 
 /* last month & next month cells */
 #cal .row .last,
-#cal .row .next {
+#cal .row .next,
+#event-panel .past-events li {
     opacity: 0.5;
 }
 
@@ -277,12 +276,39 @@ main {
     background: var(--white);
 }
 
-#event-panel #day-panel-head #event-panel-date {
-    display: inline;
+#event-panel #event-panel-head {
+    display: block;
+    position: relative;
+    margin: inherit;
+    padding: 3px;
+    background: var(--white);
+    height: 50px;
+    width: inherit;
+    z-index: 1;
+}
+
+#event-panel #event-panel-head #event-panel-date {
+    display: block;
+    position: fixed;
     font-size: 24px;
-    margin: 0;
+    margin: auto;
     float: left;
-    line-height: 32px;
+}
+
+#event-panel .curr-events li,
+#event-panel .past-events li {
+    margin-bottom: 5px;
+    border-radius: 2px;
+    overflow-wrap: anywhere;
+}
+
+#event-panel .curr-events li a,
+#event-panel .past-events li a {
+    display: block;
+    padding: 5px 10px;
+    font-size: 16px;
+    color: var(--black);
+    text-decoration: none;
 }
 
 /* ------------------------------------------------------------------

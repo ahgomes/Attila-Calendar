@@ -186,7 +186,6 @@ main {
 #cal .row .cell .events li,
 #day .events li {
     padding: 5px 10px;
-    background: var(--lightblue);
     border-radius: 2px;
     margin-bottom: 5px;
     font-size: 12px;
@@ -195,7 +194,7 @@ main {
 #cal .row .cell .events li a,
 #day .events li a {
     font-size: 12px;
-    color: var(--white);
+    color: var(--black);
     text-decoration: none;
 }
 
@@ -294,12 +293,13 @@ main {
     list-style-type: none;
     overflow: hidden;
     padding: 0px;
-    background-color: #333333;
+    background: var(--charcoal);
 }
 
 .nav-block {
     float: left;
     padding: 10px;
+    transition: background 250ms;
 }
 
 #nav-user-msg {
@@ -308,24 +308,13 @@ main {
 }
 
 .nav-block:hover {
-    animation: nav-block-hover 0.25s;
-    animation-fill-mode: forwards;
+    background: var(--red);
 }
 
 .nav-content {
     font-size: 1.25em;
     text-decoration: none;
     color: white;
-}
-
-@keyframes nav-block-hover {
-    from {
-        background-color: #333333;
-    }
-
-    to {
-        background-color: #9d1535;
-    }
 }
 
 /* ------------------------------------------------------------------
@@ -432,7 +421,7 @@ main {
     background-color: #acff9f;
 }
 .event-priority-5 {
-    background-color: white;
+    background-color: var(--grey);
 }
 
 .event-comment-container {

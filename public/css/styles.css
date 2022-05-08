@@ -201,7 +201,8 @@ main {
 
 /* last month & next month cells */
 #cal .row .last,
-#cal .row .next {
+#cal .row .next,
+#event-panel .past-events li {
     opacity: 0.5;
 }
 
@@ -267,12 +268,48 @@ main {
     position: fixed;
     top: calc(50% - 45vh);
     right: 2%;
-    padding: 20px;
+    padding: 0px 10px 0px 10px;
     height: 90vh;
     width: 30%;
     border: 1px solid var(--grey);
     box-sizing: border-box;
     background: var(--white);
+    overflow: scroll;
+}
+
+#event-panel #event-panel-head {
+    display: block;
+    position: sticky;
+    top: 0;
+    padding: 10px;
+    background: var(--white);
+    height: 30px;
+    width: auto;
+    z-index: 1;
+}
+
+#event-panel #event-panel-head #event-panel-name {
+    display: block;
+    top: 0;
+    font-size: 24px;
+    margin: auto;
+    float: left;
+}
+
+#event-panel .curr-events li,
+#event-panel .past-events li {
+    margin-bottom: 5px;
+    border-radius: 3px;
+    overflow-wrap: anywhere;
+}
+
+#event-panel .curr-events li a,
+#event-panel .past-events li a {
+    display: block;
+    padding: 7px 14px;
+    font-size: 16px;
+    color: var(--black);
+    text-decoration: none;
 }
 
 /* ------------------------------------------------------------------

@@ -146,6 +146,47 @@ function fill_events(event_data) {
     });
 }
 
+function fill_event_panel (event_data) {
+    let msPerDay = 24 * 60 * 60 * 1000;
+    $.each(event_data, (i, el) => {
+        let daysApart = Math.round((el.deadline.getTime() - TODAY.getTime()) / msPerDay);
+        if (daysApart >= -7 && daysApart <= 7) {
+            let dayInfo = el.deadline.toLocaleDateString('en-us', {
+                weekday: 'short',
+                month: 'long',
+                day: '2-digit',
+                year: 'numeric'
+            });
+            let time = time_to_string(el.deadline);
+                      
+            if (el.deadline.getDate() === TODAY.getDate()) {
+                $('<li>')
+                .addClass(`event-priority-${el.priority}`)
+                .html(`<a href="/events/view/${el._id}">
+                    ${el.title} - Today at ${time}
+                    </a>`)
+                .appendTo(`#event-panel .curr-events`)
+            }
+            else if (daysApart >= 0) {
+                $('<li>')
+                    .addClass(`event-priority-${el.priority}`)
+                    .html(`<a href="/events/view/${el._id}">
+                        ${el.title} - ${dayInfo} ${time}
+                        </a>`)
+                    .appendTo(`#event-panel .curr-events`)
+            }
+            else {
+                $('<li>')
+                .addClass(`event-priority-${el.priority}`)
+                .html(`<a href="/events/view/${el._id}">
+                    ${el.title} - ${dayInfo} ${time}
+                    </a>`)
+                .appendTo(`#event-panel .past-events`)
+            }
+        }    
+    });
+}
+
 function update_cal(date) {
     $('#cal .row').remove();
     fill_cal(date);
@@ -199,4 +240,5 @@ $(document).on('click','#cal .row .cell h2', (e => {
 $(document).ready(_ => {
     create_thgroup();
     fill_cal(current);
+    fill_event_panel(event_list);
 });

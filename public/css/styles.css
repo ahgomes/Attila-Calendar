@@ -189,6 +189,7 @@ main {
     border-radius: 2px;
     margin-bottom: 5px;
     font-size: 12px;
+    overflow-wrap: anywhere;
 }
 
 #cal .row .cell .events li a,

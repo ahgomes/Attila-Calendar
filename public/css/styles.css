@@ -185,15 +185,15 @@ main {
 /* event block */
 #cal .row .cell .events li,
 #day .events li {
-    padding: 5px 10px;
-    border-radius: 2px;
     margin-bottom: 5px;
-    font-size: 12px;
+    border-radius: 2px;
     overflow-wrap: anywhere;
 }
 
 #cal .row .cell .events li a,
 #day .events li a {
+    display: block;
+    padding: 5px 10px;
     font-size: 12px;
     color: var(--black);
     text-decoration: none;

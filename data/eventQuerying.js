@@ -45,6 +45,35 @@ const searchEvents = async function searchEvents(text) {
 }
 
 const filterEventDate = async function filterEventDate(month, day, year) {
+    month = validateApi.isValidNumber(month, true)
+    day = validateApi.isValidNumber(day, true)
+    year = validateApi.isValidNumber(year, true)
+
+    const validDays = [
+        31, // Jan
+        new Date(year, 1, 29).getUTCMonth() === 1 ? 29 : 28, // Feb
+        31, // Mar
+        30, // Apr
+        31, // May
+        30, // Jun
+        31, // Jul
+        31, // Aug
+        30, // Sep
+        31, // Oct
+        30, // Nob
+        31, // Dec
+    ];
+
+    if (month < 1 || month > 12) {
+        throw `Error: Month '${month}' must be in the range 1-12 inclusive.`;
+    }
+    if (day < 1 || day > validDays[month - 1]) {
+        throw `Error: Day '${day}' must be between 1 and 31.`
+    }
+    if (year < 1000) {
+        throw `Error: Year '${year}' must be greater than or equal to 1000.`;
+    }
+    
     const eventsCollection = await events()
 
     findEvents = null;
@@ -91,7 +120,11 @@ const filterEventDate = async function filterEventDate(month, day, year) {
 }
 
 const searchEventPriority = async function searchEventPriority(priority) {
-    // priority = validateApi.isValidNumber(priority, true)
+    priority = validateApi.isValidNumber(priority, true)
+
+    if (priority < 1 || priority > 5) {
+        throw `Error: '${priority}' should be a valid integer between 1 to 5 (inclusive)`
+    }
 
     const eventsCollection = await events()
     const findPriorityEvents = await eventsCollection.find({priority: {$eq: priority}}).toArray()
@@ -106,25 +139,38 @@ const searchEventPriority = async function searchEventPriority(priority) {
 }
 
 const filterEventPriority = async function filterEventPriority(searchType, searchTerm, order) {
+    searchType = validateApi.isValidString(searchType, true)
+    if (searchType !== "User" && searchType !== "Title/Description" && searchType !== "Date" && searchType !== "Priority") {
+        throw `Error: '${searchType}' is not a valid search type.`
+    }
+
+    order = validateApi.isValidString(order, true)
+    if (order != "asc" && order != "desc") {
+        throw "Error: sort/filter order should be 'asc' or 'desc'"
+    }
+    
     const eventsCollection = await events()
     filterEvents = null;
-    // returns events in sorted order by priority
+    
     if (order === "asc") {
         order = 1
     } else {
         order = -1
     }
 
-    console.log("Database Query:", searchType, searchTerm, order)
+    // console.log("Database Query:", searchType, searchTerm, order)
 
     if (searchType === "User") {
+        searchTerm = validateApi.isValidString(searchTerm, true)
         filterEvents = await eventsCollection.find({owners: {$in: [searchTerm]}}).sort({priority: order}).toArray()
     }
     else if (searchType === "Title/Description") {
+        searchTerm = validateApi.isValidString(searchTerm, true)
         filterEvents = await eventsCollection.find({$or: [{title: {$regex: searchTerm, $options: 'i'}}, {description: {$regex: searchTerm, $options: 'i'}}]}).sort({priority: order}).toArray()
     }
     else if (searchType === "Date") {
-        console.log("IM HERE")
+        searchTerm = validateApi.isValidString(searchTerm, true)
+
         month = searchTerm.substring(0,2)
         day = searchTerm.substring(3,5)
         year = searchTerm.substring(6,12)
@@ -182,8 +228,8 @@ const filterEventPriority = async function filterEventPriority(searchType, searc
         }
     }
     else if (searchType === "Priority") {
-        searchTerm = Number(searchTerm)
-        filterEvents = await this.searchEventPriority(searchTerm)
+        searchTerm = validateApi.isValidNumber(searchTerm, true)
+        filterEvents = await searchEventPriority(searchTerm)
     }
 
     return filterEvents

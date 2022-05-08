@@ -1,8 +1,8 @@
 <section id="cal-container">
     <section id="cal-head">
         <span id="btn-today">today</span>
-        <span id="btn-last"><</span>
-        <span id="btn-next">></span>
+        <span id="btn-last">&lt</span>
+        <span id="btn-next">&gt</span>
         <h1 id="cal-title"></h1>
     </section>
     <section id="cal">
@@ -11,4 +11,10 @@
 <section id="event-panel">
     {{> events_panel}}
 </section>
+<script>
+    let event_list = [
+        {{#each event_list}}
+        {title: '{{this.title}}', deadline: new Date('{{this.deadline}}'), priority: {{this.priority}} },
+        {{/each}} ]
+</script>
 <script src="public/js/cal_setup.js" defer></script>

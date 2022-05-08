@@ -131,6 +131,69 @@ validateApi = {
     },
 
     /**
+     * Checks if the given username is alphanumeric with no spaces, and is not too short.
+     *
+     * @param {Array<string>} username The argument to be checked
+     * 
+     * @throws Errors when {username} has spaces or is not alphanumeric
+     * @throws Errors when {username} is too short
+     */
+    checkUsername(username){
+        let regex = /^[0-9a-zA-Z]+$/;
+        if (!username.match(regex)){
+            throw 'Username must be alphanumeric, with no spaces';
+        }
+        if (username.length < 4){
+            throw 'Username is too short';
+        }
+        if (username.length > 20){
+            throw 'Username is too long';
+        }
+    },
+    /**
+     * Checks if the given username is alphanumeric with no spaces, and is not too short.
+     *
+     * @param {Array<string>} password The argument to be checked
+     * 
+     * @throws Errors when {password} has spaces
+     * @throws Errors when {password} is too short
+     */
+    checkPassword (password){
+        for (let i of password){
+            if (i == ' '){
+                throw 'No spaces allowed in password';
+            }
+        }
+        if (password.length < 6){
+            throw 'Password is too short';
+        }
+        if (password.length > 50){
+            throw 'Password is too long';
+        }
+    },    
+    /**
+     * Checks if the given username is alphanumeric with no spaces, and is not too short.
+     *
+     * @param {Array<string>} password The argument to be checked
+     * 
+     * @throws Errors when {password} has spaces
+     * @throws Errors when {password} is too short
+     */
+    checkName (name){
+        for (let i of name){
+            if (i == ' '){
+                throw 'No spaces allowed in name';
+            }
+        }
+        if (name.length < 1){
+            throw 'Name is too short';
+        }
+        if (name.length > 20){
+            throw 'Name is too long';
+        }
+    },    
+
+    /**
      * Checks if the given argument is an object.
      *
      * @param {Object} arg The argument to be checked

@@ -17,14 +17,15 @@ module.exports = {
      * @todo IMPLEMENT FUNCTION
      */
     async createUser(username, password, first_name, last_name) {
-        validate.isValidString(username, true);
-        validate.isValidString(password, true);
+        validate.isValidString(username, false);
+        validate.isValidString(password, false);
         validate.isValidString(first_name, true);
         validate.isValidString(last_name, true);
         username = username.toLowerCase();
-        username = username.trim();
         validate.checkUsername(username);
         validate.checkPassword(password);
+        validate.checkName(first_name);
+        validate.checkName(last_name);
 
         let hash = await bcrypt.hash(password, saltRounds);
 
@@ -97,7 +98,7 @@ module.exports = {
      */
     async changePassword(username, password) {
         validate.isValidString(username, true);
-        validate.isValidString(password, true);
+        validate.isValidString(password, false);
         validate.checkPassword(password);
 
         const userCollection = await users();
@@ -134,6 +135,8 @@ module.exports = {
     async changeName(username, first_name, last_name) {
         validate.isValidString(first_name, true);
         validate.isValidString(last_name, true);
+        validate.checkName(first_name);
+        validate.checkName(last_name);
 
         const userCollection = await users();
         const user = await userCollection.findOne({ username: username });
@@ -167,10 +170,9 @@ module.exports = {
      * @todo IMPLEMENT FUNCTION
      */
     async checkUser(username, password) {
-        validate.isValidString(username, true);
-        validate.isValidString(password, true);
+        validate.isValidString(username, false);
+        validate.isValidString(password, false);
         username = username.toLowerCase();
-        username = username.trim();
         validate.checkUsername(username);
         validate.checkPassword(password);
 

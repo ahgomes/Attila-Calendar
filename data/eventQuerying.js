@@ -87,7 +87,7 @@ const filterEventPriority = async function filterEventPriority(priority) {
     }
 }
 
-getEventById("626723e796b5e390a8ec9e85")
+//getEventById("626723e796b5e390a8ec9e85")
 
 module.exports = {
     getEventById,

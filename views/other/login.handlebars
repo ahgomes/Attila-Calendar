@@ -3,14 +3,16 @@
     </header>
     {{#if errorMsg}}
 	<div id="error" class="error">{{errorMsg}}</div>
-  {{/if}}
+    {{else}}
+    <div id='error' class='error' hidden></div>
+    {{/if}}
 	<br>
     <h1>Login to your Account</h1>
 	<form action="/user/login" method="POST" id="login-form">
 		<label id="usernameLabel" for="username">Enter Username:</label>
         <input name="username" type="text" id="username"/>
         <label id="passwordLabel" for="password">Enter Password:</label>
-        <input name="password" type="text" id="password"/>
+        <input name="password" type="password" id="password"/>
         <button type="submit">Login</button>	
 	</form>
     <p>Need to register? <a href="/user/signup">Click here to sign-up</a></p>

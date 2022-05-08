@@ -3,7 +3,6 @@ const router = express.Router();
 const xss = require('xss');
 
 const data = require('../data');
-const { filterEventPriority } = require('../data/eventQuerying');
 const usersApi = data.usersApi;
 const calendarsApi = data.calendarsApi;
 const eventsApi = data.eventsApi;
@@ -54,11 +53,11 @@ router.route('/').get(async (req, res) => {
 });
 
 /* /events/searchPage */
-
+// Need to ensure the user can only view/search their own events
 router.route('/searchPage').post(async (req, res) => {
     try {
         eventSearch = req.body;
-
+        console.log(eventSearch)
         if (eventSearch.searchOption == "User") {
             eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm)
         }
@@ -66,7 +65,25 @@ router.route('/searchPage').post(async (req, res) => {
             eventQuery = await eventQuerying.searchEvents(eventSearch.searchTerm)
         }
         else if (eventSearch.searchOption == "Date") {
-            eventQuery = await eventQuerying.searchByEventDate(eventSearch.searchTerm)
+            console.log("four")
+            // TODO: Might have to account for lowercase input or validate for it
+            month = eventSearch.searchTerm.substring(0,2)
+            day = eventSearch.searchTerm.substring(3,5)
+            year = eventSearch.searchTerm.substring(6,12)
+            
+            console.log('five')
+
+            day == "XX" ? dayValue = false : dayValue = Number(day)
+            month == "XX" ? monthValue = false : monthValue = Number(month)
+            year == "XXXX" ? yearValue = false : yearValue = Number(year)
+
+            console.log("six")
+
+            console.log(typeof monthValue)
+            console.log(dayValue)
+            console.log(yearValue)
+
+            eventQuery = await eventQuerying.filterEventDate(monthValue, dayValue, yearValue)
         }
         else if (eventSearch.searchOption == "Priority") {
             eventSearch.searchTerm = Number(eventSearch.searchTerm)
@@ -91,21 +108,6 @@ router.route('/searchPage').post(async (req, res) => {
             eventSearchTerm: eventSearch.searchTerm,
             eventSearchOption: eventSearch.searchOption,
             events: eventQuery,
-        });
-    } catch (e) {
-        res.status(500).send(e);
-    }
-});
-
-/* /events/searchPage/{eventId} */
-// Will probably delete and use /view/{eventId} route instead
-
-router.route('/searchPage/:id').get(async (req, res) => {
-    try {
-        findEvent = await eventQuerying.getEventById(req.params.id);
-        res.status(200).render('events/showEvent', {
-            title: findEvent.title,
-            event: findEvent,
         });
     } catch (e) {
         res.status(500).send(e);

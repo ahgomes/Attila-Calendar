@@ -27,14 +27,14 @@
                     <input type="hidden" id="eventSearchOption" name="eventSearchOption" value="{{eventSearchOption}}"/>
                     <input type="hidden" id="eventSearchTerm" name="eventSearchTerm" value="{{eventSearchTerm}}"/>
                     {{!-- <input type="hidden" id="eventSearch" name="eventSearch" value="{{eventSearch}}"/> --}}
-                    <button type="submit">Submit</button>
+                    <button type="submit">Filter</button>
                 </th>
             </form>
             <th>Deadline</th>
         </tr>
         {{#each events}}
         <tr>
-            <td><a href = "/events/searchPage/{{this._id}}">{{this.title}}</a></td>
+            <td><a href = "/events/view/{{this._id}}">{{this.title}}</a></td>
             <td>{{this.owners}}</td>
             <td>{{this.description}}</td>
             <td>{{this.priority}}</td>

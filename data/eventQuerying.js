@@ -102,25 +102,23 @@ const filterEventPriority = async function filterEventPriority(searchType, searc
     if (searchType === "User") {
         filterEvents = await eventsCollection.find({owners: {$in: [searchTerm]}}).sort({priority: order}).toArray()
     }
-
+    else if (searchType === "Title/Description") {
+        filterEvents = await eventsCollection.find({$or: [{title: {$regex: searchTerm, $options: 'i'}}, {description: {$regex: searchTerm, $options: 'i'}}]}).sort({priority: order}).toArray()
+    }
+    
+    else if (searchType === "Date") {
+        // TODO
+    }
+    else if (searchType === "Priority") {
+        searchTerm = Number(searchTerm)
+        filterEvents = await eventsCollection.find({priority: {$eq: searchTerm}}).toArray()
+    }
+    console.log(filterEvents)
     return filterEvents
 }
 
-// const filterEventPriorityAsc = async function filterEventPriorityAsc(priority) {
-//     const eventsCollection = await events()
-//     // return events in sorted order by ascending priority
-//     const sortedEvents = await eventsCollection.find({priority: {$eq: priority}}).sort({priority: 1}).toArray()
-//     return sortedEvents
-// }
 
-// const filterEventPriorityDesc = async function filterEventPriorityDesc(priority) {
-//     const eventsCollection = await events()
-//     // return events in sorted order by descending priority
-//     const sortedEvents = await eventsCollection.find({priority: {$eq: priority}}).sort({priority: -1}).toArray()
-//     return sortedEvents
-// }
-
-filterEventPriority("User", "adrian", "asc")
+filterEventPriority("Priority", "5", "asc")
 
 module.exports = {
     getEventById,

@@ -7,7 +7,7 @@ async function get_events(req) {
     let user = req.session.user;
     let list = await eventQuerying.listUserEvents(user);
     if (Array.isArray(list))
-        return list;
+        return list.sort((a, b) => a.deadline.getTime() - b.deadline.getTime());
 }
 
 router.route('/').get(async (req, res) => {

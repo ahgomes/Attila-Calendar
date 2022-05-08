@@ -3,6 +3,7 @@ const router = express.Router();
 const xss = require('xss');
 
 const data = require('../data');
+const { filterEventPriority } = require('../data/eventQuerying');
 const usersApi = data.usersApi;
 const calendarsApi = data.calendarsApi;
 const eventsApi = data.eventsApi;
@@ -71,7 +72,7 @@ router.route('/searchPage').post(async (req, res) => {
             eventSearch.searchTerm = Number(eventSearch.searchTerm)
             if (Number.isInteger(eventSearch.searchTerm)) {
                 if (eventSearch.searchTerm >= 1 && eventSearch.searchTerm <= 5) {
-                    eventQuery = await eventQuerying.filterEventPriority(eventSearch.searchTerm)
+                    eventQuery = await eventQuerying.searchEventPriority(eventSearch.searchTerm)
                 }
                 else {
                     return "Priority needs to be between 1 and 5"
@@ -87,7 +88,8 @@ router.route('/searchPage').post(async (req, res) => {
 
         res.status(200).render('events/searchEvents', {
             title: 'Events Found',
-            eventSearch: eventSearch.searchTerm,
+            eventSearchTerm: eventSearch.searchTerm,
+            eventSearchOption: eventSearch.searchOption,
             events: eventQuery,
         });
     } catch (e) {
@@ -109,6 +111,22 @@ router.route('/searchPage/:id').get(async (req, res) => {
         res.status(500).send(e);
     }
 });
+
+router.route('/searchpage/filterPriority').post(async (req, res) => {
+    try {
+        console.log("Route:", req.body)
+        filterEvents = await eventQuerying.filterEventPriority(req.body.eventSearchOption, req.body.eventSearchTerm, req.body.priorityOrder)
+ 
+        res.status(200).render('events/searchEvents', {
+            title: 'Events Found',
+            eventSearchTerm: req.body.eventSearchTerm,
+            eventSearchOption: req.body.eventSearchOption,
+            events: filterEvents,
+        })    
+    } catch (e) {
+        res.status(500).send(e)
+    }
+})
 
 /* /events/create */
 

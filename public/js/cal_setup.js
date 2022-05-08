@@ -9,13 +9,41 @@ const month_end = (y, m) => {
     return new Date(y, m + 1, 0).getDate();
 };
 
-const convert_format = date_str => { // MM/DD/YYYY UTC-5 -> YYYY-MM-DD
-    let [m, d, y] = date_str.slice(0, 10).split('/');
-    return [y, m, d].join('-');
-};
+const convert_format = event => {
+    return {title: event.title,
+            date: date_to_string(event.deadline),
+            time: time_to_string(event.deadline),
+            priority: event.priority };
+}
+
+const date_to_string = date => { // Date -> YYYY-MM-DD
+    let date_parts = [date.getMonth() + 1, date.getDate()];
+    date_parts = date_parts.map(p => p.toString().padStart(2, '0'));
+    return date.getFullYear() + '-' + date_parts.join('-');
+}
+
+const time_to_string = date => { // Date -> 00:00 AM
+    return date.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+// Date -> {date: 'YYYY-MM-DD', time: '00:00 AM'}
+const deadline_to_obj = deadline => {
+    return {date: date_to_string(deadline),
+            time: time_to_string(deadline)};
+}
 
 const TODAY = new Date();
 let current = new Date();
+
+let events = event_list.map(convert_format);
+
+function get_events() {
+
+}
+
+function get_events_from(start, end) {
+
+}
 
 function create_thgroup() {
     let group = $('<div>').addClass('th-group');
@@ -110,25 +138,15 @@ function fill_cal(curr) {
         } else date++;
     }
 
-    fill_events(data);
+    fill_events(events);
 }
-
-/* dummy data */
-let data = [{date: '04/17/2022, 12:16:35 AM', title: 'event'},
-            {date: '03/17/2022, 12:16:35 AM', title: 'event'},
-            {date: '03/31/2022, 12:16:35 AM', title: 'event'},
-            {date: '04/16/2022, 12:16:35 AM', title: 'event'},
-            {date: '04/16/2022, 12:16:35 AM', title: 'event'},
-            {date: '04/16/2022, 12:16:35 AM', title: 'event'},
-            {date: '04/16/2022, 12:16:35 AM', title: 'event'},
-            {date: '04/16/2022, 12:16:35 AM', title: 'event'}];
 
 function fill_events(event_data) {
     $.each(event_data, (i, el) => {
-        let data_date = convert_format(el.date);
+        console.log(el);
         $('<li>')
-            .text(el.title)
-            .appendTo(`.cell[data-date=${data_date}] .events`)
+            .text(el.time + ' - ' + el.title)
+            .appendTo(`.cell[data-date=${el.date}] .events`)
     });
 }
 

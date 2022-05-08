@@ -71,7 +71,7 @@ router
             let check = await usersData.checkUser(username, password);
             if (check.authenticated == true){
                 req.session.user = username;
-                res.redirect('/user');
+                res.redirect('/calendar');
                 return;
             }else{
                 res.status(400).render('other/login', {title: 'login', scriptSource: '/public/js/user/login.js', errorMsg: e});
@@ -102,7 +102,8 @@ router
   .route('/changeName')
   .get(async (req, res) => {
     if(req.session.user){
-        res.render('other/changeName', {title: 'Change Name', scriptSource: '/public/js/user/changeName.js'});
+        user = await usersData.getLoggedinUser(req);
+        res.render('other/changeName', {title: 'Change Name', first_name: user.first_name, last_name: user.last_name, scriptSource: '/public/js/user/changeName.js'});
         return;
     }else{
         res.redirect('/user');

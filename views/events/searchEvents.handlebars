@@ -1,15 +1,6 @@
 <article>
     <h1>Events Found</h1>
     <h2>Search Term: {{eventSearchTerm}}</h2>
-    <section>
-        <ul>
-            {{#each events}}
-            <li>
-                <a href = "/events/view/{{this._id}}">{{this.title}}</a>
-            </li>
-            {{/each}}
-        </ul>
-    </section>
 
     <table id="eventsTable">
         <tr>

@@ -10,7 +10,8 @@ const month_end = (y, m) => {
 };
 
 const convert_format = event => {
-    return {title: event.title,
+    return {_id: event._id,
+            title: event.title,
             date: date_to_string(event.deadline),
             time: time_to_string(event.deadline),
             priority: event.priority };
@@ -22,14 +23,14 @@ const date_to_string = date => { // Date -> YYYY-MM-DD
     return date.getFullYear() + '-' + date_parts.join('-');
 }
 
-const time_to_string = date => { // Date -> 00:00 AM
-    return date.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+const string_to_date = date_str => {
+    let [y, m, d] = date_str.split('-');
+    d = (parseInt(d) + 1).toString().padStart(2, '0');
+    return new Date([y, m, d].join('-'));
 }
 
-// Date -> {date: 'YYYY-MM-DD', time: '00:00 AM'}
-const deadline_to_obj = deadline => {
-    return {date: date_to_string(deadline),
-            time: time_to_string(deadline)};
+const time_to_string = date => { // Date -> 00:00 AM
+    return date.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 }
 
 const TODAY = new Date();
@@ -143,9 +144,10 @@ function fill_cal(curr) {
 
 function fill_events(event_data) {
     $.each(event_data, (i, el) => {
-        console.log(el);
         $('<li>')
-            .text(el.time + ' - ' + el.title)
+            .html(`<a href="/events/view/${el._id}">
+                ${el.time} - ${el.title}
+                </a>`)
             .appendTo(`.cell[data-date=${el.date}] .events`)
     });
 }
@@ -169,6 +171,29 @@ $('#btn-next').click(_ => {
     current.setMonth(current.getMonth() + 1);
     update_cal(current);
 });
+
+$('#day #day-panel-head #day-panel-close').click(_ => {
+    $('#day').hide();
+})
+
+$(document).on('click','#cal .row .cell h2', (e => {
+    let event_ol = e.target.parentElement.lastChild; // get events list
+    console.log(event_ol.innerHTML);
+    if (event_ol.innerHTML.length > 0)
+        $('#day .events').html(event_ol.innerHTML);
+    else
+        $('#day .events').html('<p>No events on this date.</p>');
+
+    let date_str = e.target.parentElement.dataset.date;
+    let date = string_to_date(date_str);
+    $('#day #day-panel-date').text(date.toLocaleDateString('en-us', {
+        weekday: 'short',
+        month: 'long',
+        day: '2-digit',
+        year: 'numeric'
+    }))
+    $('#day').show();
+}));
 
 $(document).ready(_ => {
     create_thgroup();

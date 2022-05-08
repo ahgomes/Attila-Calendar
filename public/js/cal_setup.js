@@ -38,14 +38,6 @@ let current = new Date();
 
 let events = event_list.map(convert_format);
 
-function get_events() {
-
-}
-
-function get_events_from(start, end) {
-
-}
-
 function create_thgroup() {
     let group = $('<div>').addClass('th-group');
 
@@ -176,6 +168,14 @@ $('#btn-next').click(_ => {
 $('#day #day-panel-head #day-panel-close').click(_ => {
     $('#day').hide();
 })
+
+$(document).on('submit', '#day form', (e => {
+    let date = e.target
+                .parentElement
+                .firstElementChild.firstElementChild
+                .innerText;
+    $('#day form input[name="date"]').val(date);
+}));
 
 $(document).on('click','#cal .row .cell h2', (e => {
     let event_ol = e.target.parentElement.lastChild; // get events list

@@ -15,6 +15,17 @@
         <ol class="events">
 
         </ol>
+        <form action='/events/create' method='POST'>
+            <input name='_method' value='GET' hidden />
+
+            <input name='has_date' value='true' hidden />
+            <input name='has_calendar' value='' hidden />
+            <input name='date' value='' hidden />
+
+            <button type='submit'>
+                Add Event
+            </button>
+        </form>
     </section>
 </section>
 <section id="event-panel">

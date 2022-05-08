@@ -13,7 +13,7 @@
     >
         <div class='event-flex-container event-flex-container-center-align'>
             {{#if eventView.titleExists}}
-                <h2 class='event-title'>{{{eventView.event.title}}}</h2>
+                <h2 class='event-title'>{{eventView.event.title}}</h2>
             {{else}}
                 <h2 class='event-title italics'>(No Title)</h2>
             {{/if}}
@@ -26,7 +26,7 @@
             {{#if eventView.descExists}}
                 <p
                     class='event-post-compact'
-                >{{{eventView.event.description}}}</p>
+                >{{eventView.event.description}}</p>
             {{else}}
                 <p class='event-post-compact italics'>(No Description)</p>
             {{/if}}

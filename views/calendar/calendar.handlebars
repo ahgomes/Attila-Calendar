@@ -7,6 +7,15 @@
     </section>
     <section id="cal">
     </section>
+    <section id="day" hidden>
+        <div id="day-panel-head">
+            <h3 id="day-panel-date"></h3>
+            <span id="day-panel-close">x</span>
+        </div>
+        <ol class="events">
+
+        </ol>
+    </section>
 </section>
 <section id="event-panel">
     {{> events_panel}}
@@ -14,7 +23,7 @@
 <script>
     let event_list = [
         {{#each event_list}}
-        {title: '{{this.title}}', deadline: new Date('{{this.deadline}}'), priority: {{this.priority}} },
+        {_id: '{{this._id}}', title: '{{this.title}}', deadline: new Date('{{this.deadline}}'), priority: {{this.priority}} },
         {{/each}} ]
 </script>
 <script src="public/js/cal_setup.js" defer></script>

@@ -3,7 +3,6 @@ const router = express.Router();
 const xss = require('xss');
 
 const data = require('../data');
-const { filterEventPriority } = require('../data/eventQuerying');
 const usersApi = data.usersApi;
 const calendarsApi = data.calendarsApi;
 const eventsApi = data.eventsApi;
@@ -80,12 +79,11 @@ router.route('/searchPage').post(async (req, res) => {
 
             console.log("six")
 
-            console.log(monthValue)
+            console.log(typeof monthValue)
             console.log(dayValue)
             console.log(yearValue)
 
             eventQuery = await eventQuerying.filterEventDate(monthValue, dayValue, yearValue)
-            console.log(eventQuery)
         }
         else if (eventSearch.searchOption == "Priority") {
             eventSearch.searchTerm = Number(eventSearch.searchTerm)

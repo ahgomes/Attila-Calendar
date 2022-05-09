@@ -2,12 +2,18 @@
     <h1>Events Found</h1>
     <h2>Search Term: {{eventSearchTerm}}</h2>
 
+    {{#if errorMsg}}
+        <div id="error" class="error">{{errorMsg}}</div>
+    {{else}}
+        <div id='error' class='error' hidden></div>
+    {{/if}}
+
     <table id="eventsTable">
         <tr>
             <th>Title</th>
             <th>Owner(s)</th>
             <th>Description</th>
-            <form action="/events/searchPage/filterPriority" method="POST">
+            <form action="/events/searchPage/filterPriority" method="POST" id="search-priority-form">
                 <label for="filterPriority"></label>
                 <th>
                     Priority

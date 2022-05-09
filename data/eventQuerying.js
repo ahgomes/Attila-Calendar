@@ -29,7 +29,7 @@ const listUserEvents = async function listUserEvents(username) {
         return listEvents
     }
     else {
-        throw "Sorry, no events could be found."
+        return "Sorry, no events could be found."
     }
 }
 
@@ -93,16 +93,12 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
                 //find month and day of deadline
                 month = validateApi.isValidNumber(month, true)
                 day = validateApi.isValidNumber(day, true)
-                year = validateApi.isValidNumber(year, true)
 
                 if (month < 1 || month > 12) {
                     throw `Error: Month '${month}' must be in the range 1-12 inclusive.`;
                 }
                 if (day < 1 || day > validDays[month - 1]) {
                     throw `Error: Day '${day}' is invalid for the given month.`
-                }
-                if (year < 1000) {
-                    throw `Error: Year '${year}' must be greater than or equal to 1000.`;
                 }
                 findEvents = await eventsCollection.find({"$expr": {$and: [{$eq: [{"$month": "$deadline"}, month]}, {$eq: [{"$dayOfMonth": "$deadline"}, day]}]}}).toArray()
             }
@@ -111,14 +107,10 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
             if (year) {
                 //find month and year of deadline
                 month = validateApi.isValidNumber(month, true)
-                day = validateApi.isValidNumber(day, true)
                 year = validateApi.isValidNumber(year, true)
 
                 if (month < 1 || month > 12) {
                     throw `Error: Month '${month}' must be in the range 1-12 inclusive.`;
-                }
-                if (day < 1 || day > validDays[month - 1]) {
-                    throw `Error: Day '${day}' is invalid for the given month.`
                 }
                 if (year < 1000) {
                     throw `Error: Year '${year}' must be greater than or equal to 1000.`;
@@ -128,17 +120,9 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
             else {
                 //find month of deadline
                 month = validateApi.isValidNumber(month, true)
-                day = validateApi.isValidNumber(day, true)
-                year = validateApi.isValidNumber(year, true)
 
                 if (month < 1 || month > 12) {
                     throw `Error: Month '${month}' must be in the range 1-12 inclusive.`;
-                }
-                if (day < 1 || day > validDays[month - 1]) {
-                    throw `Error: Day '${day}' is invalid for the given month.`
-                }
-                if (year < 1000) {
-                    throw `Error: Year '${year}' must be greater than or equal to 1000.`;
                 }
                 findEvents = await eventsCollection.find({"$expr": {$eq: [{"$month": "$deadline"}, month]}}).toArray()
             }
@@ -148,13 +132,9 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
         if (day) {
             if (year) {
                 //find day and year of deadline
-                month = validateApi.isValidNumber(month, true)
                 day = validateApi.isValidNumber(day, true)
                 year = validateApi.isValidNumber(year, true)
 
-                if (month < 1 || month > 12) {
-                    throw `Error: Month '${month}' must be in the range 1-12 inclusive.`;
-                }
                 if (day < 1 || day > validDays[month - 1]) {
                     throw `Error: Day '${day}' must be between 1 and 31.`
                 }
@@ -165,34 +145,17 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
             }
             else {
                 //find day of deadline
-                month = validateApi.isValidNumber(month, true)
                 day = validateApi.isValidNumber(day, true)
-                year = validateApi.isValidNumber(year, true)
-
-                if (month < 1 || month > 12) {
-                    throw `Error: Month '${month}' must be in the range 1-12 inclusive.`;
-                }
                 if (day < 1 || day > validDays[month - 1]) {
                     throw `Error: Day '${day}' is invalid for the given month.`
-                }
-                if (year < 1000) {
-                    throw `Error: Year '${year}' must be greater than or equal to 1000.`;
                 }
                 findEvents = await eventsCollection.find({"$expr": {$eq: [{"$dayOfMonth": "$deadline"}, day]}}).toArray()
             }
         }
         else {
             //find year of deadline
-            month = validateApi.isValidNumber(month, true)
-            day = validateApi.isValidNumber(day, true)
             year = validateApi.isValidNumber(year, true)
 
-            if (month < 1 || month > 12) {
-                throw `Error: Month '${month}' must be in the range 1-12 inclusive.`;
-            }
-            if (day < 1 || day > validDays[month - 1]) {
-                throw `Error: Day '${day}' is invalid for the given month.`
-            }
             if (year < 1000) {
                 throw `Error: Year '${year}' must be greater than or equal to 1000.`;
             }
@@ -207,7 +170,7 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
         throw "Sorry, no events could be found."
     }
 }
-// filterEventDate(6, 0, 2022, "adrian")
+// filterEventDate(1, 15, false, "adrian")
 
 const searchEventPriority = async function searchEventPriority(priority, username) {
     priority = validateApi.isValidNumber(priority, true)

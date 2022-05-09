@@ -82,7 +82,7 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
                     throw `Error: Month '${month}' must be in the range 1-12 inclusive.`;
                 }
                 if (day < 1 || day > validDays[month - 1]) {
-                    throw `Error: Day '${day}' must be between 1 and 31.`
+                    throw `Error: Day '${day}' is invalid for the given month.`
                 }
                 if (year < 1000) {
                     throw `Error: Year '${year}' must be greater than or equal to 1000.`;

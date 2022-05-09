@@ -55,9 +55,47 @@ router.route('/').get(async (req, res) => {
 /* /events/searchPage */
 // Need to ensure the user can only view/search their own events
 router.route('/searchPage').post(async (req, res) => {
+    let owner = null, eventQuery = null;
+    eventSearch = req.body;
+    eventSearch.searchOption = xss(eventSearch.searchOption);
+    eventSearch.searchTerm = xss(eventSearch.searchTerm);
+    
     try {
-        eventSearch = req.body;
-        console.log(eventSearch)
+        owner = validateApi
+        .isValidString((await usersApi.getLoggedinUser(req)).username, true)
+        .toLowerCase();
+    } catch (e) {
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        eventSearch.searchOption = validateApi.isValidString(eventSearch.searchOption, true);
+        if (eventSearch.searchOption !== "User" && eventSearch.searchOption !== "Title/Description" && eventSearch.searchOption !== "Priority") {
+            throw `Error: '${searchType}' is not a valid search type.`
+        }
+
+        if (eventSearch.searchOption == "User" || eventSearch.searchOption == "Title/Description" || eventSearch.searchOption == "Date") {
+            eventSearch.searchTerm = validateApi.isValidString(eventSearch.searchTerm, true);
+        }
+        else {
+            eventSearch.searchTerm = Number(eventSearch.searchTerm);
+            eventSearch.searchTerm = validateApi.isValidNumber(eventSearch.searchTerm, true);
+            if (eventSearch.searchTerm < 1 || eventSearch.searchTerm > 5) {
+                throw `Error: '${eventSearch.searchTerm}' is not a valid priority.`
+            }
+        }
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+    
+    try {
+        // console.log(eventSearch)
         if (eventSearch.searchOption == "User") {
             eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm)
         }
@@ -65,69 +103,99 @@ router.route('/searchPage').post(async (req, res) => {
             eventQuery = await eventQuerying.searchEvents(eventSearch.searchTerm)
         }
         else if (eventSearch.searchOption == "Date") {
-            console.log("four")
             // TODO: Might have to account for lowercase input or validate for it
             month = eventSearch.searchTerm.substring(0,2)
             day = eventSearch.searchTerm.substring(3,5)
             year = eventSearch.searchTerm.substring(6,12)
-            
-            console.log('five')
 
             day == "XX" ? dayValue = false : dayValue = Number(day)
             month == "XX" ? monthValue = false : monthValue = Number(month)
             year == "XXXX" ? yearValue = false : yearValue = Number(year)
 
-            console.log("six")
-
-            console.log(typeof monthValue)
-            console.log(dayValue)
-            console.log(yearValue)
-
+            if (isNaN(dayValue) || isNaN(monthValue) || isNaN(yearValue)) {
+                throw `Error: '${eventSearch.searchTerm}' is not a valid formatted date.`
+            }
             eventQuery = await eventQuerying.filterEventDate(monthValue, dayValue, yearValue)
         }
         else if (eventSearch.searchOption == "Priority") {
-            eventSearch.searchTerm = Number(eventSearch.searchTerm)
-            if (Number.isInteger(eventSearch.searchTerm)) {
-                if (eventSearch.searchTerm >= 1 && eventSearch.searchTerm <= 5) {
-                    eventQuery = await eventQuerying.searchEventPriority(eventSearch.searchTerm)
-                }
-                else {
-                    return "Priority needs to be between 1 and 5"
-                }
-            }
-            else {
-                return "Priority needs to be a valid integer"
-            }
+            eventQuery = await eventQuerying.searchEventPriority(eventSearch.searchTerm)
         }
-        else {
-            return "Sorry, no events could be found."
-        }
-
-        res.status(200).render('events/searchEvents', {
-            title: 'Events Found',
-            eventSearchTerm: eventSearch.searchTerm,
-            eventSearchOption: eventSearch.searchOption,
-            events: eventQuery,
-        });
     } catch (e) {
-        res.status(500).send(e);
+        return res.status(500).render('other/error', {
+            title: 'Unexpected Error: (500)',
+            errorMsg: e,
+        });
     }
+
+    return res.status(200).render('events/searchEvents', {
+        title: 'Events Found',
+        eventSearchTerm: eventSearch.searchTerm,
+        eventSearchOption: eventSearch.searchOption,
+        events: eventQuery,
+    });
 });
 
 router.route('/searchpage/filterPriority').post(async (req, res) => {
-    try {
-        console.log("Route:", req.body)
-        filterEvents = await eventQuerying.filterEventPriority(req.body.eventSearchOption, req.body.eventSearchTerm, req.body.priorityOrder)
+    let owner = null, filterEvents = null;
+    req.body.eventSearchOption = xss(req.body.eventSearchOption);
+    req.body.eventSearchTerm = xss(req.body.eventSearchTerm);
+    req.body.priorityOrder = xss(req.body.priorityOrder);
 
-        res.status(200).render('events/searchEvents', {
-            title: 'Events Found',
-            eventSearchTerm: req.body.eventSearchTerm,
-            eventSearchOption: req.body.eventSearchOption,
-            events: filterEvents,
-        })
+    try {
+        owner = validateApi
+        .isValidString((await usersApi.getLoggedinUser(req)).username, true)
+        .toLowerCase();
     } catch (e) {
-        res.status(500).send(e)
+        return res.status(401).render('other/error', {
+            title: 'Unexpected Error: (401)',
+            errorMsg: e,
+        });
     }
+
+    try {
+        req.body.eventSearchOption = validateApi.isValidString(req.body.eventSearchOption, true);
+        if (req.body.eventSearchOption !== "User" && req.body.eventSearchOption !== "Title/Description" && req.body.eventSearchOption !== "Date" && req.body.eventSearchOption !== "Priority") {
+            throw `Error: '${req.body.eventSearchOption}' is not a valid search type.`
+        }
+
+        if (req.body.eventSearchOption == "User" || req.body.eventSearchOption == "Title/Description" || req.body.eventSearchOption == "Date") {
+            req.body.eventSearchTerm = validateApi.isValidString(req.body.eventSearchTerm, true);
+        }
+        else {
+            req.body.eventSearchTerm = Number(req.body.eventSearchTerm);
+            req.body.eventSearchTerm = validateApi.isValidNumber(req.body.eventSearchTerm, true);
+            if (req.body.eventSearchTerm < 1 || req.body.eventSearchTerm > 5) {
+                throw `Error: '${req.body.eventSearchTerm}' is not a valid priority.`
+            }
+        }
+        
+        req.body.priorityOrder = validateApi.isValidString(req.body.priorityOrder, true)
+        if (req.body.priorityOrder != "asc" &&  req.body.priorityOrder != "desc") {
+            throw "Error: sort/filter order should be 'asc' or 'desc'"
+        }
+    } catch (e) {
+        return res.status(400).render('other/error', {
+            title: 'Unexpected Error: (400)',
+            errorMsg: e,
+        });
+    }
+
+    try {
+        // console.log("Route:", req.body)
+        filterEvents = await eventQuerying.filterEventPriority(req.body.eventSearchOption, req.body.eventSearchTerm, req.body.priorityOrder)
+    } catch (e) {
+        return res.status(500).render('other/error', {
+            title: 'Unexpected Error: (500)',
+            errorMsg: e,
+        });
+    }
+
+    return res.status(200).render('events/searchEvents', {
+        title: 'Events Found',
+        eventSearchTerm: req.body.eventSearchTerm,
+        eventSearchOption: req.body.eventSearchOption,
+        events: filterEvents,
+    })
 })
 
 /* /events/create */

@@ -33,8 +33,33 @@ const time_to_string = date => { // Date -> 00:00 AM
     return date.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 }
 
+const getFirstWeekday = (yr, mo, dayOfWeek) => {
+    let month = new Date(yr, mo);
+    while (month.getDay() != dayOfWeek){
+        month.setDate(month.getDate() + 1);
+    }
+    return month;
+}
+
+const jumpWeek = (date, n) => {
+    date.setDate(date.getDate() + n * 7);
+    return date;
+}
+
 const TODAY = new Date();
 let current = new Date();
+
+const federalHolidays = {
+    0 : [{title: "New Year's Day", date: y => new Date(y, 0, 1)}, {title: "Martin Luther King Jr. Day", date: y => jumpWeek(getFirstWeekday(y, 0, 1), 2)}],
+    1 : [{title: "Valentine's Day", date: y => new Date(y, 1, 14)}, {title: "President's Day", date: y => jumpWeek(getFirstWeekday(y, 1, 1), 2)}],
+    4 : [{title: "Memorial Day", date: y => jumpWeek(getFirstWeekday(y, 5, 1), -1)}],
+    5 : [{title: "Juneteenth", date: y => new Date(y, 5, 19)}],
+    6 : [{title: "Independence Day", date: y => new Date(y, 6, 4)}],
+    8 : [{title: "Labor Day", date: y => getFirstWeekday(y, 8, 1)}],
+    9 : [{title: "Indigenous Peoples' Day", date: y => new Date(y, 9, 10)}, {title: "Halloween", date: y => new Date(y, 9, 31)}],
+    10: [{title: "Veteran's Day", date: y => new Date(y, 10, 11)}, {title: "Thanksgiving Day", date: y => jumpWeek(getFirstWeekday(y, 10, 4), 3)}],
+    11: [{title: "Christmas Day", date: y => new Date(y, 11, 25)}, {title: "New Year's Eve", date: y => new Date(y, 11, 31)}]
+}
 
 let events = event_list.map(convert_format);
 
@@ -130,6 +155,14 @@ function fill_cal(curr) {
         } else date++;
     }
 
+    $.each(federalHolidays[current.getMonth()], (i, el) => {
+        let holiday_date = date_to_string(el.date(current.getFullYear()));
+        $('<li>')
+            .addClass('event-priority-5')
+            .html(`<p>${el.title}</p>`)
+            .appendTo(`.cell[data-date=${holiday_date}] .events`)
+    });
+    
     fill_events(events);
 }
 

@@ -57,7 +57,7 @@ Some features that we would like to implement in the future. ***We will check th
 - [ ] Add or remove multiple calendar instances
 - [ ] Merge multiple calendars into one
 - [ ] Make events periodic
-- [ ] Display U.S federal holidays
+- [x] Display U.S federal holidays
 - [ ] Automatically delete overdue events with user consent
 
 ## Contributors

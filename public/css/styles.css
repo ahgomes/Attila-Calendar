@@ -191,12 +191,15 @@ main {
 }
 
 #cal .row .cell .events li a,
-#day .events li a {
+#day .events li a,
+#cal .row .cell .events li p,
+#day .events li p {
     display: block;
     padding: 5px 10px;
     font-size: 12px;
     color: var(--black);
     text-decoration: none;
+    margin: 0;
 }
 
 /* last month & next month cells */
@@ -257,8 +260,10 @@ main {
     padding: 15px 10px 10px;
 }
 
-#day .events li a {
+#day .events li a,
+#day .events li p {
     font-size: 18px;
+    margin: 0;
 }
 
 /* -- EVENT SIDE PANEL -- */

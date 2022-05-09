@@ -23,6 +23,8 @@ const data = require('../data');
 const usersApi = data.usersApi;
 const eventsApi = data.eventsApi;
 
+const TODAY = new Date()
+
 let words = null;
 fileSys.readFile('./tasks/wordlist.txt', 'utf-8', (err, data) => {
     words = data.split(/\r\n|\r|\n/g);
@@ -163,17 +165,17 @@ async function main() {
             try {
                 if (user && calendarId) {
                     console.log(`Creating events for ${users[i][0]}...`);
-                    for (let j = 0; j < randomInt(8, 10); j++) {
+                    for (let j = 0; j < randomInt(80, 120); j++) {
                         eventId = (
                             await eventsApi.createNewEvent(
                                 user.username,
                                 calendarId,
-                                randomWords(20),
+                                randomWords(3),
                                 randomWords(100),
                                 randomInt(1, 5),
                                 new Date(
-                                    randomInt(2000, 2030),
-                                    randomInt(0, 11),
+                                    TODAY.getFullYear(),
+                                    TODAY.getMonth() + randomInt(-3, 3),
                                     randomInt(0, 25),
                                     randomInt(0, 23),
                                     randomInt(0, 59)

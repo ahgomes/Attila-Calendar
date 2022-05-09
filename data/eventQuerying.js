@@ -24,7 +24,7 @@ const listUserEvents = async function listUserEvents(username) {
     const eventsCollection = await events()
     const listEvents = await eventsCollection.find({owners: {$in: [username]}}).toArray()
 
-    // console.log(listEvents)
+    console.log(listEvents)
     if (listEvents.length > 0) {
         return listEvents
     }
@@ -33,14 +33,16 @@ const listUserEvents = async function listUserEvents(username) {
     }
 }
 
-const searchEvents = async function searchEvents(text) {
+const searchEvents = async function searchEvents(text, username) {
     text = validateApi.isValidString(text, true)
-    const eventsCollection = await events()
-    
-    const findEvents = await eventsCollection.find({$or: [{title: {$regex: text, $options: 'i'}}, {description: {$regex: text, $options: 'i'}}]}).toArray()
+    username = validateApi.isValidString(username, true).toLowerCase()
 
-    // console.log(findEvents)
+    const eventsCollection = await events()
+    findEvents = await eventsCollection.find({$or: [{title: {$regex: text, $options: 'i'}}, {description: {$regex: text, $options: 'i'}}]}).toArray()
+    findEvents = findEvents.filter(event => event.owners.includes(username))
+    
     if (findEvents.length > 0) {
+        console.log(findEvents)
         return findEvents
     }
     else {
@@ -48,7 +50,8 @@ const searchEvents = async function searchEvents(text) {
     }
 }
 
-const filterEventDate = async function filterEventDate(month, day, year) {
+const filterEventDate = async function filterEventDate(month, day, year, username) {
+    username = validateApi.isValidString(username, true).toLowerCase()
     const validDays = [
         31, // Jan
         new Date(year, 1, 29).getUTCMonth() === 1 ? 29 : 28, // Feb
@@ -157,23 +160,27 @@ const filterEventDate = async function filterEventDate(month, day, year) {
             findEvents = await eventsCollection.find({"$expr": {$eq: [{"$year": "$deadline"}, year]}}).toArray()
         }
     }
-
-   if (findEvents.length > 0) {
+    findEvents = findEvents.filter(event => event.owners.includes(username))
+    if (findEvents.length > 0) {
+        console.log(findEvents)
         return findEvents
-   } else {
+    } else {
         throw "Sorry, no events could be found."
-   }
+    }
 }
 
-const searchEventPriority = async function searchEventPriority(priority) {
+const searchEventPriority = async function searchEventPriority(priority, username) {
     priority = validateApi.isValidNumber(priority, true)
+    username = validateApi.isValidString(username, true).toLowerCase()
 
     if (priority < 1 || priority > 5) {
         throw `Error: '${priority}' should be a valid integer between 1 to 5 (inclusive)`
     }
 
     const eventsCollection = await events()
-    const findPriorityEvents = await eventsCollection.find({priority: {$eq: priority}}).toArray()
+    // find events where username is in owners and priority matches priority
+    findPriorityEvents = await eventsCollection.find({"$expr": {$and: [{$eq: ["$priority", priority]}, {$in: [username, "$owners"]}]}}).toArray()
+
 
     console.log(findPriorityEvents)
     if (findPriorityEvents.length > 0) {
@@ -184,7 +191,7 @@ const searchEventPriority = async function searchEventPriority(priority) {
     }
 }
 
-const filterEventPriority = async function filterEventPriority(searchType, searchTerm, order) {
+const filterEventPriority = async function filterEventPriority(searchType, searchTerm, order, username) {
     searchType = validateApi.isValidString(searchType, true)
     if (searchType !== "User" && searchType !== "Title/Description" && searchType !== "Date" && searchType !== "Priority") {
         throw `Error: '${searchType}' is not a valid search type.`
@@ -204,6 +211,7 @@ const filterEventPriority = async function filterEventPriority(searchType, searc
         order = -1
     }
 
+    username = validateApi.isValidString(username, true).toLowerCase()
     // console.log("Database Query:", searchType, searchTerm, order)
 
     if (searchType === "User") {
@@ -275,9 +283,10 @@ const filterEventPriority = async function filterEventPriority(searchType, searc
     }
     else if (searchType === "Priority") {
         searchTerm = validateApi.isValidNumber(searchTerm, true)
-        filterEvents = await searchEventPriority(searchTerm)
+        filterEvents = await searchEventPriority(searchTerm, username)
     }
 
+    filterEvents = filterEvents.filter(event => event.owners.includes(username))
     if (filterEvents.length > 0) {
         return filterEvents
     }

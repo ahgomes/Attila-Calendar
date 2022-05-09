@@ -18,7 +18,6 @@ const getEventById = async function getEventById(id) {
     }
 }
 
-//DONE
 const listUserEvents = async function listUserEvents(username) {
     username = validateApi.isValidString(username, true).toLowerCase();
     
@@ -33,9 +32,7 @@ const listUserEvents = async function listUserEvents(username) {
         throw "Sorry, no events could be found."
     }
 }
-// listUserEvents("VENKAT")
 
-// DONE
 const searchEvents = async function searchEvents(text, username) {
     text = validateApi.isValidString(text, true)
     username = validateApi.isValidString(username, true).toLowerCase()
@@ -52,9 +49,7 @@ const searchEvents = async function searchEvents(text, username) {
         throw "Sorry, no events could be found."
     }
 }
-searchEvents("complete", "antonio")
 
-//DONE
 const filterEventDate = async function filterEventDate(month, day, year, username) {
     username = validateApi.isValidString(username, true).toLowerCase()
     const validDays = [
@@ -173,9 +168,7 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
         throw "Sorry, no events could be found."
     }
 }
-// filterEventDate(false, false, 2022, "antonio")
 
-// DONE
 const searchEventPriority = async function searchEventPriority(priority, username) {
     priority = validateApi.isValidNumber(priority, true)
     username = validateApi.isValidString(username, true).toLowerCase()
@@ -197,9 +190,7 @@ const searchEventPriority = async function searchEventPriority(priority, usernam
         throw "Sorry, no events could be found."
     }
 }
-// searchEventPriority(3, "VENKAT")
 
-// DONE
 const filterEventPriority = async function filterEventPriority(searchType, searchTerm, order, username) {
     searchType = validateApi.isValidString(searchType, true)
     if (searchType !== "User" && searchType !== "Title/Description" && searchType !== "Date" && searchType !== "Priority") {
@@ -303,7 +294,6 @@ const filterEventPriority = async function filterEventPriority(searchType, searc
         throw "Sorry, no events could be found."
     }
 }
-// filterEventPriority("Priority", 3, "asc", "venkat")
 
 module.exports = {
     getEventById,

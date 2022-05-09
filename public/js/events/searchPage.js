@@ -33,9 +33,12 @@
 
             if (optionValue == "Date") {
                 // TODO: Might have to account for lowercase input or validate for it
+                if (searchTerm.length!=10){
+                    throw `Error: '${searchTerm}' is not a valid formatted date.`;
+                }
                 let month = searchTerm.substring(0,2)
                 let day = searchTerm.substring(3,5)
-                let year = searchTerm.substring(6,12)
+                let year = searchTerm.substring(6,10)
     
                 day == "XX" ? dayValue = false : dayValue = Number(day)
                 month == "XX" ? monthValue = false : monthValue = Number(month)

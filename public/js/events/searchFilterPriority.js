@@ -38,6 +38,10 @@
                 let month = searchTerm.substring(0,2)
                 let day = searchTerm.substring(3,5)
                 let year = searchTerm.substring(6,12)
+                
+                if (searchTerm.length!=10){
+                    throw `Error: '${searchTerm}' is not a valid formatted date.`;
+                }
     
                 day == "XX" ? dayValue = false : dayValue = Number(day)
                 month == "XX" ? monthValue = false : monthValue = Number(month)

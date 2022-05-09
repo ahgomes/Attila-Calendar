@@ -1,7 +1,7 @@
 <article>
     <h1>Events Found</h1>
     <h2>Search Term: {{eventSearchTerm}}</h2>
-
+    <a href="/events">Search For Another Event</a>
     {{#if errorMsg}}
         <div id="error" class="error">{{errorMsg}}</div>
     {{else}}
@@ -40,5 +40,5 @@
         {{/each}}
     </table>
     <br>
-    <a href="/events">Search For Another Event</a>
+    
 </article>

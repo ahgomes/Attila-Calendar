@@ -140,7 +140,7 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
                 if (year < 1000) {
                     throw `Error: Year '${year}' must be greater than or equal to 1000.`;
                 }
-                findEvents = await eventsCollection.find({"$expr": {$and: [{$eq: ["$dayOfMonth", day]}, {$eq: ["$year", year]}]}}).toArray()
+                findEvents = await eventsCollection.find({"$expr": {$and: [{$eq: [{"$dayOfMonth": "$deadline"}, day]}, {$eq: [{"$year": "$deadline"}, year]}]}}).toArray()
             }
             else {
                 //find day of deadline
@@ -162,13 +162,13 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
     }
     findEvents = findEvents.filter(event => event.owners.includes(username))
     if (findEvents.length > 0) {
-        // console.log(findEvents)
+        console.log(findEvents)
         return findEvents
     } else {
         throw "Sorry, no events could be found."
     }
 }
-// filterEventDate(false, false, 2022, "adrian")
+filterEventDate(07, 06, 2022, "adrian")
 
 const searchEventPriority = async function searchEventPriority(priority, username) {
     priority = validateApi.isValidNumber(priority, true)

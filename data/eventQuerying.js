@@ -24,7 +24,7 @@ const listUserEvents = async function listUserEvents(username) {
     const eventsCollection = await events()
     const listEvents = await eventsCollection.find({owners: {$in: [username]}}).toArray()
 
-    console.log(listEvents)
+    // console.log(listEvents)
     if (listEvents.length > 0) {
         return listEvents
     }
@@ -42,7 +42,7 @@ const searchEvents = async function searchEvents(text, username) {
     findEvents = findEvents.filter(event => event.owners.includes(username))
     
     if (findEvents.length > 0) {
-        console.log(findEvents)
+        // console.log(findEvents)
         return findEvents
     }
     else {
@@ -162,7 +162,7 @@ const filterEventDate = async function filterEventDate(month, day, year, usernam
     }
     findEvents = findEvents.filter(event => event.owners.includes(username))
     if (findEvents.length > 0) {
-        console.log(findEvents)
+        // console.log(findEvents)
         return findEvents
     } else {
         throw "Sorry, no events could be found."
@@ -182,7 +182,7 @@ const searchEventPriority = async function searchEventPriority(priority, usernam
     findPriorityEvents = await eventsCollection.find({"$expr": {$and: [{$eq: ["$priority", priority]}, {$in: [username, "$owners"]}]}}).toArray()
 
 
-    console.log(findPriorityEvents)
+    // console.log(findPriorityEvents)
     if (findPriorityEvents.length > 0) {
         return findPriorityEvents
     }
@@ -238,11 +238,11 @@ const filterEventPriority = async function filterEventPriority(searchType, searc
             if (dayValue) {
                 if (yearValue) {
                     //find month, day and year of deadline
-                    console.log("a")
+                    // console.log("a")
                     filterEvents = await eventsCollection.find({"$expr": {$and: [{$eq: [{"$month": "$deadline"}, monthValue]}, {$eq: [{"$dayOfMonth": "$deadline"}, dayValue]}, {$eq: [{"$year": "$deadline"}, yearValue]}]}}).sort({priority: order}).toArray()
                 }
                 else {
-                    console.log("b")
+                    // console.log("b")
                     //find month and day of deadline
                     filterEvents = await eventsCollection.find({"$expr": {$and: [{$eq: [{"$month": "$deadline"}, monthValue]}, {$eq: [{"$dayOfMonth": "$deadline"}, dayValue]}]}}).sort({priority: order}).toArray()
                 }
@@ -250,13 +250,13 @@ const filterEventPriority = async function filterEventPriority(searchType, searc
             else {
                 if (yearValue) {
                     //find month and year of deadline
-                    console.log("I have arrived")
+                    // console.log("I have arrived")
                     filterEvents = await eventsCollection.find({"$expr": {$and: [{$eq: [{"$month": "$deadline"}, monthValue]}, {$eq: [{"$year": "$deadline"}, yearValue]}]}}).sort({priority: order}).sort({priority: order}).toArray()
-                    console.log(filterEvents)
+                    // console.log(filterEvents)
                 }
                 else {
                     //find month of deadline
-                    console.log("c")
+                    // console.log("c")
                     filterEvents = await eventsCollection.find({"$expr": {$eq: [{"$month": "$deadline"}, monthValue]}}).sort({priority: order}).toArray()
                 }
             }
@@ -265,18 +265,18 @@ const filterEventPriority = async function filterEventPriority(searchType, searc
             if (dayValue) {
                 if (yearValue) {
                     //find day and year of deadline
-                    console.log("d")
+                    // console.log("d")
                     filterEvents = await eventsCollection.find({"$expr": {$and: [{$eq: ["$dayOfMonth", dayValue]}, {$eq: ["$year", yearValue]}]}}).sort({priority: order}).toArray()
                 }
                 else {
                     //find day of deadline
-                    console.log("e")
+                    // console.log("e")
                     filterEvents = await eventsCollection.find({"$expr": {$eq: [{"$dayOfMonth": "$deadline"}, dayValue]}}).sort({priority: order}).toArray()
                 }
             }
             else {
                 //find year of deadline
-                console.log("f")
+                // console.log("f")
                 filterEvents = await eventsCollection.find({"$expr": {$eq: [{"$year": "$deadline"}, yearValue]}}).sort({priority: order}).toArray()
             }
         }

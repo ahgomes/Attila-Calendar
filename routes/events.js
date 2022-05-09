@@ -98,10 +98,10 @@ router.route('/searchPage').post(async (req, res) => {
     try {
         // console.log(eventSearch)
         if (eventSearch.searchOption == "User") {
-            eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm)
+            eventQuery = await eventQuerying.listUserEvents(eventSearch.searchTerm, owner)
         }
         else if (eventSearch.searchOption == "Title/Description") {
-            eventQuery = await eventQuerying.searchEvents(eventSearch.searchTerm)
+            eventQuery = await eventQuerying.searchEvents(eventSearch.searchTerm, owner)
         }
         else if (eventSearch.searchOption == "Date") {
             // TODO: Might have to account for lowercase input or validate for it
@@ -131,10 +131,11 @@ router.route('/searchPage').post(async (req, res) => {
                 }
             }
 
-            eventQuery = await eventQuerying.filterEventDate(monthValue, dayValue, yearValue)
+            eventQuery = await eventQuerying.filterEventDate(monthValue, dayValue, yearValue, owner)
         }
         else if (eventSearch.searchOption == "Priority") {
-            eventQuery = await eventQuerying.searchEventPriority(eventSearch.searchTerm)
+            // console.log(owner)
+            eventQuery = await eventQuerying.searchEventPriority(eventSearch.searchTerm, owner)
         }
     } catch (e) {
         return res.status(500).render('other/error', {
@@ -199,7 +200,7 @@ router.route('/searchpage/filterPriority').post(async (req, res) => {
 
     try {
         // console.log("Route:", req.body)
-        filterEvents = await eventQuerying.filterEventPriority(req.body.eventSearchOption, req.body.eventSearchTerm, req.body.priorityOrder)
+        filterEvents = await eventQuerying.filterEventPriority(req.body.eventSearchOption, req.body.eventSearchTerm, req.body.priorityOrder, owner)
     } catch (e) {
         return res.status(500).render('other/error', {
             title: 'Unexpected Error: (500)',

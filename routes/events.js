@@ -104,15 +104,12 @@ router.route('/searchPage').post(async (req, res) => {
             eventQuery = await eventQuerying.searchEvents(eventSearch.searchTerm, owner)
         }
         else if (eventSearch.searchOption == "Date") {
-            // TODO: Might have to account for lowercase input or validate for it
-
-            // if (eventSearch.searchTerm.length!=10){
-            //     throw `Error: '${searchTerm}' is not a valid formatted date.`;
-            // }
-
+            if (eventSearch.searchTerm.length !== 10) {
+                throw `Error: '${eventSearch.searchTerm}' is not a valid date.`
+            }
             month = eventSearch.searchTerm.substring(0,2)
             day = eventSearch.searchTerm.substring(3,5)
-            year = eventSearch.searchTerm.substring(6,12)
+            year = eventSearch.searchTerm.substring(6,9)
 
             day == "XX" ? dayValue = false : dayValue = Number(day)
             month == "XX" ? monthValue = false : monthValue = Number(month)

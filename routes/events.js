@@ -109,7 +109,7 @@ router.route('/searchPage').post(async (req, res) => {
             
             month = eventSearch.searchTerm.substring(0,2)
             day = eventSearch.searchTerm.substring(3,5)
-            year = eventSearch.searchTerm.substring(6,12)
+            year = eventSearch.searchTerm.substring(6,9)
 
             day == "XX" ? dayValue = false : dayValue = Number(day)
             month == "XX" ? monthValue = false : monthValue = Number(month)

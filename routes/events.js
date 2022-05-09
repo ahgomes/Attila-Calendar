@@ -73,8 +73,8 @@ router.route('/searchPage').post(async (req, res) => {
 
     try {
         eventSearch.searchOption = validateApi.isValidString(eventSearch.searchOption, true);
-        if (eventSearch.searchOption !== "User" && eventSearch.searchOption !== "Title/Description" && eventSearch.searchOption !== "Priority") {
-            throw `Error: '${searchType}' is not a valid search type.`
+        if (eventSearch.searchOption !== "User" && eventSearch.searchOption !== "Title/Description" && eventSearch.searchOption !== "Priority" && eventSearch.searchOption !== "Date") {
+            throw `Error: '${eventSearch.searchOption}' is not a valid search type.`
         }
 
         if (eventSearch.searchOption == "User" || eventSearch.searchOption == "Title/Description" || eventSearch.searchOption == "Date") {
@@ -112,9 +112,24 @@ router.route('/searchPage').post(async (req, res) => {
             month == "XX" ? monthValue = false : monthValue = Number(month)
             year == "XXXX" ? yearValue = false : yearValue = Number(year)
 
-            if (isNaN(dayValue) || isNaN(monthValue) || isNaN(yearValue)) {
-                throw `Error: '${eventSearch.searchTerm}' is not a valid formatted date.`
+            if (dayValue != false) {
+                if (isNaN(dayValue)) {
+                    throw `Error: '${eventSearch.searchTerm}' is not a valid formatted date.`
+                }
             }
+
+            if (monthValue != false) {
+                if (isNaN(monthValue)) {
+                    throw `Error: '${eventSearch.searchTerm}' is not a valid formatted date.`
+                }
+            }
+
+            if (yearValue != false) {
+                if (isNaN(yearValue)) {
+                    throw `Error: '${eventSearch.searchTerm}' is not a valid formatted date.`
+                }
+            }
+
             eventQuery = await eventQuerying.filterEventDate(monthValue, dayValue, yearValue)
         }
         else if (eventSearch.searchOption == "Priority") {

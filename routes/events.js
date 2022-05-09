@@ -49,6 +49,7 @@ router.route('/').get(async (req, res) => {
     return res.render('events/main', {
         title: 'Events Page',
         events,
+        scriptSource: '/public/js/events/searchPage.js',
     });
 });
 
@@ -147,6 +148,7 @@ router.route('/searchPage').post(async (req, res) => {
         eventSearchTerm: eventSearch.searchTerm,
         eventSearchOption: eventSearch.searchOption,
         events: eventQuery,
+        scriptSource: '/public/js/events/searchFilterPriority.js',
     });
 });
 
@@ -210,6 +212,7 @@ router.route('/searchpage/filterPriority').post(async (req, res) => {
         eventSearchTerm: req.body.eventSearchTerm,
         eventSearchOption: req.body.eventSearchOption,
         events: filterEvents,
+        scriptSource: '/public/js/events/searchFilterPriority.js',
     })
 })
 

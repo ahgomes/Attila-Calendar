@@ -1,6 +1,12 @@
 <h1>Search Events</h1>
 
-<form action='/events/searchPage' method='POST'>
+{{#if errorMsg}}
+	<div id="error" class="error">{{errorMsg}}</div>
+{{else}}
+    <div id='error' class='error' hidden></div>
+{{/if}}
+
+<form action='/events/searchPage' method='POST' id="search-form">
     <label for='searchOption'></label>
     <select name='searchOption' id='searchOption'>
         <option value='Title/Description'>Title/Description</option>

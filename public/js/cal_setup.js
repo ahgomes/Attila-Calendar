@@ -23,7 +23,7 @@ const date_to_string = date => { // Date -> YYYY-MM-DD
     return date.getFullYear() + '-' + date_parts.join('-');
 }
 
-const string_to_date = date_str => {
+const string_to_date = date_str => { // YYYY-MM-DD -> Date
     let [y, m, d] = date_str.split('-');
     d = (parseInt(d) + 1).toString().padStart(2, '0');
     return new Date([y, m, d].join('-'));
@@ -109,8 +109,7 @@ function fill_cal(curr) {
     for (; i < (row_count + 1) * 7; i++) {
         let cell = $(`#td-${(i < 7 ? '0' : '') + i.toString(7)}`);
         cell.attr('data-date', `${str_part}-${(date < 10 ? '0' + date : date)}`)
-            .prepend($('<h2>').text(date).attr('title', 'open expanded day view')
-);
+            .prepend($('<h2>').text(date).attr('title', 'open expanded day view'));
 
         if (i < curr_start) cell.addClass('last');
         else if (i >= curr_start + curr_end) cell.addClass('next');
@@ -119,7 +118,6 @@ function fill_cal(curr) {
                 && date == curr.getDate()) {
             cell.addClass('today');
         }
-
 
         if (i == curr_start - 1) {
             str_part = curr_str_part;

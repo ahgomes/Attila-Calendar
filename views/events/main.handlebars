@@ -2,8 +2,7 @@
 
 <form action='/events/searchPage' method='POST'>
     <label for='searchOption'></label>
-    <select name='searchOption' id='searchType'>
-        <option value='User'>User</option>
+    <select name='searchOption' id='searchOption'>
         <option value='Title/Description'>Title/Description</option>
         <option value='Date'>Date</option>
         <option value='Priority'>Priority</option>
@@ -15,14 +14,17 @@
     <button type='submit'>Submit</button>
 </form>
 
-<p>For date enter in format: XX/XX/XXXX</p>
+<p>For a date search use the format: MM/DD/YYYY</p>
+<p>If you do not want to enter a value for month, day, or year, replace the MM, DD, YYYY with (capital) X's</p>
+<p>For example, a valid date search with only the month and year fields would be 05/XX/2022</p>
+<p>A valid date search with only the year field: XX/XX/2022 </p>
 
-<br />
+<br>
 
-<a href='/events/create'>Click Here to Create an Event</a>
+<a href='/events/create'>Create an Event</a>
 
-<br />
-<br />
+<br>
+<br>
 
 <h1>All of Your Events</h1>
 <div class='event-list-container-compact center-element'>

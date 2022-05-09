@@ -25,15 +25,7 @@ const eventsApi = data.eventsApi;
 
 let words = null;
 fileSys.readFile('./tasks/wordlist.txt', 'utf-8', (err, data) => {
-    if (data.includes('\r\n')) {
-        words = data.split('\r\n');
-    } else if (data.includes('\n')) {
-        words = data.split('\n');
-    } else if (data.includes('\r')) {
-        words = data.split('\r');
-    } else {
-        words = [data];
-    }
+    words = data.split(/\r\n|\r|\n/g);
 });
 
 function randomInt(min, max) {

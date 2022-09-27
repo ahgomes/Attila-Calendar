@@ -21,6 +21,7 @@
             password = validateApi.isValidString(DOMpassword.val(), false);
             first_name = validateApi.isValidString(DOMfirst_name.val(), true);
             last_name = validateApi.isValidString(DOMlast_name.val(), true);
+            username = username.trim();
             validateApi.checkUsername(username);
             validateApi.checkPassword(password);
             validateApi.checkName(first_name);

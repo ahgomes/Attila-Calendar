@@ -22,6 +22,7 @@ module.exports = {
         validate.isValidString(first_name, true);
         validate.isValidString(last_name, true);
         username = username.toLowerCase();
+        username = username.trim();
         validate.checkUsername(username);
         validate.checkPassword(password);
         validate.checkName(first_name);
@@ -172,6 +173,7 @@ module.exports = {
         validate.isValidString(username, false);
         validate.isValidString(password, false);
         username = username.toLowerCase();
+        username = username.trim();
         validate.checkUsername(username);
         validate.checkPassword(password);
 

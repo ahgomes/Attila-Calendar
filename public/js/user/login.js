@@ -15,6 +15,7 @@
         try {
             username = validateApi.isValidString(DOMusername.val(), false);
             password = validateApi.isValidString(DOMpassword.val(), false);
+            username = username.trim();
             validateApi.checkUsername(username);
             validateApi.checkPassword(password);
             DOMerror.text('').hide();

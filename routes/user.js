@@ -24,6 +24,7 @@ router
         let first_name = xss(req.body.first_name);
         let last_name = xss(req.body.last_name);
         try {
+            username = username.trim();
             validate.isValidString(username, false);
             validate.isValidString(password, false);
             validate.isValidString(first_name, true);
@@ -63,6 +64,7 @@ router
         let username = xss(req.body.username);
         let password = xss(req.body.password);
         try {
+            username = username.trim();
             validate.isValidString(username, false);
             validate.isValidString(password, false);
             username = username.toLowerCase();
@@ -102,9 +104,14 @@ router
   .route('/changeName')
   .get(async (req, res) => {
     if(req.session.user){
-        user = await usersData.getLoggedinUser(req);
-        res.render('other/changeName', {title: 'Change Name', first_name: user.first_name, last_name: user.last_name, scriptSource: '/public/js/user/changeName.js'});
-        return;
+        try{
+            user = await usersData.getLoggedinUser(req);
+            res.render('other/changeName', {title: 'Change Name', first_name: user.first_name, last_name: user.last_name, scriptSource: '/public/js/user/changeName.js'});
+            return;
+        }catch(e){
+            res.status(400).render('other/changeName', {title: 'Change Name', first_name: user.first_name, last_name: user.last_name, scriptSource: '/public/js/user/changeName.js', errorMsg: e});
+            return;
+        }
     }else{
         res.redirect('/user');
         return;
@@ -114,9 +121,9 @@ router
     if(req.session.user){
         let first_name = xss(req.body.first_name);
         let last_name = xss(req.body.last_name);
-        validate.checkName(first_name);
-        validate.checkName(last_name);
         try {
+            validate.checkName(first_name);
+            validate.checkName(last_name);
             validate.isValidString(first_name, true);
             validate.isValidString(last_name, true);
         }catch (e) {
